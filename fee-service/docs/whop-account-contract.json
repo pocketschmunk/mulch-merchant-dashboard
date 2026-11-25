@@ -1,0 +1,3057 @@
+{
+  "api_version_date": "2026-11-19-2",
+  "endpoint": "/accounts",
+  "request": {
+    "properties": {
+      "affiliate_code": {
+        "description": "A saved partner referral link code for this new business account. An existing primary user referral takes priority. Used with user tokens creating top-level accounts.",
+        "example": "account-partner-link",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "blueprint_id": {
+        "description": "The blueprint App ID, prefixed `app_`. Creates a hosted website for the account and queues its deployment asynchronously; the Account response does not report deployment completion.",
+        "example": "app_xxxxxxxxxxxxxx",
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "country": {
+        "description": "The ISO 3166-1 alpha-2 country code where the account's business is located (e.g. `US`). Defaults to the parent account's country for subaccounts.",
+        "example": "US",
+        "type": "string"
+      },
+      "dispute_fighter_enabled": {
+        "description": "Whether Whop assembles and files dispute evidence for this account. Enabling it opts into the success fee charged on disputes it wins. Requires payment:dispute. Omit to preserve the existing setting or creation default.",
+        "type": "boolean"
+      },
+      "email": {
+        "description": "The email address of the account owner. Required when creating a subaccount.",
+        "example": "marcus@shinetime.example",
+        "type": "string"
+      },
+      "external_id": {
+        "description": "Your platform's own identifier for this subaccount, such as your user or store ID. Unique among your subaccounts: creating a second account with the same `external_id` and a different `email` returns a 409, unless `reassign_external_id` is `true`. Retrying with the same `email` and `external_id` returns the existing account. Subaccounts only.",
+        "example": "user_12345",
+        "maxLength": 255,
+        "minLength": 1,
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "metadata": {
+        "additionalProperties": true,
+        "description": "Arbitrary key/value metadata to store on the account. When `external_id` is not sent, an `external_id` key here sets `external_id` and follows its rules. It must be unique among your subaccounts unless `reassign_external_id` is `true`. It stays in `metadata` as sent. Changing it later does not change `external_id`.",
+        "example": {
+          "seller_tier": "gold"
+        },
+        "type": "object"
+      },
+      "orchestration_enabled": {
+        "description": "Whether payment orchestration is enabled for this account. Requires payout:account:update. Omit to preserve the existing setting or creation default.",
+        "type": "boolean"
+      },
+      "reassign_external_id": {
+        "default": false,
+        "description": "Pass `true` to move `external_id` to the new subaccount when another of your subaccounts already has it. Without it, that request returns a 409. The subaccount that had it is not deleted. It stays active with `external_id` set to `null`, and its `metadata` is unchanged. Requires `external_id`. Also requires the `company:update` permission on your platform account, in addition to `company:create_child`. Ignored when the same `email` already has the `external_id`, which returns that account.",
+        "example": false,
+        "type": "boolean"
+      },
+      "send_customer_emails": {
+        "default": false,
+        "description": "Whether Whop sends transactional emails to customers on behalf of the subaccount.",
+        "example": true,
+        "type": "boolean"
+      },
+      "title": {
+        "description": "The display name of the account. Defaults to `external_id` or the owner's email when omitted.",
+        "example": "Referred Studio",
+        "type": "string"
+      },
+      "website": {
+        "description": "The account's business website, as an `http` or `https` URL of at most 255 characters. Also added to the account's `social_links` as a `website` entry.",
+        "example": "https://shinetimedetail.com",
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "type": "object"
+  },
+  "schemas": {
+    "Account": {
+      "properties": {
+        "ads_spend_usd": {
+          "description": "Lifetime charged ad spend for the account, in USD. Computed only on `list` for callers with `stats:read` on the account; `null` otherwise.",
+          "example": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "balances": {
+          "items": {
+            "$ref": "#/components/schemas/AccountBalanceToken",
+            "description": "Account holdings, each with USD value. Empty when `total_usd` is `null`."
+          },
+          "type": "array"
+        },
+        "banner_image_url": {
+          "description": "Account banner image URL.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/image/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "business_address": {
+          "description": "Account business address used to calculate tax, with `line1`, `line2`, `city`, `state`, `postal_code`, and `country`. `null` when no address is set.",
+          "example": {
+            "city": "Austin",
+            "country": "US",
+            "line1": "4180 Burnet Rd",
+            "line2": "Suite 2",
+            "postal_code": "78756",
+            "state": "TX"
+          },
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "business_name": {
+          "description": "The account's legal business name used with its tax address.",
+          "example": "Shine Time Auto Detailing, LLC",
+          "maxLength": 255,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "business_type": {
+          "description": "High-level business category for the account. See the [business types and industries glossary](/api-reference/accounts/account#business-types-and-industries-glossary) for valid values.",
+          "example": "software",
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-whop-hide-enum-values": true
+        },
+        "can_transfer_pending_balance_to_children": {
+          "description": "Whether pending funds may be transferred from this platform account to its subaccounts.",
+          "example": false,
+          "type": "boolean"
+        },
+        "cancellation_policy": {
+          "description": "The account's cancellation policy document, or `null` if they have not published one.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/File"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capabilities": {
+          "description": "Payment rails enabled for this account, each `active`, `inactive`, or `pending` (onboarding or review in progress). Computed only on `retrieve` and `me` for callers with `company:balance:read` scope; `null` otherwise.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountCapabilities"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cards": {
+          "description": "Whop Cards application details for the account. Returned on `list`, `retrieve`, and `me` for callers with `company:balance:read` scope; `null` otherwise, or when the account has no card application or blocking application review.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountCards"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "collect_vat_id": {
+          "description": "The account's saved preference for offering optional buyer VAT/tax ID entry. Checkouts where Whop collects and remits tax offer entry automatically, regardless of this preference. Does not require a VAT ID to purchase.",
+          "example": false,
+          "type": "boolean"
+        },
+        "company_formation": {
+          "$ref": "#/components/schemas/AccountCompanyFormation",
+          "description": "Company formation state for the account, managed through [Form Company](/api-reference/accounts/form-company). A `draft` `status` until the formation checkout is paid, then filing progress with downloadable documents and signatures awaiting action. Empty when the formation state is temporarily unavailable."
+        },
+        "country": {
+          "description": "Country where the account is located.",
+          "example": "us",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "description": "When the account was created, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "customers_l30d": {
+          "description": "Distinct customers with a paid receipt at the account in the last 30 days, refreshed every few hours. Computed only on `retrieve` for callers with `stats:read` on the account; `null` otherwise, and when the count is unavailable.",
+          "example": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "description": {
+          "description": "Account promotional description.",
+          "example": "Mobile ceramic coating, paint correction, and interior detailing across the Austin metro.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "direct_reports_count": {
+          "description": "How many team members report to the business directly, with no manager above them. Present on single-account reads.",
+          "example": 0,
+          "type": "integer"
+        },
+        "dispute_fighter_enabled": {
+          "description": "Whether Whop assembles and files dispute evidence for this account. Enabling it opts the account into the success fee charged on disputes it wins.",
+          "example": false,
+          "type": "boolean"
+        },
+        "economic_intelligence": {
+          "description": "Whether Economic Intelligence is on for the account. It turns off automatically when its committed period ends. While it is off, the account can't activate an experiment or run a recommendation.",
+          "example": false,
+          "type": "boolean"
+        },
+        "email": {
+          "description": "Account owner email address.",
+          "example": "marcus@shinetime.example",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "eula": {
+          "description": "The account's end-user license agreement document, or `null` if they have not published one.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/File"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "external_id": {
+          "description": "The parent platform's own identifier for this subaccount, unique among the platform's subaccounts. `null` when unset.",
+          "example": "connected_account_123",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "financing": {
+          "description": "The account's most recent financing application. Computed only on `retrieve` and `me` for callers with `company:balance:read` scope; `null` otherwise, or when the account has never applied for financing.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountFinancing"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "funds_release_at": {
+          "description": "When a suspended account can pay out its balance to its own payout method, as an ISO 8601 timestamp. A dispute can move it later. Computed on `retrieve`, `me`, and `suspend`; `null` otherwise, when `status` is not `suspended`, and when the suspension holds the balance.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "home_preferences": {
+          "items": {
+            "description": "Public account home page preferences.",
+            "enum": [
+              "hide_member_count",
+              "hide_members_card"
+            ],
+            "example": "hide_member_count",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "id": {
+          "description": "Account ID, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "industry_type": {
+          "description": "Specific industry vertical for the account. See the [business types and industries glossary](/api-reference/accounts/account#business-types-and-industries-glossary) for valid values.",
+          "example": "trading",
+          "type": [
+            "string",
+            "null"
+          ],
+          "x-whop-hide-enum-values": true
+        },
+        "invoice_prefix": {
+          "description": "Prefix used for account invoices.",
+          "example": "INV",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "level": {
+          "description": "The Whop Levels progress of the account's `owner`, counted across every account they own, so all of them show the same level. Computed only on `retrieve` and `me` for callers with `company:basic:read` scope; `null` otherwise, and when the account is not in Whop Levels.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountLevel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "logo_url": {
+          "description": "Account logo image URL.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/image/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "description": "Arbitrary key/value metadata supplied at account creation.",
+          "example": {
+            "external_id": "connected_account_123"
+          },
+          "type": "object"
+        },
+        "onboarding_type": {
+          "description": "Type of onboarding the account has completed.",
+          "enum": [
+            "platform",
+            "seller",
+            null
+          ],
+          "example": "platform",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "opengraph_image_url": {
+          "description": "Account Open Graph image URL.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/image/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "opengraph_image_variant": {
+          "description": "Account Open Graph image variant.",
+          "enum": [
+            "white",
+            "black",
+            "orange",
+            null
+          ],
+          "example": "black",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "orchestration_enabled": {
+          "description": "Whether payment orchestration is enabled for this account.",
+          "example": true,
+          "type": "boolean"
+        },
+        "other_business_description": {
+          "description": "Business type details when business_type is `other`.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "other_industry_description": {
+          "description": "Industry details when industry_type is `other`.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "owner": {
+          "$ref": "#/components/schemas/UserSummary",
+          "description": "The single user who owns the account, whose email is the `email` above. Distinct from the `owner` role on team members, which any number of them can hold."
+        },
+        "parent_account": {
+          "description": "Parent account for subaccounts, or `null` for standalone accounts.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountParent"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "partner": {
+          "description": "The account's active first-tier partner. Present on retrieve responses; null when no active first-tier partner is attributed to the account. Omitted from other responses.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountPartner"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payment_controls": {
+          "description": "Payment health controls currently applied to the account. Computed only on `retrieve` and `me` for callers with `company:balance:read` scope; `null` otherwise.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountPaymentControls"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payment_method_configuration": {
+          "description": "The account's default payment methods at checkout. A variant's or checkout configuration's own `payment_method_configuration` takes precedence. `null` when the account uses Whop's platform defaults.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/CheckoutSessionPaymentMethodConfiguration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "platform_credits": {
+          "items": {
+            "$ref": "#/components/schemas/Money",
+            "description": "Whop-issued platform credits per currency, read from the balance cache. Credits can only be spent on eligible Whop products such as Whop Ads, can never be withdrawn, and are not included in `balances` or `total_usd`. Empty when the account holds none or `total_usd` is `null`."
+          },
+          "type": "array"
+        },
+        "privacy_policy": {
+          "description": "The account's privacy policy document, or `null` if they have not published one.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/File"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "product_tax_code": {
+          "description": "Tax classification code applied by default to the account's products, with `id`, `name`, and `product_type`. `null` when no default is set.",
+          "example": {
+            "id": "ptc_xxxxxxxxxxxxxx",
+            "name": "General - Digital Goods",
+            "product_type": "digital"
+          },
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "recommended_actions": {
+          "deprecated": true,
+          "description": "DEPRECATED: Use the `GET /economic_intelligence?account_id={account_id}` endpoint instead.",
+          "example": null,
+          "items": {
+            "$ref": "#/components/schemas/AccountRecommendedAction",
+            "description": "Deprecated: use the `GET /economic_intelligence?account_id={account_id}` endpoint instead. Optional actions that unlock capabilities or grow the account, same shape as `required_actions`. Computed only on `retrieve` and `me`; `null` otherwise."
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "require_2fa": {
+          "description": "Whether authorized users must enable two-factor authentication.",
+          "example": false,
+          "type": "boolean"
+        },
+        "required_actions": {
+          "items": {
+            "$ref": "#/components/schemas/AccountRequiredAction",
+            "description": "Actions the account owner must take to unblock capabilities like payouts and card spend, ordered by display priority. Computed only on `retrieve` and `me` for callers with `company:balance:read` scope; `null` otherwise."
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "return_policy": {
+          "description": "The account's return policy document, or `null` if they have not published one.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/File"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rewards": {
+          "items": {
+            "$ref": "#/components/schemas/AccountPartnerReward",
+            "description": "Business rewards attached through this account's active referral link, with account-specific progress and ledger status. Present on retrieve responses; empty without both balance and stats read access."
+          },
+          "type": "array"
+        },
+        "route": {
+          "description": "Account public route identifier.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "send_customer_emails": {
+          "description": "Whether Whop sends transactional emails to customers on behalf of this account.",
+          "example": false,
+          "type": "boolean"
+        },
+        "shipping_policy": {
+          "description": "The account's shipping policy document, or `null` if they have not published one.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/File"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "show_joined_whops": {
+          "description": "Whether the account appears in joined whops on other accounts.",
+          "example": true,
+          "type": "boolean"
+        },
+        "show_reviews_dtc": {
+          "description": "Whether reviews are displayed on direct-to-consumer product pages.",
+          "example": true,
+          "type": "boolean"
+        },
+        "show_user_directory": {
+          "description": "Whether the account shows users in the user directory.",
+          "example": true,
+          "type": "boolean"
+        },
+        "social_links": {
+          "items": {
+            "$ref": "#/components/schemas/AccountSocialLink",
+            "description": "Account social links."
+          },
+          "type": "array"
+        },
+        "status": {
+          "description": "Whether the account can operate on Whop: `active` or `suspended`. Computed on `list`, `retrieve`, `me`, and `suspend`; `null` otherwise.",
+          "example": "active",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status_reason": {
+          "description": "Why the account was suspended, as a label such as `Suspended - Fraudulent activity`. `Suspended` when no reason is recorded. Computed on `retrieve`, `me`, and `suspend`. `null` otherwise, or when `status` is not `suspended`.",
+          "example": "Suspended - Fraudulent activity",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "store_page_config": {
+          "$ref": "#/components/schemas/AccountStorePageConfig",
+          "description": "Account store page display configuration."
+        },
+        "target_audience": {
+          "description": "Target audience for this account.",
+          "example": "Owners of new and enthusiast vehicles in Austin, TX",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tax_collection_enabled_states": {
+          "items": {
+            "description": "US state codes (of the 50 states plus `DC`) where the account collects tax: the full set when Whop remits (`tax_remitted_by` `whop`), the configured subset when the account self-remits (`self`), and empty when neither. On update, send the complete list to replace it (only allowed when `self`).",
+            "example": "AL",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "tax_identifiers": {
+          "items": {
+            "$ref": "#/components/schemas/AccountTaxIdentifier",
+            "description": "Account tax/VAT registrations. Empty when none are set."
+          },
+          "type": "array"
+        },
+        "tax_remitted_by": {
+          "description": "Who calculates and remits tax for the account. `whop` means Whop calculates and remits. `self` means Whop calculates, and the account collects and remits. `none` means neither, and the account is responsible. New businesses start on `whop`, and new connected accounts start on `none`. `null` means the account has no setting yet.",
+          "enum": [
+            "whop",
+            "self",
+            "none",
+            null
+          ],
+          "example": "whop",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tax_type": {
+          "description": "How tax is applied to the account's prices: `inclusive` (tax included in the listed price) or `exclusive` (tax added on top). Defaults to `exclusive` when unset; `null` only when the account has no payment connection.",
+          "enum": [
+            "inclusive",
+            "exclusive",
+            null
+          ],
+          "example": "exclusive",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "terms_of_service": {
+          "description": "The account's terms of service document, or `null` if they have not published one.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/File"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "three_ds_level": {
+          "description": "3D Secure behavior for supported on-session card payments. `mandate_challenge` requires a 3DS challenge before payment processing; `mandate_if_required` mandates a challenge only when the payment processor requires it; `frictionless_if_required` uses the regular frictionless 3DS flow. Payments of $1,000 or more use `mandate_if_required` unless `mandate_challenge` is selected. Risk and authentication recovery requirements can override the preference. `null` uses the standard checkout flow.",
+          "enum": [
+            "mandate_challenge",
+            "mandate_if_required",
+            "frictionless_if_required",
+            null
+          ],
+          "example": "mandate_challenge",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "description": "Account display name.",
+          "example": "Shine Time Auto Detailing",
+          "type": "string"
+        },
+        "total_earned_usd": {
+          "description": "Account lifetime sales, normalized to USD. Computed only on `retrieve` and `me` for callers with `stats:read` scope; `null` otherwise.",
+          "example": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "total_usd": {
+          "description": "Total USD value across balances with known exchange rates. Computed only on single-account reads (`retrieve` and `me`); `null` on list responses, writes, missing balance-read permission, or unavailable balance source.",
+          "example": "50.00",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "trading": {
+          "description": "The trading account address, a snapshot of its margin and open positions, and its WebSocket subscriptions. Opt in with `include_trading=true` on single-account reads. `null` otherwise, without trading permission, or without an Ethereum wallet.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/TradingAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "use_logo_as_opengraph_image_fallback": {
+          "description": "Whether the account uses its logo as the fallback Open Graph image.",
+          "example": false,
+          "type": "boolean"
+        },
+        "verification": {
+          "description": "Account identity verification status for the `individual` (KYC) and `business` (KYB) profiles. Each is `null` until created, otherwise a `status` of `not_started`, `pending`, `manual_review`, `approved`, or `rejected`.",
+          "example": {
+            "business": null,
+            "individual": null
+          },
+          "type": "object"
+        },
+        "volume_l30d_usd": {
+          "description": "Volume through the account in the last 30 days (GMV from paid receipts), normalized to USD. Computed only on `list` for callers with `stats:read` on the account; `null` otherwise.",
+          "example": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "volume_usd": {
+          "description": "Lifetime volume through the account \u2014 sales plus transfers received \u2014 normalized to USD. Computed only on `list` for callers with `stats:read` on the account; `null` otherwise.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "wallet": {
+          "description": "Account primary crypto wallet, or `null` if none has been provisioned.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountWallet"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "website": {
+          "description": "The account's business website URL, or `null` if none has been provided. Setting it also adds a `website` entry to `social_links`.",
+          "example": "https://shinetimedetail.com",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "whop_partner_enabled_at": {
+          "description": "When the account turned on Whop Partner mode, as an ISO 8601 timestamp. Present on single-account reads and update responses; `null` until the account turns Whop Partner mode on by sending `whop_partner_enabled: true` on update.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "trading",
+        "email",
+        "title",
+        "description",
+        "route",
+        "website",
+        "logo_url",
+        "banner_image_url",
+        "terms_of_service",
+        "privacy_policy",
+        "return_policy",
+        "eula",
+        "shipping_policy",
+        "cancellation_policy",
+        "business_type",
+        "country",
+        "home_preferences",
+        "industry_type",
+        "invoice_prefix",
+        "onboarding_type",
+        "opengraph_image_url",
+        "opengraph_image_variant",
+        "other_business_description",
+        "other_industry_description",
+        "require_2fa",
+        "three_ds_level",
+        "collect_vat_id",
+        "target_audience",
+        "dispute_fighter_enabled",
+        "orchestration_enabled",
+        "send_customer_emails",
+        "payment_method_configuration",
+        "show_joined_whops",
+        "show_reviews_dtc",
+        "show_user_directory",
+        "store_page_config",
+        "metadata",
+        "external_id",
+        "created_at",
+        "use_logo_as_opengraph_image_fallback",
+        "total_earned_usd",
+        "status",
+        "status_reason",
+        "funds_release_at",
+        "volume_usd",
+        "volume_l30d_usd",
+        "customers_l30d",
+        "ads_spend_usd",
+        "level",
+        "capabilities",
+        "payment_controls",
+        "cards",
+        "financing",
+        "required_actions",
+        "recommended_actions",
+        "tax_remitted_by",
+        "tax_type",
+        "product_tax_code",
+        "business_address",
+        "business_name",
+        "tax_identifiers",
+        "tax_collection_enabled_states",
+        "total_usd",
+        "balances",
+        "platform_credits",
+        "economic_intelligence",
+        "can_transfer_pending_balance_to_children",
+        "verification",
+        "company_formation",
+        "owner",
+        "parent_account",
+        "wallet",
+        "social_links"
+      ],
+      "type": "object"
+    },
+    "AccountBalanceToken": {
+      "properties": {
+        "balance": {
+          "description": "Total amount held in native units, as a decimal string.",
+          "example": "1500.0",
+          "type": "string"
+        },
+        "breakdown": {
+          "$ref": "#/components/schemas/AccountBalanceBreakdown",
+          "description": "Balance split into available, pending, and reserve amounts, as native-unit decimal strings, with the days the pending amount is expected to settle."
+        },
+        "icon_url": {
+          "description": "Holding icon URL.",
+          "example": "https://assets.whop.com/tokens/usdt.png",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "The holding's display name",
+          "example": "Tether USD",
+          "type": "string"
+        },
+        "price_usd": {
+          "description": "USD price per unit, or `null` when no exchange rate is available.",
+          "example": 1,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "symbol": {
+          "description": "Holding display symbol, such as `USDT`, `cbBTC`, or `EUR`.",
+          "example": "USDT",
+          "type": "string"
+        },
+        "value_usd": {
+          "description": "Holding USD value, or `null` when no exchange rate is available.",
+          "example": "1500.00",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "symbol",
+        "name",
+        "balance",
+        "value_usd",
+        "price_usd",
+        "icon_url",
+        "breakdown"
+      ],
+      "type": "object"
+    },
+    "File": {
+      "properties": {
+        "blurhash": {
+          "description": "BlurHash placeholder for an image or video. Null when unavailable or removed by moderation.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "content_type": {
+          "description": "The original file's MIME type, for example `application/pdf`. It is kept when moderation removes the file.",
+          "example": "application/pdf",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "description": "When the file was created, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "duration_seconds": {
+          "description": "Audio or video duration in seconds. Null when unavailable or removed by moderation.",
+          "example": null,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "filename": {
+          "description": "The original filename, including its extension.",
+          "example": "evidence.pdf",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "height": {
+          "description": "Image or video height in pixels. Null when unavailable or removed by moderation.",
+          "example": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "The file's ID, prefixed `file_`.",
+          "example": "file_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "multipart_chunk_size": {
+          "description": "The byte size each part (except the last) must be. Present only on create, and only for multipart uploads.",
+          "example": 5242880,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "multipart_upload_id": {
+          "description": "The ID of the multipart upload, passed back to `complete`. Present only on create, and only for multipart uploads.",
+          "example": "upload-id",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "multipart_upload_urls": {
+          "items": {
+            "$ref": "#/components/schemas/FileMultipartUrl",
+            "description": "The presigned URL for each part. Present only on create, and only for multipart uploads."
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "object": {
+          "description": "The type of this object, always `file`.",
+          "example": "file",
+          "type": "string"
+        },
+        "removed_by_moderation": {
+          "description": "Whether moderation removed the file. When `true`, `url` serves a replacement image. `filename`, `size` and `content_type` still describe the original file.",
+          "example": false,
+          "type": "boolean"
+        },
+        "size": {
+          "description": "The file size in bytes. `null` until the upload has finished.",
+          "example": 9670,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "upload_headers": {
+          "description": "Headers to send with the upload PUT. Present only on create.",
+          "example": {},
+          "type": "object"
+        },
+        "upload_status": {
+          "description": "Where the file is in its upload lifecycle.",
+          "enum": [
+            "pending",
+            "processing",
+            "ready",
+            "failed"
+          ],
+          "example": "pending",
+          "type": "string"
+        },
+        "upload_url": {
+          "description": "Presigned URL to PUT the file's bytes to. Present only on create, and only for single-part uploads.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/application.pdf",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "description": "A URL to download the file. Public files get a permanent CDN URL, and private files get a signed URL that expires. `null` until the upload has finished. When moderation removes the file, a replacement image URL.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/audio/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "visibility": {
+          "description": "`public` files are served from an unsigned CDN URL. `private` files are served from a signed URL that expires.",
+          "enum": [
+            "public",
+            "private"
+          ],
+          "example": "private",
+          "type": "string"
+        },
+        "waveform_url": {
+          "description": "Audio waveform URL. Null when unavailable or removed by moderation.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "width": {
+          "description": "Image or video width in pixels. Null when unavailable or removed by moderation.",
+          "example": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "id",
+        "filename",
+        "content_type",
+        "size",
+        "url",
+        "removed_by_moderation",
+        "upload_status",
+        "visibility",
+        "created_at",
+        "width",
+        "height",
+        "blurhash",
+        "duration_seconds",
+        "waveform_url"
+      ],
+      "type": "object"
+    },
+    "AccountCapabilities": {
+      "properties": {
+        "accept_bank_payments": {
+          "description": "Bank payins: debits, transfers, and local bank rails",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "active",
+          "type": "string"
+        },
+        "accept_bnpl_payments": {
+          "description": "Buy-now-pay-later payins; requires approval",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "inactive",
+          "type": "string"
+        },
+        "accept_card_payments": {
+          "description": "Card payins, including Apple Pay and Google Pay",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "active",
+          "type": "string"
+        },
+        "bank_deposit": {
+          "description": "Deposits by bank wire or ACH to the account's virtual bank account",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "inactive",
+          "type": "string"
+        },
+        "card_deposit": {
+          "description": "Balance top-ups by charging a stored payment method",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "inactive",
+          "type": "string"
+        },
+        "card_issuing": {
+          "description": "Issuing Whop cards; requires card application approval",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "inactive",
+          "type": "string"
+        },
+        "crypto_deposit": {
+          "description": "On-chain deposits to the account's crypto wallet",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "active",
+          "type": "string"
+        },
+        "crypto_payout": {
+          "description": "On-chain payouts to a crypto wallet",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "active",
+          "type": "string"
+        },
+        "instant_payout": {
+          "description": "Instant payouts to an eligible payout destination",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "inactive",
+          "type": "string"
+        },
+        "run_ads": {
+          "description": "Launching ad campaigns through Whop Ads. `inactive` until the account's identity or business is verified, while a requested ads services agreement is awaiting the account's signature, and while the account is suspended from Whop Ads.",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "inactive",
+          "type": "string"
+        },
+        "standard_payout": {
+          "description": "Standard payouts to an external payout destination",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "active",
+          "type": "string"
+        },
+        "transfer": {
+          "description": "Transfers to other accounts",
+          "enum": [
+            "active",
+            "inactive",
+            "pending"
+          ],
+          "example": "active",
+          "type": "string"
+        }
+      },
+      "required": [
+        "accept_card_payments",
+        "accept_bank_payments",
+        "accept_bnpl_payments",
+        "standard_payout",
+        "instant_payout",
+        "crypto_payout",
+        "transfer",
+        "bank_deposit",
+        "crypto_deposit",
+        "card_deposit",
+        "card_issuing",
+        "run_ads"
+      ],
+      "type": "object"
+    },
+    "AccountCards": {
+      "properties": {
+        "decline_reason": {
+          "description": "Reason the card issuer declined the application. `unsupported_state` replaces `unsupported_region` for a verified person or business in the United States. `compliance` covers sanctions, politically exposed person, and adverse media checks. `other` covers reasons that are not in this list. `null` when `status` is not `denied`, or when the issuer did not decline the application.",
+          "enum": [
+            "compromised_identity",
+            "duplicate",
+            "unsupported_region",
+            "compliance",
+            "fraud",
+            "verification_failed",
+            "unsupported_state",
+            "other",
+            null
+          ],
+          "example": "compromised_identity",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "kind": {
+          "description": "Whether the card application verifies a business (`business`, KYB) or a person (`individual`, consumer identity). `null` when the application is not yet linked to a verification.",
+          "enum": [
+            "individual",
+            "business",
+            null
+          ],
+          "example": "individual",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "description": "Where the card application stands. `approved` means cards can be issued. `needs_verification` means the applicant has not completed identity verification yet; `needs_information` means they did, but the documents were rejected for a fixable reason and must be resubmitted. `pending` and `manual_review` are in flight. `denied`, `locked`, and `canceled` are terminal.",
+          "enum": [
+            "approved",
+            "pending",
+            "manual_review",
+            "denied",
+            "locked",
+            "canceled",
+            "needs_verification",
+            "needs_information"
+          ],
+          "example": "approved",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "status",
+        "decline_reason"
+      ],
+      "type": "object"
+    },
+    "AccountCompanyFormation": {
+      "additionalProperties": true,
+      "properties": {
+        "documents": {
+          "items": {
+            "$ref": "#/components/schemas/AccountCompanyFormationDocument",
+            "description": "Formation documents available for download, such as the Articles of Organization and the EIN confirmation letter. Present once `status` leaves `draft`."
+          },
+          "type": "array"
+        },
+        "ein_registered": {
+          "description": "Whether the company's EIN has been issued by the IRS. Present once `status` leaves `draft`.",
+          "example": false,
+          "type": "boolean"
+        },
+        "legal_name": {
+          "description": "Registered company name including the entity ending, for example `Acme, LLC`. Present once `status` leaves `draft`.",
+          "example": "Shine Time Auto Detailing, LLC",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "signatures": {
+          "$ref": "#/components/schemas/AccountCompanyFormationSignatures",
+          "description": "IRS forms still awaiting a founder's signature, each with a hosted signing URL. Present once `status` leaves `draft`; empty when nothing needs signing."
+        },
+        "state_registered": {
+          "description": "Whether the state formation filing is complete. Present once `status` leaves `draft`.",
+          "example": true,
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "draft",
+            "processing",
+            "filed",
+            "rejected",
+            "completed"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "AccountFinancing": {
+      "properties": {
+        "application_id": {
+          "description": "The ID of the account's most recent financing application, starting with inrq_. Retrieve it for requirements and review feedback.",
+          "example": "inrq_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "status": {
+          "description": "The most recent financing application's review state: `requires_collection` (waiting on the merchant, including after a request for more information), `awaiting_review`, `approved`, `denied`, or `completed`. Whether financing payment methods are enabled is `capabilities.accept_bnpl_payments`.",
+          "enum": [
+            "requires_collection",
+            "awaiting_review",
+            "completed",
+            "approved",
+            "denied"
+          ],
+          "example": "awaiting_review",
+          "type": "string"
+        }
+      },
+      "required": [
+        "application_id",
+        "status"
+      ],
+      "type": "object"
+    },
+    "AccountLevel": {
+      "properties": {
+        "account_level": {
+          "description": "This account's own level from its points alone, from `0` up to `10`. `current` is higher when the owner's other accounts lift it.",
+          "example": 0,
+          "type": "integer"
+        },
+        "current": {
+          "description": "The level that applies: the highest the owner reached this month or in the 5 months before, from `0` up to `10`.",
+          "example": 1,
+          "type": "integer"
+        },
+        "points": {
+          "description": "Points earned this month across every account the owner owns, plus the owner's partner points, rounded down. An account whose month nets below zero counts as zero.",
+          "example": 41000,
+          "type": "integer"
+        },
+        "points_by_source": {
+          "$ref": "#/components/schemas/OwnerLevelPoints",
+          "description": "This month's points, split by where they were earned. Each source is net of its refunds, so one can be negative."
+        },
+        "resets_at": {
+          "description": "When this month's points reset to zero, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        }
+      },
+      "required": [
+        "current",
+        "points",
+        "points_by_source",
+        "resets_at",
+        "account_level"
+      ],
+      "type": "object"
+    },
+    "UserSummary": {
+      "properties": {
+        "id": {
+          "description": "User ID, prefixed `user_`.",
+          "example": "user_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name.",
+          "example": "Dana Whitfield",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_picture": {
+          "$ref": "#/components/schemas/UserProfilePicture",
+          "description": "Avatar wrapper. Its `url` is always present, and is a generated placeholder when the user set no picture."
+        },
+        "username": {
+          "description": "Public username.",
+          "example": "danawhitfield",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "name",
+        "profile_picture"
+      ],
+      "type": "object"
+    },
+    "AccountParent": {
+      "properties": {
+        "fees": {
+          "additionalProperties": {
+            "properties": {
+              "fixed_fee_usd": {
+                "description": "Fixed markup in US dollars per transaction.",
+                "type": "number"
+              },
+              "percentage_fee": {
+                "description": "Percentage of the transaction charged as markup.",
+                "type": "number"
+              }
+            },
+            "required": [
+              "percentage_fee",
+              "fixed_fee_usd"
+            ],
+            "type": "object"
+          },
+          "description": "Markup rates this parent charges the subaccount being read, keyed by fee type (for example `crypto_deposit_markup`), each with `percentage_fee` and `fixed_fee_usd`. Resolved with the subaccount's own overrides winning over the platform default.",
+          "example": {
+            "crypto_swap_markup": {
+              "fixed_fee_usd": 0,
+              "percentage_fee": 3
+            },
+            "transfer_markup": {
+              "fixed_fee_usd": 0,
+              "percentage_fee": 0
+            }
+          },
+          "type": "object"
+        },
+        "id": {
+          "description": "Account ID, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "logo_url": {
+          "description": "Account logo image URL.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/image/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "route": {
+          "description": "Account public route identifier.",
+          "example": "shine-time-holdings",
+          "type": "string"
+        },
+        "title": {
+          "description": "Account display name.",
+          "example": "Shine Time Holdings",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "route",
+        "logo_url"
+      ],
+      "type": "object"
+    },
+    "AccountPartner": {
+      "properties": {
+        "email": {
+          "description": "Email address for contacting the partner. Null when the partner has not added their own email address.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "User ID, prefixed `user_`.",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_picture": {
+          "$ref": "#/components/schemas/UserProfilePicture",
+          "description": "Avatar wrapper. Its `url` is always present, and is a generated placeholder when the user set no picture."
+        },
+        "referring_account": {
+          "description": "Business the partner referred this account on behalf of, when the referral belongs to their team. `null` for a personal referral.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/AccountSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "username": {
+          "description": "Public username.",
+          "type": "string"
+        },
+        "whop_partner_verified_at": {
+          "description": "When the user became a verified Whop Partner, as an ISO 8601 timestamp. Null if not verified.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "name",
+        "profile_picture",
+        "email",
+        "whop_partner_verified_at",
+        "referring_account"
+      ],
+      "type": "object"
+    },
+    "AccountPaymentControls": {
+      "properties": {
+        "dispute_alert_auto_refund": {
+          "$ref": "#/components/schemas/AccountDisputeAlertAutoRefundControl",
+          "description": "Automatic refund settings for pre-chargeback dispute alerts."
+        },
+        "dispute_alert_fee_usd": {
+          "description": "Fee charged for each dispute alert in USD. `null` when unavailable.",
+          "example": 29,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "enforce_3ds": {
+          "description": "Whether 3-D Secure is forced on every card payment at checkout. The account cannot bypass it while set.",
+          "example": false,
+          "type": "boolean"
+        },
+        "financing_disabled": {
+          "description": "Whether payment health controls explicitly disable financing. This is independent of financing approval in `capabilities.accept_bnpl_payments`.",
+          "example": false,
+          "type": "boolean"
+        },
+        "high_risk_processing_fee_percentage": {
+          "description": "Additional processing fee percentage for high-risk processing.",
+          "example": 0,
+          "type": "number"
+        },
+        "payment_method_warnings": {
+          "items": {
+            "description": "Payment methods the account has been warned are nearing their dispute-rate line. Each entry carries `payment_method`, `measure` (`disputes`, `disputes_and_tc40s` or `fraud_disputes`), `warned_at` as an ISO 8601 timestamp, and the `rate`, `warning_rate` and `target_rate` as fractions where `0.01` is 1%. Empty when none are warned. A warned method is paused, and appears in `restricted_payment_methods`, if it is still over its target rate about four weeks later.",
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "pending_auto_topup_fee_percentage": {
+          "description": "Percentage fee charged when pending, not-yet-settled balance is advanced to fund the account's cards balance, where `2` means 2%. `0` when the account is exempt.",
+          "example": 2,
+          "type": "number"
+        },
+        "pending_balance_delay_days": {
+          "description": "Additional days payments remain pending before becoming available.",
+          "example": 0,
+          "type": "integer"
+        },
+        "reserve": {
+          "$ref": "#/components/schemas/AccountReserveControl",
+          "description": "Reserve currently applied to incoming payment volume."
+        },
+        "resolution_center_auto_refund": {
+          "$ref": "#/components/schemas/AccountResolutionCenterAutoRefundControl",
+          "description": "Settings for automatic refunds of Resolution Center cases. You can change them with `PATCH /accounts/{id}`."
+        },
+        "restricted_payment_methods": {
+          "items": {
+            "description": "Card brands blocked at checkout for this account. Empty when none are blocked. The account cannot re-enable them itself.",
+            "enum": [
+              "card_visa",
+              "card_mastercard",
+              "card_american_express",
+              "card_discover_global_network",
+              "addi",
+              "affirm",
+              "afterpay_clearpay",
+              "alma",
+              "billie",
+              "capchase_pay",
+              "claritypay",
+              "flex_pay",
+              "klarna",
+              "kriya",
+              "kueski",
+              "mondu",
+              "oney",
+              "scalapay",
+              "sequra",
+              "sezzle",
+              "splitit",
+              "sunbit",
+              "tabby",
+              "tamara",
+              "zip",
+              "card_installments_three",
+              "card_installments_six",
+              "card_installments_twelve",
+              "oney_3x",
+              "oney_4x",
+              "klarna_pay_now",
+              "us_bank_account",
+              "sepa_debit",
+              "bacs_debit",
+              "au_becs_debit",
+              "acss_debit",
+              "pay_by_bank",
+              "payto",
+              "paypal",
+              "cashapp",
+              "venmo",
+              "amazon_pay",
+              "link",
+              "wechat_pay"
+            ],
+            "example": "card_visa",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "undated_pending_reason": {
+          "description": "Why pending funds without a settlement date aren't moving yet. `kyc_incomplete`, `pending_information_request`, and `update_payout_profile` are things the merchant can act on. `compliance_review` means a verification the merchant already submitted is being reviewed, so these funds stay pending until it clears. `withdrawals_disabled` means Whop has blocked withdrawals, so these funds cannot become available. `null` when there's no reason to show \u2014 still clearing, or held for a reason that isn't named here.",
+          "enum": [
+            "kyc_incomplete",
+            "pending_information_request",
+            "update_payout_profile",
+            "compliance_review",
+            "withdrawals_disabled",
+            null
+          ],
+          "example": "pending_information_request",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "withdrawal_schedule": {
+          "$ref": "#/components/schemas/AccountWithdrawalScheduleControl",
+          "description": "How the account's balance automatically withdraws."
+        }
+      },
+      "required": [
+        "dispute_alert_auto_refund",
+        "resolution_center_auto_refund",
+        "dispute_alert_fee_usd",
+        "high_risk_processing_fee_percentage",
+        "pending_auto_topup_fee_percentage",
+        "pending_balance_delay_days",
+        "financing_disabled",
+        "reserve",
+        "withdrawal_schedule",
+        "undated_pending_reason",
+        "enforce_3ds",
+        "restricted_payment_methods",
+        "payment_method_warnings"
+      ],
+      "type": "object"
+    },
+    "CheckoutSessionPaymentMethodConfiguration": {
+      "properties": {
+        "disabled": {
+          "items": {
+            "description": "Payment methods this checkout withholds, even when the defaults would offer them.",
+            "example": "card",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "enabled": {
+          "items": {
+            "description": "Payment methods this checkout offers on top of whatever the defaults provide.",
+            "example": "card",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "include_platform_defaults": {
+          "description": "Whether Whop's default set is the starting point. When `false`, only `enabled` is offered.",
+          "example": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled",
+        "disabled",
+        "include_platform_defaults"
+      ],
+      "type": "object"
+    },
+    "Money": {
+      "properties": {
+        "amount": {
+          "description": "The amount in major units, as an exact decimal string. For example, `\"10.00\"` is ten dollars. It is a string so that no float rounds it in transit.",
+          "example": "-1234.56",
+          "type": "string"
+        },
+        "currency": {
+          "description": "Three-letter ISO 4217 currency code, lowercase.",
+          "example": "usd",
+          "type": "string"
+        },
+        "decimals": {
+          "description": "How many decimal places the amount carries. This is the precision the charge itself runs at.",
+          "example": 2,
+          "type": "integer"
+        },
+        "display_decimals": {
+          "description": "How many decimal places to SHOW. Usually equal to `decimals`, and deliberately not always: COP is charged in centavos but written in whole pesos, so it is `2` and `0`. Format the number in your own locale using this.",
+          "example": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "currency",
+        "amount",
+        "decimals",
+        "display_decimals"
+      ],
+      "type": "object"
+    },
+    "AccountRecommendedAction": {
+      "properties": {
+        "action": {
+          "description": "The recommendation; new values may be added, so handle unknown actions gracefully",
+          "enum": [
+            "theme_business",
+            "create_product",
+            "create_plan",
+            "verify_identity",
+            "connect_affiliate_program",
+            "create_promotion",
+            "migrate_from_stripe",
+            "accept_first_payment",
+            "launch_first_ad",
+            "launch_draft_campaign",
+            "increase_ad_budget",
+            "refresh_ad_creatives",
+            "fix_ad_billing",
+            "exclude_customers_from_ads",
+            "retarget_abandoned_checkouts",
+            "fix_funnel_dropoff",
+            "invite_team_member",
+            "enable_tax_collection",
+            "create_card",
+            "apply_for_financing"
+          ],
+          "example": "theme_business",
+          "type": "string"
+        },
+        "blocked_capabilities": {
+          "items": {
+            "description": "Capabilities this would unlock, or empty",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cta": {
+          "description": "The URL the call-to-action links to",
+          "type": "string"
+        },
+        "cta_label": {
+          "description": "Button label",
+          "type": "string"
+        },
+        "description": {
+          "description": "Supporting copy, or empty",
+          "type": "string"
+        },
+        "icon_url": {
+          "description": "Illustration icon URL, or `null`",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "impact_score": {
+          "description": "Estimated impact from 0-100, or `null` when not ranked",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "reasoning": {
+          "description": "Why this action was recommended, or `null`",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "description": "Always optional \u2014 never blocking",
+          "enum": [
+            "optional"
+          ],
+          "example": "optional",
+          "type": "string"
+        },
+        "title": {
+          "description": "Headline for the recommendation",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "status",
+        "title",
+        "description",
+        "cta_label",
+        "cta",
+        "icon_url",
+        "blocked_capabilities",
+        "reasoning",
+        "impact_score"
+      ],
+      "type": "object"
+    },
+    "AccountRequiredAction": {
+      "properties": {
+        "action": {
+          "description": "What the holder must do; new values may be added, so handle unknown actions gracefully",
+          "enum": [
+            "deposit_funds",
+            "review_held_payments",
+            "submit_information_request",
+            "update_automatic_withdrawal_method",
+            "reauthorize_payout_methods",
+            "update_payout_method",
+            "update_payout_profile",
+            "card_usage_review",
+            "verify_identity",
+            "scale_account_setup",
+            "sign_formation_documents",
+            "configure_tax_remitter",
+            "add_vat_registration",
+            "confirm_tax_details",
+            "accept_payout_terms",
+            "enable_two_factor_authentication",
+            "respond_to_abuse_report"
+          ],
+          "example": "verify_identity",
+          "type": "string"
+        },
+        "blocked_capabilities": {
+          "items": {
+            "description": "Capabilities gated until this is resolved",
+            "example": "standard_payout",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "cta": {
+          "description": "The URL the call-to-action links to, or null when there is no button",
+          "example": "https://whop.com/dashboard/biz_xxxxxxxxxxxxxx/balance/",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cta_label": {
+          "description": "Button label, or empty when there is no button",
+          "example": "Verify now",
+          "type": "string"
+        },
+        "description": {
+          "description": "Supporting copy, or empty",
+          "example": "Complete verification to withdraw your earnings.",
+          "type": "string"
+        },
+        "icon_url": {
+          "description": "The URL of the action's illustration icon, or null if it has none",
+          "example": "https://whop.com/illustrations/orange/shield.svg",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "description": "required (act now) or pending (under review)",
+          "enum": [
+            "required",
+            "pending"
+          ],
+          "example": "required",
+          "type": "string"
+        },
+        "title": {
+          "description": "Headline for the action",
+          "example": "Complete your identity verification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "action",
+        "status",
+        "title",
+        "description",
+        "cta_label",
+        "cta",
+        "icon_url",
+        "blocked_capabilities"
+      ],
+      "type": "object"
+    },
+    "AccountPartnerReward": {
+      "properties": {
+        "id": {
+          "description": "Reward definition ID, prefixed `prwd_`. Progress and status apply to the containing account.",
+          "type": "string"
+        },
+        "qualification_amount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Qualifying USD volume required to earn this reward."
+        },
+        "qualification_progress": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Qualifying USD volume for the reward\u2019s activity accumulated by this account since attribution, calculated using the fulfillment rules."
+        },
+        "qualification_type": {
+          "description": "Activity that qualifies this account for the reward.",
+          "enum": [
+            "sales",
+            "ad_spend"
+          ],
+          "example": "sales",
+          "type": "string"
+        },
+        "reward_amount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "USD amount credited for this reward. Uses the saved grant amount once fulfillment has started."
+        },
+        "status": {
+          "description": "This account's reward state. Credited requires a posted ledger entry; processing includes a met requirement awaiting fulfillment. Reversing and reversed reflect a subsequent reward reversal.",
+          "enum": [
+            "in_progress",
+            "processing",
+            "credited",
+            "reversing",
+            "reversed",
+            "unavailable"
+          ],
+          "example": "in_progress",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "qualification_type",
+        "qualification_amount",
+        "qualification_progress",
+        "reward_amount",
+        "status"
+      ],
+      "type": "object"
+    },
+    "AccountSocialLink": {
+      "properties": {
+        "id": {
+          "description": "The ID of the social link",
+          "example": "social_1",
+          "type": "string"
+        },
+        "title": {
+          "description": "The optional display title for the social link",
+          "example": "@shinetimedetail",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "description": "The social link URL",
+          "example": "https://instagram.com/shinetimedetail",
+          "type": "string"
+        },
+        "website": {
+          "description": "The social platform for this link",
+          "enum": [
+            "x",
+            "instagram",
+            "facebook",
+            "tiktok",
+            "youtube",
+            "linkedin",
+            "twitch",
+            "website",
+            "custom"
+          ],
+          "example": "instagram",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "website",
+        "url",
+        "title"
+      ],
+      "type": "object"
+    },
+    "AccountStorePageConfig": {
+      "properties": {
+        "accent_color": {
+          "description": "Accent color used on the account store page.",
+          "enum": [
+            "ruby",
+            "tomato",
+            "red",
+            "crimson",
+            "pink",
+            "plum",
+            "purple",
+            "violet",
+            "iris",
+            "cyan",
+            "teal",
+            "jade",
+            "green",
+            "grass",
+            "brown",
+            "blue",
+            "orange",
+            "indigo",
+            "sky",
+            "mint",
+            "yellow",
+            "amber",
+            "lime",
+            "lemon",
+            "magenta",
+            "gold",
+            "bronze",
+            "gray",
+            null
+          ],
+          "example": "red",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "layout": {
+          "description": "Layout used on the account store page.",
+          "enum": [
+            "featured",
+            "compact",
+            null
+          ],
+          "example": "compact",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_variant": {
+          "description": "Profile presentation used on the account store page.",
+          "enum": [
+            "personal",
+            "business",
+            null
+          ],
+          "example": "business",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "whop_affiliate_link": {
+          "description": "Whether the account store page shows a Whop affiliate link.",
+          "example": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "accent_color",
+        "layout",
+        "profile_variant",
+        "whop_affiliate_link"
+      ],
+      "type": "object"
+    },
+    "AccountTaxIdentifier": {
+      "properties": {
+        "id": {
+          "description": "Tax identifier ID.",
+          "example": "txid_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "tax_id_type": {
+          "description": "Tax ID type.",
+          "enum": [
+            "ad_nrt",
+            "ao_tin",
+            "ar_cuit",
+            "al_tin",
+            "am_tin",
+            "aw_tin",
+            "au_abn",
+            "au_arn",
+            "eu_vat",
+            "az_tin",
+            "bs_tin",
+            "bh_vat",
+            "bd_bin",
+            "bb_tin",
+            "by_tin",
+            "bj_ifu",
+            "bo_tin",
+            "ba_tin",
+            "br_cnpj",
+            "br_cpf",
+            "bg_uic",
+            "bf_ifu",
+            "kh_tin",
+            "cm_niu",
+            "ca_bn",
+            "ca_gst_hst",
+            "ca_pst_bc",
+            "ca_pst_mb",
+            "ca_pst_sk",
+            "ca_qst",
+            "cv_nif",
+            "cl_tin",
+            "cn_tin",
+            "co_nit",
+            "cd_nif",
+            "cr_tin",
+            "hr_oib",
+            "do_rcn",
+            "ec_ruc",
+            "eg_tin",
+            "sv_nit",
+            "et_tin",
+            "eu_oss_vat",
+            "ge_vat",
+            "gh_tin",
+            "de_stn",
+            "gb_vat",
+            "gn_nif",
+            "hk_br",
+            "hu_tin",
+            "is_vat",
+            "in_gst",
+            "id_npwp",
+            "il_vat",
+            "jp_cn",
+            "jp_rn",
+            "jp_trn",
+            "kz_bin",
+            "ke_pin",
+            "kg_tin",
+            "la_tin",
+            "li_uid",
+            "li_vat",
+            "my_frp",
+            "my_itn",
+            "my_sst",
+            "mr_nif",
+            "mx_rfc",
+            "md_vat",
+            "me_pib",
+            "ma_vat",
+            "np_pan",
+            "nz_gst",
+            "ng_tin",
+            "mk_vat",
+            "no_vat",
+            "no_voec",
+            "om_vat",
+            "pe_ruc",
+            "ph_tin",
+            "pl_nip",
+            "ro_tin",
+            "ru_inn",
+            "ru_kpp",
+            "sa_vat",
+            "sn_ninea",
+            "rs_pib",
+            "sg_gst",
+            "sg_uen",
+            "si_tin",
+            "za_vat",
+            "kr_brn",
+            "es_cif",
+            "ch_uid",
+            "ch_vat",
+            "tw_vat",
+            "tj_tin",
+            "tz_vat",
+            "th_vat",
+            "tr_tin",
+            "ug_tin",
+            "ua_vat",
+            "ae_trn",
+            "us_ein",
+            "uy_ruc",
+            "uz_tin",
+            "uz_vat",
+            "ve_rif",
+            "vn_tin",
+            "zm_tin",
+            "zw_tin",
+            "sr_fin",
+            "xi_vat"
+          ],
+          "example": "eu_vat",
+          "type": "string"
+        },
+        "tax_id_value": {
+          "description": "Tax ID value, for example `DE123456789`. See the [tax IDs guide](/developer/guides/tax-ids).",
+          "example": "DE123456789",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "tax_id_type",
+        "tax_id_value"
+      ],
+      "type": "object"
+    },
+    "TradingAccount": {
+      "properties": {
+        "account_id": {
+          "description": "The account that owns this trading account, prefixed `biz_`. `null` when a user owns it.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "hyperliquid": {
+          "description": "Hyperliquid-specific state. Present when `provider` is `hyperliquid`, otherwise `null`.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/TradingHyperliquidAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "description": "The Whop wallet ID backing this trading account, prefixed `cwal_`.",
+          "type": "string"
+        },
+        "object": {
+          "enum": [
+            "trading_account"
+          ],
+          "example": "trading_account",
+          "type": "string"
+        },
+        "provider": {
+          "description": "Trading venue that holds the positions and orders.",
+          "enum": [
+            "hyperliquid"
+          ],
+          "example": "hyperliquid",
+          "type": "string"
+        },
+        "spot": {
+          "description": "Spot holdings in the Whop wallet with their entry price and profit and loss. `null` when it could not be read.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/TradingSpotAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "user_id": {
+          "description": "The user who owns this trading account, prefixed `user_`. `null` when an account owns it.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "id",
+        "account_id",
+        "user_id",
+        "provider",
+        "hyperliquid",
+        "spot"
+      ],
+      "type": "object"
+    },
+    "AccountWallet": {
+      "properties": {
+        "address": {
+          "description": "The on-chain address of the wallet",
+          "example": "0xabc123",
+          "type": "string"
+        },
+        "id": {
+          "description": "Wallet ID, prefixed `wallet_`.",
+          "example": "cwal_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "network": {
+          "description": "The blockchain network the wallet lives on",
+          "enum": [
+            "solana",
+            "ethereum",
+            "bitcoin"
+          ],
+          "example": "ethereum",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "address",
+        "network"
+      ],
+      "type": "object"
+    },
+    "V1ErrorResponse": {
+      "properties": {
+        "error": {
+          "properties": {
+            "code": {
+              "description": "Machine-readable reason for this specific refusal, such as `bank_warning_not_acknowledged`. Only present when the error carries one.",
+              "type": "string"
+            },
+            "message": {
+              "description": "Human-readable error message.",
+              "example": "account_id is required",
+              "type": "string"
+            },
+            "type": {
+              "description": "Machine-readable error code.",
+              "example": "bad_request",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "message"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "type": "object"
+    },
+    "AccountBalanceBreakdown": {
+      "properties": {
+        "available": {
+          "description": "Amount you can spend, send, or withdraw now, in native units, as a decimal string.",
+          "example": "1500.0",
+          "type": "string"
+        },
+        "finishing_settlement": {
+          "description": "The part of `pending` that has already settled and is waiting to move into the account's crypto wallet or Whop Card, where it becomes `available`. The move usually starts within the hour; while it runs, the amount is reported in `in_transit` instead. Money moved only to top up the account's retained minimum balance is not included. In native units, as a decimal string.",
+          "example": "0",
+          "type": "string"
+        },
+        "in_transit": {
+          "description": "Amount moving between the account's own destinations, such as a card top-up. In native units, as a decimal string.",
+          "example": "0",
+          "type": "string"
+        },
+        "pending": {
+          "description": "Amount from recent payments still settling, in native units, as a decimal string.",
+          "example": "0",
+          "type": "string"
+        },
+        "pending_settlements": {
+          "items": {
+            "$ref": "#/components/schemas/AccountBalanceSettlement",
+            "description": "When the pending amount is expected to settle, one entry per day, earliest first. Money without a scheduled settlement day, including `finishing_settlement`, is left out, so these entries plus `finishing_settlement` can sum to less than `pending`, never more."
+          },
+          "type": "array"
+        },
+        "perps": {
+          "description": "Amount held for perpetual trading, at what the trading account is worth now, in native units, as a decimal string. It is not part of `available`.",
+          "example": "0",
+          "type": "string"
+        },
+        "reserve": {
+          "description": "Amount held back, in native units, as a decimal string. Retrieve the account's reserves for why it is held and when it unlocks.",
+          "example": "0",
+          "type": "string"
+        }
+      },
+      "required": [
+        "available",
+        "pending",
+        "in_transit",
+        "perps",
+        "reserve",
+        "pending_settlements",
+        "finishing_settlement"
+      ],
+      "type": "object"
+    },
+    "FileMultipartUrl": {
+      "properties": {
+        "part_number": {
+          "description": "The 1-based index of this part within the multipart upload.",
+          "example": 1,
+          "type": "integer"
+        },
+        "url": {
+          "description": "The presigned URL to PUT this part's bytes to.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/application.pdf",
+          "type": "string"
+        }
+      },
+      "required": [
+        "part_number",
+        "url"
+      ],
+      "type": "object"
+    },
+    "AccountCompanyFormationDocument": {
+      "properties": {
+        "id": {
+          "description": "Document ID, prefixed `file_`.",
+          "example": "file_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "name": {
+          "description": "Human-readable document name, such as `Articles of Organization`.",
+          "example": "Articles of Organization",
+          "type": "string"
+        },
+        "type": {
+          "description": "Document category: `articles_of_organization`, `operating_agreement`, `ein_letter`, `signed_ss4`, `signed_form8821`, or `mail` for postal correspondence received on the company's behalf.",
+          "example": "articles_of_organization",
+          "type": "string"
+        },
+        "url": {
+          "description": "CDN URL for downloading the document.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/audio/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "type",
+        "url"
+      ],
+      "type": "object"
+    },
+    "AccountCompanyFormationSignatures": {
+      "additionalProperties": true,
+      "properties": {
+        "form8821": {
+          "$ref": "#/components/schemas/AccountCompanyFormationSignatureRequest",
+          "description": "Signature state for IRS Form 8821, the tax information authorization. Present only while the form still needs the founder's action."
+        },
+        "ss4": {
+          "$ref": "#/components/schemas/AccountCompanyFormationSignatureRequest",
+          "description": "Signature state for IRS Form SS-4, the EIN application. Present only while the form still needs the founder's action."
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "OwnerLevelPoints": {
+      "properties": {
+        "ads": {
+          "description": "Points from paid Whop Ads charges, net of refunds: 10 for every dollar, rounded toward zero.",
+          "example": 0,
+          "type": "integer"
+        },
+        "cards": {
+          "description": "Points from captured Whop Card spend, net of refunds: 10 for every dollar, rounded toward zero.",
+          "example": 40000,
+          "type": "integer"
+        },
+        "partners": {
+          "description": "Points from accounts the owner referred as a partner: 1 for every 3 they earn, rounded toward zero.",
+          "example": 0,
+          "type": "integer"
+        },
+        "trading": {
+          "description": "Points from perpetual trading volume filled through Whop: 1 for every dollar traded, rounded toward zero.",
+          "example": 1000,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "cards",
+        "ads",
+        "trading",
+        "partners"
+      ],
+      "type": "object"
+    },
+    "UserProfilePicture": {
+      "properties": {
+        "url": {
+          "description": "Avatar image URL. Always present. It is a generated placeholder when the user set no picture.",
+          "example": "https://ui-avatars.com/api/",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "type": "object"
+    },
+    "AccountSummary": {
+      "properties": {
+        "id": {
+          "description": "Account ID, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "title": {
+          "description": "Account display name.",
+          "example": "Acme Bookkeeping",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title"
+      ],
+      "type": "object"
+    },
+    "AccountDisputeAlertAutoRefundControl": {
+      "properties": {
+        "locked": {
+          "description": "Whether the account owner is prevented from changing this threshold.",
+          "example": false,
+          "type": "boolean"
+        },
+        "threshold_usd": {
+          "description": "Maximum dispute alert amount automatically refunded in USD. `null` when automatic refunds are disabled.",
+          "example": 500,
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "threshold_usd",
+        "locked"
+      ],
+      "type": "object"
+    },
+    "AccountReserveControl": {
+      "properties": {
+        "hold_period_days": {
+          "description": "Number of days reserved funds are held before release.",
+          "example": 14,
+          "type": "integer"
+        },
+        "percentage": {
+          "description": "Percentage of incoming payment volume held in reserve. `null` when no reserve is applied.",
+          "example": 15,
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "percentage",
+        "hold_period_days"
+      ],
+      "type": "object"
+    },
+    "AccountResolutionCenterAutoRefundControl": {
+      "properties": {
+        "card_threshold_usd": {
+          "description": "Whop automatically refunds Resolution Center cases on card payments up to this amount in USD. Card payments include Visa, Mastercard, American Express and Discover. `null` when Whop does not automatically refund card cases. You can change it with `PATCH /accounts/{id}` while `locked` is `false`.",
+          "example": 49.99,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "financing_threshold_usd": {
+          "description": "Whop automatically refunds Resolution Center cases on financing payments up to this amount in USD. Financing payments include Klarna, Affirm, Zip, Afterpay, Splitit and Sezzle. `null` when Whop does not automatically refund financing cases. You can change it with `PATCH /accounts/{id}` while `locked` is `false`.",
+          "example": 25,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "locked": {
+          "description": "Whether the thresholds are locked. While `true`, `PATCH /accounts/{id}` refuses a threshold change with a `403`. You cannot change this field.",
+          "example": false,
+          "type": "boolean"
+        },
+        "message": {
+          "description": "Message the customer gets when Whop automatically refunds their case. `null` when no message is set. You can change it with `PATCH /accounts/{id}`. You can also change it while `locked` is `true`.",
+          "example": "We refunded your payment. Sorry it didn't work out.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paypal_threshold_usd": {
+          "description": "Whop automatically refunds Resolution Center cases on PayPal and Venmo payments up to this amount in USD. `null` when Whop does not automatically refund these cases. You can change it with `PATCH /accounts/{id}` while `locked` is `false`.",
+          "example": 40,
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "card_threshold_usd",
+        "financing_threshold_usd",
+        "paypal_threshold_usd",
+        "message",
+        "locked"
+      ],
+      "type": "object"
+    },
+    "AccountWithdrawalScheduleControl": {
+      "properties": {
+        "day": {
+          "description": "Day the automatic withdrawal runs on: 0-6 (Sunday-Saturday) for `weekly`, 1-31 for `monthly`. `null` for `manual` and `daily`.",
+          "example": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "frequency": {
+          "description": "How often the account's balance automatically withdraws.",
+          "enum": [
+            "manual",
+            "daily",
+            "weekly",
+            "monthly"
+          ],
+          "example": "manual",
+          "type": "string"
+        },
+        "next_payout_date": {
+          "description": "Next date the automatic withdrawal is scheduled to run, as an ISO 8601 date. `null` for `manual` and `daily`, where no single next date applies.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "frequency",
+        "day",
+        "next_payout_date"
+      ],
+      "type": "object"
+    },
+    "TradingHyperliquidAccount": {
+      "properties": {
+        "address": {
+          "description": "Lowercase wallet address that holds the Hyperliquid account.",
+          "type": "string"
+        },
+        "depositable": {
+          "description": "USDT0 in the Whop wallet on Plasma that a `deposit` trade can move into this account, as a decimal string. `null` when the chain could not be read.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "margin_summary": {
+          "description": "Account value and margin across the main exchange and the `xyz` markets, read from Hyperliquid at most once a second. `null` when Hyperliquid could not be read. Use `websocket_subscriptions` for live updates.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/TradingMarginSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "positions": {
+          "items": {
+            "$ref": "#/components/schemas/TradingPosition",
+            "description": "Open perpetual positions across the main exchange and the `xyz` markets, read from Hyperliquid at most once a second. `null` when Hyperliquid could not be read. Use `websocket_subscriptions` for live updates."
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "websocket_subscriptions": {
+          "items": {
+            "$ref": "#/components/schemas/TradingWebsocketSubscription",
+            "description": "Subscriptions for live account updates. Send each `message` unchanged after connecting to `websocket_url`."
+          },
+          "type": "array"
+        },
+        "websocket_url": {
+          "description": "Hyperliquid WebSocket URL to connect to directly for live updates.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "address",
+        "websocket_url",
+        "websocket_subscriptions",
+        "depositable",
+        "margin_summary",
+        "positions"
+      ],
+      "type": "object"
+    },
+    "TradingSpotAccount": {
+      "properties": {
+        "holdings": {
+          "items": {
+            "$ref": "#/components/schemas/TradingSpotHolding",
+            "description": "Each spot asset the wallet still holds, with its average entry price and profit and loss. Cost basis counts the oldest units as sold first and includes assets that arrived from outside Whop."
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "holdings"
+      ],
+      "type": "object"
+    },
+    "AccountBalanceSettlement": {
+      "properties": {
+        "amount": {
+          "description": "Amount expected that day, in native units, as a decimal string.",
+          "example": "0.0",
+          "type": "string"
+        },
+        "date": {
+          "description": "The day this money is expected to finish settling, as an ISO 8601 date.",
+          "example": "2026-01-01",
+          "type": "string"
+        }
+      },
+      "required": [
+        "date",
+        "amount"
+      ],
+      "type": "object"
+    },
+    "AccountCompanyFormationSignatureRequest": {
+      "properties": {
+        "expires_at": {
+          "description": "When the signing URL expires, as an ISO 8601 timestamp. Present only when the signing URL is included.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "status": {
+          "description": "`pending` when a signing session is ready for the founder; `unknown` when the signature state could not be determined.",
+          "enum": [
+            "pending",
+            "unknown"
+          ],
+          "example": "pending",
+          "type": "string"
+        },
+        "url": {
+          "description": "Hosted signing URL where the founder completes the form. Present while `status` is `pending` and the caller has `incorporation:write`. Omitted from webhooks.",
+          "example": "https://sign.doola.com/shine-time-auto-detailing/form8821",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "type": "object"
+    },
+    "TradingMarginSummary": {
+      "properties": {
+        "account_value": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Total account value in USD, including unrealized profit and loss."
+        },
+        "total_margin_used": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Margin allocated across open positions, in USD."
+        },
+        "total_position_notional": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Combined notional value of open positions, in USD."
+        },
+        "withdrawable": {
+          "$ref": "#/components/schemas/Money",
+          "description": "USD that can be withdrawn now without closing positions."
+        }
+      },
+      "required": [
+        "account_value",
+        "total_position_notional",
+        "total_margin_used",
+        "withdrawable"
+      ],
+      "type": "object"
+    },
+    "TradingPosition": {
+      "properties": {
+        "entry_price": {
+          "description": "Average entry price in USD, or `null` when the provider omits it.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "hyperliquid": {
+          "description": "Hyperliquid perpetual details. Present on Hyperliquid positions, otherwise `null`.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/TradingHyperliquidPosition"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "description": "Trading position ID, prefixed `trdpos_`. Stable for a market within one trading account.",
+          "type": "string"
+        },
+        "market": {
+          "description": "Market symbol on the provider, such as `ETH`.",
+          "type": "string"
+        },
+        "object": {
+          "enum": [
+            "trading_position"
+          ],
+          "example": "trading_position",
+          "type": "string"
+        },
+        "position_value": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Current position value in USD."
+        },
+        "side": {
+          "enum": [
+            "long",
+            "short"
+          ],
+          "example": "long",
+          "type": "string"
+        },
+        "size": {
+          "description": "Absolute position size as a decimal string.",
+          "type": "string"
+        },
+        "unrealized_pnl": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Unrealized profit or loss in USD. Negative for a loss."
+        }
+      },
+      "required": [
+        "object",
+        "id",
+        "market",
+        "side",
+        "size",
+        "entry_price",
+        "position_value",
+        "unrealized_pnl",
+        "hyperliquid"
+      ],
+      "type": "object"
+    },
+    "TradingWebsocketSubscription": {
+      "properties": {
+        "channel": {
+          "description": "The live update stream this subscription opens.",
+          "enum": [
+            "clearinghouse_state",
+            "open_orders",
+            "order_updates",
+            "user_fills",
+            "user_events"
+          ],
+          "example": "clearinghouse_state",
+          "type": "string"
+        },
+        "message": {
+          "description": "JSON subscription message to send unchanged over the Hyperliquid WebSocket.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "channel",
+        "message"
+      ],
+      "type": "object"
+    },
+    "TradingSpotHolding": {
+      "properties": {
+        "average_entry_price": {
+          "description": "The average price paid per unit of what is still held, in USD, counting the oldest units as sold first. `null` when it is not known.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "cost_basis": {
+          "$ref": "#/components/schemas/Money",
+          "description": "What was paid in USD for the units still held."
+        },
+        "market": {
+          "description": "The spot market's `id` from `GET /trades/markets`, such as `BTC`, `XAUT`, or a tokenized stock's ticker such as `AAPL`.",
+          "type": "string"
+        },
+        "realized_pnl": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Gains and losses already locked in by selling, in USD."
+        },
+        "unrealized_pnl": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The value of the units still held minus their `cost_basis`, in USD."
+        },
+        "unrealized_pnl_percentage": {
+          "description": "`unrealized_pnl` as a percentage of `cost_basis`, where `2` means up 2%. `null` when it is not known.",
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "market",
+        "average_entry_price",
+        "cost_basis",
+        "unrealized_pnl",
+        "unrealized_pnl_percentage",
+        "realized_pnl"
+      ],
+      "type": "object"
+    },
+    "TradingHyperliquidPosition": {
+      "properties": {
+        "cumulative_funding": {
+          "$ref": "#/components/schemas/TradingCumulativeFunding",
+          "description": "Funding paid on the position over several windows, in USD."
+        },
+        "leverage": {
+          "$ref": "#/components/schemas/TradingPositionLeverage",
+          "description": "Margin mode and multiplier for the position."
+        },
+        "liquidation_price": {
+          "description": "Estimated liquidation price in USD, or `null` when Hyperliquid reports none.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "margin_used": {
+          "$ref": "#/components/schemas/Money",
+          "description": "Margin allocated to the position, in USD."
+        },
+        "return_on_equity": {
+          "description": "Return on equity as a decimal ratio string, such as `0.1` for 10%.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "leverage",
+        "liquidation_price",
+        "margin_used",
+        "return_on_equity",
+        "cumulative_funding"
+      ],
+      "type": "object"
+    },
+    "TradingCumulativeFunding": {
+      "properties": {
+        "all_time": {
+          "description": "Funding paid on this market across the account's history, in USD, or `null` when unavailable.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "since_change": {
+          "description": "Funding paid since the position size last changed, in USD, or `null` when unavailable.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "since_open": {
+          "description": "Funding paid since the position opened, in USD, or `null` when unavailable.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "all_time",
+        "since_open",
+        "since_change"
+      ],
+      "type": "object"
+    },
+    "TradingPositionLeverage": {
+      "properties": {
+        "type": {
+          "description": "`cross` shares margin across positions. `isolated` limits margin to this position.",
+          "enum": [
+            "cross",
+            "isolated"
+          ],
+          "example": "cross",
+          "type": "string"
+        },
+        "value": {
+          "description": "Multiplier applied to the position's margin, such as `10` for 10x.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "type": "object"
+    }
+  }
+}

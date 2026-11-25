@@ -1,0 +1,2850 @@
+{
+  "api_version_date": "2026-11-23-3",
+  "endpoint": "/payments",
+  "request": {
+    "allOf": [
+      {
+        "$ref": "#/components/schemas/PaymentInput"
+      },
+      {
+        "properties": {
+          "affiliate_code": {
+            "description": "The code an affiliate link carries, which is the affiliate's username. The affiliate is credited for this payment as on a checkout session. A code naming no one eligible to earn on the product is ignored, and the payment goes ahead. A promo code with its own affiliate takes precedence. No affiliate is credited on a variant without a product or on a purchase of several variants. At most 255 characters. Not supported with a `card_present` `payment_method`.",
+            "example": "priyaraman",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "apply_surcharge": {
+            "description": "Adds the account's card surcharge, set in `card_surcharge` on the account's preferences, when the card is a credit card. Send it only after you have shown the buyer the surcharge. Whop calculates the amount. You cannot send an amount. With a `confirmation_token`, the surcharge is a line of its own, calculated on the purchase after discounts and before tax. With a `card_present` `payment_method`, the surcharge is added after the reader reads the card, with `POST /payments/{id}/apply_surcharge`. A debit or prepaid card, or an account that cannot surcharge, pays no surcharge. The payment still goes ahead. Only for a one-time purchase, and not with `quote_id`. Defaults to false.",
+            "example": true,
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "auto_capture_after_minutes": {
+            "description": "Minutes after authorization at which Whop captures the hold automatically unless it has been voided. Requires `capture: false`. Between 5 and 5760 (4 days), or 5 and 1440 (1 day) for `card_present`.",
+            "example": 60,
+            "maximum": 5760,
+            "minimum": 5,
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "billing_address": {
+            "description": "The buyer's billing address, returned on the payment as `billing_address` and used to calculate tax when Whop calculates it for the account. Only with a `paypal` `payment_method`. Only the keys you supply are kept.",
+            "properties": {
+              "city": {
+                "description": "City name.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code, such as `US`.",
+                "example": "US",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line1": {
+                "description": "First line of the street address.",
+                "example": "1 Market St",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line2": {
+                "description": "Second line of the street address.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "description": "The buyer's full name.",
+                "example": "Dana Shine",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "postal_code": {
+                "description": "Postal or ZIP code.",
+                "example": "94105",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "description": "State, province, or region code, such as `CA`.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "capture": {
+            "description": "Whether to capture a card payment immediately. Defaults to true. Pass false to place an authorization hold that must be captured in full within five days via the capture endpoint, or automatically after `auto_capture_after_minutes`. With a `card_present` `payment_method`, false holds the sale so its line items can change after the tap with `PATCH /payments/{id}`. Capture it for its total, or Whop captures it after `auto_capture_after_minutes` (10 by default).",
+            "example": false,
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "confirmation_token": {
+            "description": "A confirmation token describing a payment method the buyer just supplied. Provide this instead of `member_id` and `payment_method_id`; the buyer is resolved from the token's billing email, or from `email`. The buyer may still have a step to complete \u2014 poll the payment's status for what to do next.",
+            "example": "ctok_xxxxxxxxxxxxxx",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "email": {
+            "description": "The buyer's email, resolving or creating the user the payment belongs to. With `confirmation_token` it overrides the email the token carries, and is ignored when the token was created by a signed-in buyer; with a `card_present` `payment_method` it names a buyer the point of sale already knows, otherwise the sale belongs to a guest until a buyer is attached; with a `paypal` `payment_method` it names the buyer, and when it and `member_id` are both omitted the buyer is the PayPal account that approves the payment. Ignored with `member_id`.",
+            "example": "dana@shinetime.example",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "ip_address": {
+            "description": "The buyer's IPv4 or IPv6 address, used to assess the charge's risk and passed to the processor. Ignored unless a saved payment method is charged with `off_session` set to false.",
+            "example": "203.0.113.24",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "line_items": {
+            "description": "What the buyer is purchasing. Each entry takes exactly one of `variant_id` or an inline `variant`. One entry charges that variant; several entries form a cart, which requires every variant to be compatible, belong to this account, and use the same currency. Mutually exclusive with `variant_id` and `variant`.",
+            "example": [
+              {
+                "quantity": 1,
+                "variant_id": "plan_xxxxxxxxxxxxxx"
+              }
+            ],
+            "items": {
+              "oneOf": [
+                {
+                  "required": [
+                    "variant_id"
+                  ]
+                },
+                {
+                  "required": [
+                    "variant"
+                  ]
+                }
+              ],
+              "properties": {
+                "quantity": {
+                  "description": "How many units of the variant to purchase. Defaults to 1; more than 1 requires the variant to allow multiple quantities.",
+                  "example": 1,
+                  "maximum": 999999,
+                  "minimum": 1,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "variant": {
+                  "description": "Find or create the variant for this entry by its attributes. Unknown properties return an error. Creating a variant requires `plan:create`, and creating or updating a product requires the matching product permission.",
+                  "properties": {
+                    "allow_multiple_quantity": {
+                      "description": "Whether more than one unit can be purchased in an order. Renewal variants cannot enable it. When `false`, checkouts, carts, and invoices reject a quantity above 1.",
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "application_fee_amount": {
+                      "description": "Application fee the platform collects per unit, in the variant currency (5.00 means $5.00 for USD). Must be positive and below the initial price for one-time variants or renewal price for recurring variants. Paid to the parent account alongside other processing fees; collection is capped to remaining proceeds. Applies to subsequent payments on recurring variants. Only valid for subaccounts with a parent account.",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "billing_period": {
+                      "description": "Recurring billing interval in days.",
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "billing_type": {
+                      "description": "Billing model for the variant.",
+                      "enum": [
+                        null,
+                        "renewal",
+                        "one_time"
+                      ],
+                      "example": "renewal",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "currency": {
+                      "description": "Currency code for the variant prices.",
+                      "enum": [
+                        "usd",
+                        "sgd",
+                        "inr",
+                        "aud",
+                        "brl",
+                        "cad",
+                        "dkk",
+                        "eur",
+                        "nok",
+                        "gbp",
+                        "sek",
+                        "chf",
+                        "hkd",
+                        "huf",
+                        "jpy",
+                        "mxn",
+                        "myr",
+                        "pln",
+                        "czk",
+                        "nzd",
+                        "aed",
+                        "eth",
+                        "ape",
+                        "cop",
+                        "ron",
+                        "thb",
+                        "bgn",
+                        "idr",
+                        "dop",
+                        "php",
+                        "try",
+                        "krw",
+                        "twd",
+                        "vnd",
+                        "pkr",
+                        "clp",
+                        "uyu",
+                        "ars",
+                        "zar",
+                        "dzd",
+                        "tnd",
+                        "mad",
+                        "kes",
+                        "kwd",
+                        "jod",
+                        "all",
+                        "xcd",
+                        "amd",
+                        "bsd",
+                        "bhd",
+                        "bob",
+                        "bam",
+                        "khr",
+                        "crc",
+                        "xof",
+                        "egp",
+                        "etb",
+                        "gmd",
+                        "ghs",
+                        "gtq",
+                        "gyd",
+                        "ils",
+                        "jmd",
+                        "mop",
+                        "mga",
+                        "mur",
+                        "mdl",
+                        "mnt",
+                        "nad",
+                        "ngn",
+                        "mkd",
+                        "omr",
+                        "pyg",
+                        "pen",
+                        "qar",
+                        "rwf",
+                        "sar",
+                        "rsd",
+                        "lkr",
+                        "tzs",
+                        "ttd",
+                        "uzs",
+                        "rub",
+                        "btc",
+                        "cny",
+                        "usdt",
+                        "kzt",
+                        "awg",
+                        "whop_usd",
+                        "xau",
+                        "hnl"
+                      ],
+                      "example": "usd",
+                      "type": "string"
+                    },
+                    "description": {
+                      "description": "Variant description.",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "expiration_days": {
+                      "description": "Days until access expires.",
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "force_create_new_plan": {
+                      "description": "Create a new variant instead of reusing a matching variant.",
+                      "type": [
+                        "boolean",
+                        "null"
+                      ]
+                    },
+                    "initial_price": {
+                      "description": "Additional amount charged on the first purchase, in the variant currency. For recurring variants without a trial, the first charge includes this amount plus renewal_price.",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "internal_notes": {
+                      "description": "Internal notes for the account.",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "override_tax_type": {
+                      "description": "Whether the variant's price includes tax: `inclusive` (tax is included in the price), `exclusive` (tax is added on top), or `unspecified`. Omit it or pass `null` to use the account's tax setting. On an account enrolled in the Whop tax service, `inclusive` or `exclusive` replaces the account's setting and `unspecified` keeps it. Otherwise it applies only where the account is the merchant of record: `inclusive` or `exclusive` replaces the account's setting when the account collects tax, and `unspecified` means the variant collects no tax. Where Whop is the merchant of record, the account's setting applies. Variants that differ only in this value are different variants.",
+                      "enum": [
+                        null,
+                        "exclusive",
+                        "inclusive",
+                        "unspecified"
+                      ],
+                      "example": "exclusive",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "product": {
+                      "description": "Find or create a product by external identifier. Mutually exclusive with product_id.",
+                      "properties": {
+                        "collect_shipping_address": {
+                          "description": "Whether to collect a shipping address at checkout.",
+                          "type": [
+                            "boolean",
+                            "null"
+                          ]
+                        },
+                        "custom_statement_descriptor": {
+                          "description": "Custom card statement descriptor for the product, starting with WHOP*.",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "description": {
+                          "description": "Product description.",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "external_identifier": {
+                          "description": "Your unique identifier for the product.",
+                          "pattern": "\\S",
+                          "type": "string"
+                        },
+                        "global_affiliate_percentage": {
+                          "description": "Percentage of revenue paid to global affiliates.",
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "global_affiliate_status": {
+                          "description": "Global affiliate program status.",
+                          "enum": [
+                            null,
+                            "enabled",
+                            "disabled"
+                          ],
+                          "example": "enabled",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "headline": {
+                          "description": "Product headline.",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "product_tax_code_id": {
+                          "description": "Product tax code identifier.",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "redirect_purchase_url": {
+                          "description": "Where to redirect the buyer after purchase.",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "route": {
+                          "description": "Product route.",
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "title": {
+                          "description": "Product title.",
+                          "pattern": "\\S",
+                          "type": "string"
+                        },
+                        "visibility": {
+                          "default": "hidden",
+                          "description": "Product visibility. Defaults to hidden.",
+                          "enum": [
+                            "visible",
+                            "hidden",
+                            "archived",
+                            "quick_link"
+                          ],
+                          "example": "visible",
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "external_identifier",
+                        "title"
+                      ],
+                      "type": [
+                        "object",
+                        "null"
+                      ]
+                    },
+                    "product_id": {
+                      "description": "Existing product ID belonging to the account, prefixed `prod_`. Mutually exclusive with `product`.",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "redirect_url": {
+                      "description": "Where the customer is sent after paying for this variant. Must be a valid URL that is not another Whop checkout link.",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "renewal_price": {
+                      "description": "Recurring price in the variant currency.",
+                      "type": [
+                        "number",
+                        "null"
+                      ]
+                    },
+                    "split_pay_required_payments": {
+                      "description": "How many payments a recurring variant collects before it stops billing, from 2 to 115. Only valid for `renewal` variants. `null` bills until the subscription is canceled.",
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "title": {
+                      "description": "Variant title.",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "trial_period_days": {
+                      "description": "Free trial days before renewal.",
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "visibility": {
+                      "description": "Whether the variant is visible to customers.",
+                      "enum": [
+                        null,
+                        "visible",
+                        "hidden",
+                        "archived",
+                        "quick_link"
+                      ],
+                      "example": "visible",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "currency"
+                  ],
+                  "type": "object"
+                },
+                "variant_id": {
+                  "description": "An existing variant to charge for, prefixed `plan_`. Mutually exclusive with `variant`. Each variant may appear once \u2014 use `quantity` for multiple units.",
+                  "example": "plan_xxxxxxxxxxxxxx",
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "type": "array"
+          },
+          "member_id": {
+            "description": "The member to charge, prefixed `mber_`. Required with `payment_method_id` unless `confirmation_token` is provided. With a `paypal` `payment_method` it names the buyer instead of `email`, and must belong to a user; omit both to take the buyer from the PayPal account that approves.",
+            "example": "mber_xxxxxxxxxxxxxx",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "metadata": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Custom metadata to attach to the payment.",
+            "example": {
+              "register": "front"
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "off_session": {
+            "description": "Whether the buyer is absent from your checkout and can't authenticate. Pass true when you charge the card without the buyer, such as a renewal on your own schedule. Pass false when the buyer is present, such as a one-click upsell right after checkout: the charge is processed as a customer-initiated card-on-file payment, and if the issuer asks the buyer to authenticate, the payment's status is `requires_action` with a `next_action` to send them to, after which they return to `return_url`. From API version 2026-10-07-1 it defaults to false when `return_url` is provided and to true otherwise; before that version it defaults to true. A saved Apple Pay, Google Pay or PayPal payment method is always charged with `off_session` true. Ignored unless `member_id` and `payment_method_id` are provided.",
+            "example": true,
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "payment_method": {
+            "description": "A payment method named on this call rather than described by a confirmation token. `type` names it and the member named after it carries its details. Nothing is collected on this call: the payment is created first and the buyer or device then acts on the `next_action` the status endpoint serves. `card_present` (Tap to Pay): the reader collects against the payment with the client secret in `next_action`. `paypal`: the buyer approves on PayPal's page, reached through a `redirect` `next_action`, then returns to `return_url`; `member_id` or `email` names the buyer. Mutually exclusive with `confirmation_token` and `payment_method_id`, and with `member_id` except for `paypal`.",
+            "properties": {
+              "card_present": {
+                "description": "Required when `type` is `card_present`.",
+                "properties": {
+                  "platform": {
+                    "description": "Which Tap to Pay SDK collects the payment. Stripe offers Tap to Pay in different countries per platform, so eligibility is checked for the named one, as it is for the connection-token session.",
+                    "enum": [
+                      "ios",
+                      "android"
+                    ],
+                    "example": "ios",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "platform"
+                ],
+                "type": "object"
+              },
+              "paypal": {
+                "description": "Options for a `paypal` payment method.",
+                "properties": {
+                  "request_shipping": {
+                    "description": "Has PayPal ask the buyer for a shipping address. Tax is recalculated for each address the buyer picks before they approve, so the total they approve is the total charged, and the address they confirm is returned on the payment as `shipping_address`. Cannot be combined with `shipping_address`. Defaults to false.",
+                    "example": true,
+                    "type": "boolean"
+                  }
+                },
+                "type": "object"
+              },
+              "type": {
+                "description": "The kind of payment method; the member named after it carries its details.",
+                "enum": [
+                  "card_present",
+                  "paypal"
+                ],
+                "example": "paypal",
+                "type": "string"
+              }
+            },
+            "required": [
+              "type"
+            ],
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "payment_method_id": {
+            "description": "The stored payment method to charge, prefixed `payt_`. It must belong to the member. Required unless `confirmation_token` is provided. With a card saved from a tap, Whop treats an inline `variant` as the sale's tip. It files the tip as a one-time Tip under a hidden Tip product, from the variant's `currency` and `initial_price` alone. Charging it needs only `payment:charge`.",
+            "example": "payt_xxxxxxxxxxxxxx",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "quote_id": {
+            "description": "A payment quote from `POST /payment_quotes`, prefixed `pq_`. The payment charges exactly the quote: its purchase (its variants and quantities, or the `variant` it priced), which this body may then omit, its promo code, and its tax, the quote's `tax_amount` rather than a figure calculated now. Omit it, or send null, to have tax calculated when the payment is charged. The quote must belong to `account_id`. A purchase field you omit or send as null takes the quote's value; the buyer's email, the addresses and the payment method are this request's own, never the quote's. Whatever you do send must describe the quoted purchase: the same variants, quantities and promo code. A quote that priced `variant` takes only the same `variant` you sent to `POST /payment_quotes` (or omit the purchase to take the quoted one), never `variant_id` or `line_items`, and a quote that priced variants by id never takes `variant`. Unless the quote located no buyer (`located_by` is null), the address the payment carries (its shipping address, else its billing address) must put the buyer where the quote priced tax, by country, state and postal code; otherwise the payment is refused with 400 before the payment method is used. A quote located by IP address or by the country the buyer chose (`located_by` is `ip_address` or `presentment_country`) is a preview and cannot be paid. A quote is consumed by one payment: a declined payment keeps it and can be retried; a new payment needs a new quote. A quote cannot be charged by a processor that doesn't take quotes, such as a seller's own connected PayPal account; such a payment is refused before the payment method is used. A quote priced in a `presentment_currency` is charged in that currency at the quote's `exchange_rate`. A payment refused over its quote carries an error `code`. `quote_expired`: the quote has expired; quote again. `quote_tax_unavailable`: the quote could not price tax; quote again, or omit `quote_id`. `quote_preview_only`: the quote was located by IP address or by the country the buyer chose; quote again with the buyer's address. `quote_in_use` (409): another payment holds the quote. `quote_mismatch`: the purchase or the buyer's address is not the one quoted. `quote_rate_expired`: the exchange rate the quote was priced at has moved too far to charge; quote again. `payment_method_currency_unsupported`: the payment method cannot pay in the quote's currency; use another method, or quote again in another currency. `quote_processor_unsupported`: the payment would be processed by a processor that doesn't take quotes, such as a seller's own connected PayPal account; use another method, or omit `quote_id` to have tax calculated when the payment is charged.",
+            "example": "pq_xxxxxxxxxxxxxxx",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "return_url": {
+            "description": "Where the buyer continues after completing an off-site step such as 3D Secure. An absolute https URL without credentials, at most 2,048 characters. Required when a saved payment method is charged with `off_session` false; otherwise ignored unless `confirmation_token` or a `paypal` `payment_method` is provided.",
+            "example": "https://shinetime.example/checkout/done",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "setup_future_usage": {
+            "description": "Attests that the buyer was told the payment method will be saved for later charges. A `paypal` method is saved once the buyer approves on PayPal's page, and can then be charged with `member_id` and `payment_method_id`. A `card_present` method saves the tapped card when the reader collects it. The payment's `payment_method_id` then names the saved card. The point of sale must also pass the buyer's consent to the Terminal SDK as `allow_redisplay`. Omit it for a one-time payment that saves nothing. Other payment methods ignore it.",
+            "enum": [
+              "off_session",
+              null
+            ],
+            "example": "off_session",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "shipping_address": {
+            "description": "Where physical goods ship, returned on the payment as `shipping_address`. Only the keys you supply are kept; omit it for digital goods.",
+            "properties": {
+              "city": {
+                "description": "City name.",
+                "example": "Austin",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code, such as `US`.",
+                "example": "US",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line1": {
+                "description": "First line of the street address.",
+                "example": "1114 Bouldin Ave",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line2": {
+                "description": "Second line of the street address.",
+                "example": "Unit B",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "description": "The recipient's full name, as it should appear on the shipping label.",
+                "example": "Dana Whitfield",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "postal_code": {
+                "description": "Postal or ZIP code.",
+                "example": "78704",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "description": "State, province, or region code, such as `CA`.",
+                "example": "TX",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "statement_descriptor": {
+            "description": "Overrides the text on the buyer's card statement for this payment only. Takes precedence over the product's and account's custom descriptors, and changes neither. Must start with `WHOP*` unless the business processes as the merchant of record. For a business processing as the merchant of record, Whop removes a `WHOP*` prefix when at least 5 characters, including a letter, remain. Must be 5-22 characters, contain at least one letter, and use only Latin letters, numbers, spaces, underscores, hyphens, or asterisks.",
+            "example": "WHOP*SHINETIME",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    ]
+  },
+  "schemas": {
+    "PaymentInput": {
+      "description": "The account, variant and promo code for a purchase.",
+      "properties": {
+        "account_id": {
+          "description": "The account the purchase belongs to, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "promo_code": {
+          "description": "The promo code as the buyer typed it, matched within the account regardless of case and surrounding spaces, as checkout matches it. It must be valid for the variant. Send it or `promo_code_id`, not both; an empty or whitespace-only string counts as not sent. A code the account does not have, or one that is no longer active, is refused before anything is written, with the error code `promo_invalid`. A code this purchase cannot use, such as one with no uses left or one restricted to other variants, products or buyers, is refused with `promo_invalid` too, and the error's message says why.",
+          "example": "SHINE20",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "promo_code_id": {
+          "description": "An active promo code to apply, prefixed `promo_`. It must belong to the account and be valid for the variant. Send it or `promo_code`, not both. A code this purchase cannot use is refused with the error code `promo_invalid`, and the error's message says why.",
+          "example": "promo_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "description": "The variant purchased, described by its attributes instead of an id: the variant with exactly these attributes is used, and one is created when none exists. Mutually exclusive with `variant_id` and `line_items`. Creating a variant requires `plan:create`; creating or updating a product requires the corresponding product permission.",
+          "properties": {
+            "allow_multiple_quantity": {
+              "description": "Whether more than one unit can be purchased in an order. Renewal variants cannot enable it. When `false`, checkouts, carts, and invoices reject a quantity above 1.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "application_fee_amount": {
+              "description": "Application fee the platform collects per unit, in the variant currency (5.00 means $5.00 for USD). Must be positive and below the initial price for one-time variants or renewal price for recurring variants. Paid to the parent account alongside other processing fees; collection is capped to remaining proceeds. Applies to subsequent payments on recurring variants. Only valid for subaccounts with a parent account.",
+              "example": 2,
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "billing_period": {
+              "description": "Recurring billing interval in days.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "billing_type": {
+              "description": "Billing model for the variant.",
+              "enum": [
+                null,
+                "renewal",
+                "one_time"
+              ],
+              "example": "one_time",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "currency": {
+              "description": "Currency code for the variant prices.",
+              "enum": [
+                "usd",
+                "sgd",
+                "inr",
+                "aud",
+                "brl",
+                "cad",
+                "dkk",
+                "eur",
+                "nok",
+                "gbp",
+                "sek",
+                "chf",
+                "hkd",
+                "huf",
+                "jpy",
+                "mxn",
+                "myr",
+                "pln",
+                "czk",
+                "nzd",
+                "aed",
+                "eth",
+                "ape",
+                "cop",
+                "ron",
+                "thb",
+                "bgn",
+                "idr",
+                "dop",
+                "php",
+                "try",
+                "krw",
+                "twd",
+                "vnd",
+                "pkr",
+                "clp",
+                "uyu",
+                "ars",
+                "zar",
+                "dzd",
+                "tnd",
+                "mad",
+                "kes",
+                "kwd",
+                "jod",
+                "all",
+                "xcd",
+                "amd",
+                "bsd",
+                "bhd",
+                "bob",
+                "bam",
+                "khr",
+                "crc",
+                "xof",
+                "egp",
+                "etb",
+                "gmd",
+                "ghs",
+                "gtq",
+                "gyd",
+                "ils",
+                "jmd",
+                "mop",
+                "mga",
+                "mur",
+                "mdl",
+                "mnt",
+                "nad",
+                "ngn",
+                "mkd",
+                "omr",
+                "pyg",
+                "pen",
+                "qar",
+                "rwf",
+                "sar",
+                "rsd",
+                "lkr",
+                "tzs",
+                "ttd",
+                "uzs",
+                "rub",
+                "btc",
+                "cny",
+                "usdt",
+                "kzt",
+                "awg",
+                "whop_usd",
+                "xau",
+                "hnl"
+              ],
+              "example": "usd",
+              "type": "string"
+            },
+            "description": {
+              "description": "Variant description.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "expiration_days": {
+              "description": "Days until access expires.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "force_create_new_plan": {
+              "description": "Create a new variant instead of reusing a matching variant.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "initial_price": {
+              "description": "Additional amount charged on the first purchase, in the variant currency. For recurring variants without a trial, the first charge includes this amount plus renewal_price.",
+              "example": 31,
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "internal_notes": {
+              "description": "Internal notes for the account.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "override_tax_type": {
+              "description": "Whether the variant's price includes tax: `inclusive` (tax is included in the price), `exclusive` (tax is added on top), or `unspecified`. Omit it or pass `null` to use the account's tax setting. On an account enrolled in the Whop tax service, `inclusive` or `exclusive` replaces the account's setting and `unspecified` keeps it. Otherwise it applies only where the account is the merchant of record: `inclusive` or `exclusive` replaces the account's setting when the account collects tax, and `unspecified` means the variant collects no tax. Where Whop is the merchant of record, the account's setting applies. Variants that differ only in this value are different variants.",
+              "enum": [
+                null,
+                "exclusive",
+                "inclusive",
+                "unspecified"
+              ],
+              "example": "inclusive",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "product": {
+              "description": "Find or create a product by external identifier. Mutually exclusive with product_id.",
+              "properties": {
+                "collect_shipping_address": {
+                  "description": "Whether to collect a shipping address at checkout.",
+                  "example": true,
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "custom_statement_descriptor": {
+                  "description": "Custom card statement descriptor for the product, starting with WHOP*.",
+                  "example": "WHOP*INLINE",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "description": "Product description.",
+                  "example": "Quoted, then sent with the payment.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "external_identifier": {
+                  "description": "Your unique identifier for the product.",
+                  "example": "quoted-again",
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "global_affiliate_percentage": {
+                  "description": "Percentage of revenue paid to global affiliates.",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "global_affiliate_status": {
+                  "description": "Global affiliate program status.",
+                  "enum": [
+                    null,
+                    "enabled",
+                    "disabled"
+                  ],
+                  "example": "enabled",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "headline": {
+                  "description": "Product headline.",
+                  "example": "Product headline",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "product_tax_code_id": {
+                  "description": "Product tax code identifier.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "redirect_purchase_url": {
+                  "description": "Where to redirect the buyer after purchase.",
+                  "example": "https://example.com/thanks",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "route": {
+                  "description": "Product route.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "title": {
+                  "description": "Product title.",
+                  "example": "Quoted again",
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "visibility": {
+                  "default": "hidden",
+                  "description": "Product visibility. Defaults to hidden.",
+                  "enum": [
+                    "visible",
+                    "hidden",
+                    "archived",
+                    "quick_link"
+                  ],
+                  "example": "visible",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "external_identifier",
+                "title"
+              ],
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "product_id": {
+              "description": "Existing product ID belonging to the account, prefixed `prod_`. Mutually exclusive with `product`.",
+              "example": "prod_xxxxxxxxxxxxxx",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "redirect_url": {
+              "description": "Where the customer is sent after paying for this variant. Must be a valid URL that is not another Whop checkout link.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "renewal_price": {
+              "description": "Recurring price in the variant currency.",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "split_pay_required_payments": {
+              "description": "How many payments a recurring variant collects before it stops billing, from 2 to 115. Only valid for `renewal` variants. `null` bills until the subscription is canceled.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "title": {
+              "description": "Variant title.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "trial_period_days": {
+              "description": "Free trial days before renewal.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "visibility": {
+              "description": "Whether the variant is visible to customers.",
+              "enum": [
+                null,
+                "visible",
+                "hidden",
+                "archived",
+                "quick_link"
+              ],
+              "example": "visible",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "currency"
+          ],
+          "type": "object"
+        },
+        "variant_id": {
+          "description": "The variant purchased, prefixed `plan_`. It must belong to the account. Mutually exclusive with `variant` and `line_items`.",
+          "example": "plan_xxxxxxxxxxxxxx",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id"
+      ],
+      "type": "object"
+    },
+    "Payment": {
+      "properties": {
+        "account_id": {
+          "description": "The account that received the payment, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "amount_after_fees": {
+          "description": "What the account keeps: the total less Whop's fees. Null when you read the payment as its buyer.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "amount_charged": {
+          "$ref": "#/components/schemas/Money",
+          "description": "What the buyer is charged for this payment: the total plus any buyer fees, in the currency the buyer pays in. Refunds do not reduce it; `presentment_refunded_amount` states them in the same currency."
+        },
+        "auto_capture_at": {
+          "description": "When Whop will capture this authorized card payment automatically unless it is voided first, as an ISO 8601 timestamp. Null when no automatic capture was requested.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "auto_refunded": {
+          "description": "True when Whop refunded the payment automatically, for example on a dispute alert.",
+          "example": false,
+          "type": "boolean"
+        },
+        "billing_address": {
+          "description": "The billing address the buyer entered, or null.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentAddress"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "billing_reason": {
+          "description": "Why the charge was created: a first purchase, a renewal, a one-time payment, or a manual charge.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/BillingReasons"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "capture_expires_at": {
+          "description": "When the hold on this authorized card payment expires if it is not captured first, as an ISO 8601 timestamp. Null when the payment was not created for later capture.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "checkout_configuration_id": {
+          "description": "The checkout configuration the buyer paid through, prefixed `ch_`, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "checkout_origin": {
+          "description": "The scheme and host of the website where the buyer opened the checkout, such as `https://store.example.com`. Use it to tell apart payments from different websites on one account. Null when the website was not recorded, including for payments made without the buyer present.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "checkout_surface": {
+          "description": "The checkout experience that produced this payment, such as `embedded_checkout` for a checkout on the account's own website or `off_session` for a subscription renewal. Null when the checkout was not recorded.",
+          "enum": [
+            "hosted_checkout",
+            "embedded_checkout",
+            "custom_checkout",
+            "modal_checkout",
+            "in_app_checkout",
+            "mobile_checkout",
+            "off_session",
+            "card_present",
+            null
+          ],
+          "example": "custom_checkout",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "client_secret": {
+          "description": "The credential a buyer's surface presents to poll this payment, set its return URL and resume it when the bank asked the customer to authenticate. Only on payments created from a confirmation token or waiting on that authentication, null when you read the payment as its buyer, and always null in list responses \u2014 retrieve the payment for it.",
+          "example": "pay_xxxxxxxxxxxxxx_secret_vdefault_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "description": "When the payment was created, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "currency": {
+          "$ref": "#/components/schemas/Currencies",
+          "description": "The currency the payment settles in, lowercase ISO 4217. Every money field below is stated in it unless it says otherwise."
+        },
+        "customer_email": {
+          "description": "The buyer's email address. Null without `member:email:read` on the account or when the buyer has no assigned email.",
+          "example": "marcus@shinetime.example",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "customer_phone": {
+          "description": "The phone number the buyer gave at checkout, when one was collected.",
+          "example": "+xxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "decline_code": {
+          "description": "The normalized decline reason of the most recent failed attempt, or null.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentDeclineCodes"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dispute_alerted_at": {
+          "description": "When an issuer warned that this payment will be disputed, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dispute_created_at": {
+          "description": "When the most recent dispute on this payment was opened, as an ISO 8601 timestamp. Null when the payment was never disputed, or without the payment:dispute:read permission.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "failure_message": {
+          "description": "Why the most recent attempt failed, in plain words, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "financing_installments_count": {
+          "description": "For installment methods, how many payments the charge splits into.",
+          "example": null,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "holds": {
+          "items": {
+            "$ref": "#/components/schemas/PaymentHold",
+            "description": "The active holds on this payment. Each hold has its own release date, independent of `settlement_time_at`. Empty when nothing is held or you read the payment as its buyer; released holds are omitted."
+          },
+          "type": "array"
+        },
+        "id": {
+          "description": "Payment ID, prefixed `pay_`.",
+          "example": "pay_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "ip_address": {
+          "description": "IP address that Whop captured from the buyer's browser at checkout. Null when the buyer was not present at checkout, for example a subscription renewal or a charge made without the buyer. Also null when you read the payment as its buyer.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "last_payment_attempt_at": {
+          "description": "When the most recent charge attempt ran, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line_items": {
+          "items": {
+            "$ref": "#/components/schemas/ReceiptLineItem",
+            "description": "Everything this payment charged for, in purchase order, with quantities and subtotals in the purchase currency. Payments made before item snapshots were recorded return the single item implied by their variant. Empty when no items or variant can be resolved."
+          },
+          "type": "array"
+        },
+        "member_id": {
+          "description": "The buyer's member record on the account, prefixed `mber_`. Null without the member:basic:read permission, unless you are the buyer.",
+          "example": "mber_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "membership_id": {
+          "description": "The membership this payment is billed against, prefixed `mem_`. Null for one-off purchases, or without the member:basic:read permission unless you are the buyer.",
+          "example": "mem_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "description": "Your own key-value data attached when the payment was created. Null when you read the payment as its buyer.",
+          "example": {
+            "order_ref": "SHINE-4417"
+          },
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "missing_tracking": {
+          "description": "True for a paid payment with a shipping address, no shipment, and no full refund. Null without the shipment:basic:read permission.",
+          "example": false,
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "needs_tracking": {
+          "description": "True when funds are held until the order ships and no tracking number has been added yet. Null without the shipment:basic:read permission.",
+          "example": false,
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "next_payment_attempt_at": {
+          "description": "When the next automatic retry is scheduled, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "paid_at": {
+          "description": "When the money was collected, or null while it has not been.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payment_instrument": {
+          "description": "The instrument shaped for display: a buyer-facing name, the standard icon set, and when it was a card, the card's brand, last four, issuer identification number, and the network transaction id the account uses for the card. The network transaction id is null when you read the payment as its buyer.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentInstrument"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payment_method_id": {
+          "description": "The stored payment method that was charged, prefixed `payt_`. Null when the method was not saved.",
+          "example": "payt_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payment_method_type": {
+          "description": "The kind of instrument used, for example `card`, `apple_pay`, `klarna`, or `us_bank_account`.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentMethodTypes"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "payment_rule_matches": {
+          "items": {
+            "$ref": "#/components/schemas/PaymentRuleMatch",
+            "description": "The account's own payment rules that decided this payment, recorded when they ran. Only one action is taken per payment, so a rule that matched but was skipped or outranked is not listed. Empty when none decided it, when the account had no rules, when Whop blocked the payment before they ran, or when you read the payment as its buyer."
+          },
+          "type": "array"
+        },
+        "payments_failed": {
+          "description": "How many charge attempts have failed on this payment.",
+          "example": 0,
+          "type": "number"
+        },
+        "presentment_refunded_amount": {
+          "description": "How much has been refunded so far, in the currency presented to the buyer. Zero when nothing has been refunded.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "presentment_tax_amount": {
+          "description": "The sales tax or VAT collected, in the currency presented to the buyer. Null when no tax applied.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "presentment_total": {
+          "description": "The account-facing total in the currency presented to the buyer, before conversion into the settlement currency. Excludes buyer fees.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "product_id": {
+          "description": "The product the variant belongs to, prefixed `prod_`. Null for a variant with no product.",
+          "example": "prod_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "promo_code_id": {
+          "description": "The promo code applied at checkout, prefixed `promo_`, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "quote_id": {
+          "description": "The payment quote this payment charged, prefixed `pq_`: its purchase, promo code and `tax_amount` are the quote's. Null when the payment named no quote and tax was calculated at charge time.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recovery_url": {
+          "description": "Whop-hosted URL where the buyer can sign in and complete 3D Secure for an off-session charge the bank challenged \u2014 a subscription renewal or a saved-card payment. Null when recovery is unavailable, you lack `member:basic:read`, or in list responses. Retrieve the payment for it.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "refundable": {
+          "description": "True when the payment is `paid`, not yet fully refunded, and its processor supports refunds.",
+          "example": false,
+          "type": "boolean"
+        },
+        "refunded_amount": {
+          "description": "How much has been refunded so far, as it settled \u2014 refunds convert at the rate in force when each one was issued, not the payment's original rate.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "refunded_at": {
+          "description": "When the payment was refunded, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolution_center_ineligible_reason": {
+          "description": "Why the buyer cannot open a Resolution Center case on this payment with `POST /resolution_center_cases`, or null when they can. `already_opened`: a case is already open or was decided (a withdrawn case does not count). `unsupported_payment_processor`: the payment method does not support cases. `out_of_date`: the window to open a case has passed. `not_paid`: the payment is not `paid`. `free`: nothing was charged. `already_refunded`: some of it has been refunded.",
+          "enum": [
+            "already_opened",
+            "unsupported_payment_processor",
+            "out_of_date",
+            "not_paid",
+            "free",
+            "already_refunded",
+            null
+          ],
+          "example": "not_paid",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "response_due_at": {
+          "description": "When the earliest response is due on a dispute or Resolution Center case awaiting the account's response, as an ISO 8601 timestamp. Null when nothing awaits a response, or without the permission to read that dispute or case.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "retryable": {
+          "description": "True when the payment can be retried by hand with `POST /payments/{id}/retry`. The payment must be `open` and not paid through an invoice payment link. Its membership must be `active`, `trialing`, or `past_due`, or the payment must be a failed first payment on a `drafted` membership. Its one manual retry must not be used up. A retry can still be refused when the account cannot currently accept payments.",
+          "example": true,
+          "type": "boolean"
+        },
+        "risk_score": {
+          "description": "Whop's published risk index from 0 (lowest) to 100 (highest), including enforced decision floors. This is not a fraud probability. Null when no score is available or you read the payment as its buyer.",
+          "example": null,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "risk_signals": {
+          "deprecated": true,
+          "description": "Deprecated. Risk score explanations are no longer provided; always null.\nDEPRECATED: Risk score explanations are no longer provided. Always null.",
+          "example": null,
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "settlement_time_at": {
+          "description": "When the portion not listed in `holds` posts to the account's available balance, at midnight UTC. The `financial_activity.funds_available` webhook's `posted_at` carries the same value when the settlement that clears it posts. Null until the payment is paid or when you read the payment as its buyer, and always null in list responses \u2014 retrieve the payment for it.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shipment_id": {
+          "description": "The shipment fulfilling this payment, prefixed `ship_`. Null when nothing ships or without the shipment:basic:read permission.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "shipping_address": {
+          "description": "The shipping address for physical goods, or null.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentAddress"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "$ref": "#/components/schemas/ReceiptStatus",
+          "description": "The lifecycle state of the charge: `open` while collection is outstanding, `paid` once the money moved, `pending` while a settlement rail clears, `void`/`uncollectible` when it ended without collecting."
+        },
+        "substatus": {
+          "$ref": "#/components/schemas/FriendlyReceiptStatus",
+          "description": "The dashboard's finer-grained reading of the payment, folding in refunds, disputes and Resolution Center cases."
+        },
+        "subtotal": {
+          "description": "The price before discounts, tax and fees.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "surcharge": {
+          "description": "The card surcharge the buyer pays for paying by credit card. It is included in `total` and `amount_charged`, and appears in `line_items` as a line of its own. Null when the payment has no surcharge.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tax_amount": {
+          "description": "The sales tax or VAT collected. Null when no tax applied.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tax_behavior": {
+          "description": "Whether `tax_amount` was added on top of the price (`exclusive`) or was already inside it (`inclusive`).",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/ReceiptTaxBehaviors"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tax_refunded_amount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "How much of the collected tax has been returned to the buyer so far. Zero when the payment carried no tax, or when nothing has been refunded."
+        },
+        "three_ds_verified": {
+          "description": "True when the buyer completed 3D Secure for this payment.",
+          "example": false,
+          "type": "boolean"
+        },
+        "total": {
+          "description": "The account-facing total: the price after discounts, plus any tax added on top. Excludes buyer fees, which the buyer pays above this amount \u2014 so this is not necessarily what the buyer's statement shows; `amount_charged` is what the buyer is charged.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "updated_at": {
+          "description": "When the payment last changed, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "usd_total": {
+          "description": "The total converted to USD at the time of the charge, for reporting across currencies. Excludes the adaptive pricing FX markup, which the account does not keep. Null when you read the payment as its buyer.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "user": {
+          "description": "The buyer. Null when the buyer is an account rather than a user.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/UserSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "user_agent": {
+          "description": "The buyer's browser user agent at checkout. Null when the buyer was not present at checkout, such as a subscription renewal, or without the member:basic:read permission.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant_id": {
+          "description": "The variant that was charged, prefixed `plan_`.",
+          "example": "plan_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "verification_checks": {
+          "description": "The Address Verification Service (AVS), cardholder name, and Card Verification Value (CVV/CVC) results, or null when the processor returned none or you read the payment as its buyer.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentVerificationChecks"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "voidable": {
+          "description": "True when the payment can be voided or canceled. The request is rejected if the payment is no longer eligible \u2014 see `POST /payments/{id}/void`.",
+          "example": false,
+          "type": "boolean"
+        },
+        "wuid": {
+          "description": "The Whop pixel's visitor ID for the buyer's browser at checkout, prefixed `wuid_`. Null when the checkout page had no Whop pixel, when the buyer was not present at checkout, or without the member:basic:read permission.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "substatus",
+        "billing_reason",
+        "refundable",
+        "retryable",
+        "voidable",
+        "resolution_center_ineligible_reason",
+        "account_id",
+        "user",
+        "member_id",
+        "membership_id",
+        "variant_id",
+        "product_id",
+        "line_items",
+        "promo_code_id",
+        "checkout_configuration_id",
+        "shipment_id",
+        "currency",
+        "total",
+        "subtotal",
+        "tax_amount",
+        "tax_behavior",
+        "quote_id",
+        "refunded_amount",
+        "tax_refunded_amount",
+        "auto_refunded",
+        "amount_charged",
+        "surcharge",
+        "amount_after_fees",
+        "usd_total",
+        "payment_method_type",
+        "payment_method_id",
+        "payment_instrument",
+        "customer_email",
+        "presentment_total",
+        "presentment_tax_amount",
+        "presentment_refunded_amount",
+        "customer_phone",
+        "billing_address",
+        "shipping_address",
+        "needs_tracking",
+        "missing_tracking",
+        "payments_failed",
+        "failure_message",
+        "decline_code",
+        "recovery_url",
+        "three_ds_verified",
+        "verification_checks",
+        "risk_score",
+        "ip_address",
+        "user_agent",
+        "wuid",
+        "checkout_surface",
+        "checkout_origin",
+        "payment_rule_matches",
+        "risk_signals",
+        "financing_installments_count",
+        "metadata",
+        "created_at",
+        "updated_at",
+        "paid_at",
+        "last_payment_attempt_at",
+        "next_payment_attempt_at",
+        "refunded_at",
+        "dispute_alerted_at",
+        "dispute_created_at",
+        "auto_capture_at",
+        "capture_expires_at",
+        "response_due_at",
+        "settlement_time_at",
+        "holds",
+        "client_secret"
+      ],
+      "type": "object"
+    },
+    "V1ErrorResponse": {
+      "properties": {
+        "error": {
+          "properties": {
+            "code": {
+              "description": "Machine-readable reason for this specific refusal, such as `bank_warning_not_acknowledged`. Only present when the error carries one.",
+              "type": "string"
+            },
+            "message": {
+              "description": "Human-readable error message.",
+              "example": "account_id is required",
+              "type": "string"
+            },
+            "type": {
+              "description": "Machine-readable error code.",
+              "example": "bad_request",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "message"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "type": "object"
+    },
+    "Money": {
+      "properties": {
+        "amount": {
+          "description": "The amount in major units, as an exact decimal string. For example, `\"10.00\"` is ten dollars. It is a string so that no float rounds it in transit.",
+          "example": "-1234.56",
+          "type": "string"
+        },
+        "currency": {
+          "description": "Three-letter ISO 4217 currency code, lowercase.",
+          "example": "usd",
+          "type": "string"
+        },
+        "decimals": {
+          "description": "How many decimal places the amount carries. This is the precision the charge itself runs at.",
+          "example": 2,
+          "type": "integer"
+        },
+        "display_decimals": {
+          "description": "How many decimal places to SHOW. Usually equal to `decimals`, and deliberately not always: COP is charged in centavos but written in whole pesos, so it is `2` and `0`. Format the number in your own locale using this.",
+          "example": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "currency",
+        "amount",
+        "decimals",
+        "display_decimals"
+      ],
+      "type": "object"
+    },
+    "PaymentAddress": {
+      "properties": {
+        "city": {
+          "description": "The city.",
+          "example": "Austin",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "description": "The ISO 3166-1 alpha-2 country code.",
+          "example": "US",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line1": {
+          "description": "The first street address line.",
+          "example": "1114 Bouldin Ave",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line2": {
+          "description": "The second street address line.",
+          "example": "Unit B",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "The name on the address.",
+          "example": "Dana Whitfield",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "postal_code": {
+          "description": "The postal or ZIP code.",
+          "example": "78704",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "description": "The state, province or region.",
+          "example": "TX",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "line1",
+        "line2",
+        "city",
+        "state",
+        "postal_code",
+        "country"
+      ],
+      "type": "object"
+    },
+    "BillingReasons": {
+      "description": "The reason why a specific payment was billed",
+      "enum": [
+        "subscription_create",
+        "subscription_cycle",
+        "subscription_update",
+        "one_time",
+        "manual",
+        "subscription"
+      ],
+      "example": "subscription_create",
+      "type": "string"
+    },
+    "Currencies": {
+      "description": "The available currencies on the platform",
+      "enum": [
+        "usd",
+        "sgd",
+        "inr",
+        "aud",
+        "brl",
+        "cad",
+        "dkk",
+        "eur",
+        "nok",
+        "gbp",
+        "sek",
+        "chf",
+        "hkd",
+        "huf",
+        "jpy",
+        "mxn",
+        "myr",
+        "pln",
+        "czk",
+        "nzd",
+        "aed",
+        "eth",
+        "ape",
+        "cop",
+        "ron",
+        "thb",
+        "bgn",
+        "idr",
+        "dop",
+        "php",
+        "try",
+        "krw",
+        "twd",
+        "vnd",
+        "pkr",
+        "clp",
+        "uyu",
+        "ars",
+        "zar",
+        "dzd",
+        "tnd",
+        "mad",
+        "kes",
+        "kwd",
+        "jod",
+        "all",
+        "xcd",
+        "amd",
+        "bsd",
+        "bhd",
+        "bob",
+        "bam",
+        "khr",
+        "crc",
+        "xof",
+        "egp",
+        "etb",
+        "gmd",
+        "ghs",
+        "gtq",
+        "gyd",
+        "ils",
+        "jmd",
+        "mop",
+        "mga",
+        "mur",
+        "mdl",
+        "mnt",
+        "nad",
+        "ngn",
+        "mkd",
+        "omr",
+        "pyg",
+        "pen",
+        "qar",
+        "rwf",
+        "sar",
+        "rsd",
+        "lkr",
+        "tzs",
+        "ttd",
+        "uzs",
+        "rub",
+        "btc",
+        "cny",
+        "usdt",
+        "kzt",
+        "awg",
+        "whop_usd",
+        "xau",
+        "hnl"
+      ],
+      "example": "usd",
+      "type": "string"
+    },
+    "PaymentDeclineCodes": {
+      "description": "The reason a payment was declined.",
+      "enum": [
+        "insufficient_funds",
+        "lost_card",
+        "stolen_card",
+        "expired_card",
+        "suspected_fraud",
+        "invalid_card_number",
+        "invalid_cvc",
+        "invalid_cvc_or_expiration",
+        "incorrect_pin",
+        "authentication_required",
+        "card_not_supported",
+        "currency_not_supported",
+        "duplicate_transaction",
+        "generic_decline",
+        "invalid_account",
+        "invalid_amount",
+        "processing_error",
+        "restricted_card",
+        "card_velocity_exceeded",
+        "contact_issuer",
+        "card_declined_by_issuer",
+        "bank_declined",
+        "regulatory_blocked",
+        "transaction_not_permitted",
+        "transaction_stopped",
+        "card_type_not_supported",
+        "issuer_not_found",
+        "closed_account",
+        "issuer_unavailable",
+        "invalid_zip",
+        "invalid_billing_address",
+        "invalid_expiry_month",
+        "invalid_expiry_year",
+        "invalid_expiry",
+        "invalid_transaction",
+        "cannot_authorize",
+        "pin_required",
+        "pin_try_exceeded",
+        "provider_declined",
+        "high_risk",
+        "test_mode_decline",
+        "merchant_blacklist",
+        "reenter_transaction",
+        "invalid_pin",
+        "pin_required_as",
+        "withdrawal_count_limit_exceeded",
+        "invalid_country",
+        "issuer_error",
+        "invalid_card_holder_name",
+        "no_accounts",
+        "transaction_cancelled",
+        "three_d_secure_success",
+        "three_d_secure_canceled",
+        "three_d_secure_invalid_card_number",
+        "three_d_secure_generic_error",
+        "three_d_secure_timeout",
+        "three_d_secure_failed",
+        "three_d_secure_card_not_enrolled",
+        "three_d_secure_fraud",
+        "three_d_secure_too_many_attempts",
+        "three_d_secure_rejected_by_bank",
+        "three_d_secure_reported_lost_or_stolen",
+        "blocked_by_cardholder",
+        "test_mode_test_card",
+        "try_again_later",
+        "transaction_not_allowed",
+        "bank_insufficient_funds",
+        "bank_account_not_found",
+        "bank_account_closed",
+        "bank_account_frozen",
+        "bank_invalid_routing_number",
+        "bank_non_transaction_account",
+        "bank_authorization_revoked",
+        "bank_payment_stopped",
+        "bank_not_authorized",
+        "bank_account_holder_deceased",
+        "bank_duplicate",
+        "bank_amount_error",
+        "bank_regulatory_blocked",
+        "bank_details_invalid",
+        "bank_processing_error",
+        "bank_generic_decline",
+        "sepa_invalid_iban",
+        "sepa_no_mandate",
+        "sepa_mandate_data_invalid",
+        "sepa_disputed",
+        "sepa_refused_by_customer",
+        "sepa_generic_decline"
+      ],
+      "example": "insufficient_funds",
+      "type": "string"
+    },
+    "PaymentHold": {
+      "properties": {
+        "amount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The amount currently held, in the hold's currency."
+        },
+        "percentage": {
+          "description": "The reserve percentage recorded when the hold was created, for example 3.5 for 3.5%. Null for other hold types or when no percentage was recorded.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "release_at": {
+          "description": "When the held funds are scheduled to become available, as an ISO 8601 timestamp. Never earlier than the payment's settlement date. Null when release depends on an event, such as shipment resolution, rather than a date.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "type": {
+          "description": "The reason funds are held: `reserve`, `bnpl`, `sequra`, `fraud_hold`, or `preshipment_hold`.",
+          "enum": [
+            "reserve",
+            "bnpl",
+            "sequra",
+            "fraud_hold",
+            "preshipment_hold"
+          ],
+          "example": "reserve",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "amount",
+        "percentage",
+        "release_at"
+      ],
+      "type": "object"
+    },
+    "ReceiptLineItem": {
+      "properties": {
+        "id": {
+          "description": "Line item ID, prefixed `li_`. Null when the payment predates item snapshots and the item is read from the payment's variant.",
+          "example": "li_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "label": {
+          "description": "The item's name as shown at checkout (the product title, else the variant title).",
+          "example": "Ceramic Coating Package",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "product_id": {
+          "description": "The product the variant belongs to, prefixed `prod_`. On a payment that predates item snapshots this falls back to the variant's product, so it can be set where the parent's own `product_id` is null. Null for a variant with no product.",
+          "example": "prod_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "product_title": {
+          "description": "The product's current title, or `null` when the item has no product.",
+          "example": "Ceramic Coating Package",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "quantity": {
+          "description": "How many units were bought.",
+          "example": 1,
+          "type": "number"
+        },
+        "sku": {
+          "description": "The variant's stock keeping unit, free text set by the seller (e.g. `TSHIRT-LARGE-BLUE`). Accounts with billing-reason SKU suffixes enabled receive it stamped with why the charge happened: `-S` for a first subscription charge, `-R` for a renewal, `-C` for a one-time purchase, `-U` when the payment's own metadata carries `upsell: true`, `-F` when nothing was charged. Other billing reasons carry the bare SKU. `null` when the variant has no SKU or has been deleted.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "subtotal": {
+          "description": "The recorded amount for this item's full quantity, before discounts, tax, and fees, in its purchase currency. Returns `null` when no item amount was recorded.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "variant_id": {
+          "description": "The variant bought, prefixed `plan_`. Null when the variant has since been deleted.",
+          "example": "plan_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant_title": {
+          "description": "The variant's current title, or `null` when the variant has been deleted or has no title.",
+          "example": "Ceramic Coating \u2014 Full Vehicle",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "variant_id",
+        "variant_title",
+        "product_id",
+        "product_title",
+        "label",
+        "quantity",
+        "subtotal",
+        "sku"
+      ],
+      "type": "object"
+    },
+    "PaymentInstrument": {
+      "properties": {
+        "card": {
+          "description": "Card, Apple Pay, and Google Pay payments only: the card's network, last four, issuer identification number, expiry, and network transaction id.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentInstrumentCard"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "crypto": {
+          "description": "Crypto payments only: the on-chain transaction that the buyer sent.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentInstrumentCrypto"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "display_name": {
+          "description": "Buyer-facing instrument name \u2014 \"Visa \u2022\u2022\u2022\u2022 4242\" when the card surfaced, else the method's own name (\"Klarna\").",
+          "example": "Visa \u2022\u2022\u2022\u2022 4242",
+          "type": "string"
+        },
+        "icons": {
+          "$ref": "#/components/schemas/PaymentMethodIcons",
+          "description": "The standard icon set: square and card shapes, each in light and dark colorways."
+        },
+        "installment_count": {
+          "description": "Installment methods only: how many payments the charge splits into. Data, not copy \u2014 compose and translate the label client-side.",
+          "example": null,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "payment_method_type": {
+          "description": "The payment method type identifier, e.g. `card`, `klarna`, `apple_pay`.",
+          "example": "card",
+          "type": "string"
+        }
+      },
+      "required": [
+        "payment_method_type",
+        "display_name",
+        "icons",
+        "card",
+        "crypto",
+        "installment_count"
+      ],
+      "type": "object"
+    },
+    "PaymentMethodTypes": {
+      "description": "The different types of payment methods that can be used.",
+      "enum": [
+        "acss_debit",
+        "addi",
+        "affirm",
+        "afterpay_clearpay",
+        "alipay",
+        "alipayhk",
+        "alma",
+        "amazon_pay",
+        "apple",
+        "apple_pay",
+        "au_bank_transfer",
+        "au_becs_debit",
+        "bacs_debit",
+        "bancolombia",
+        "bancontact",
+        "bank_wire",
+        "billie",
+        "blik",
+        "boleto",
+        "bre_b",
+        "ca_bank_transfer",
+        "capchase_pay",
+        "card",
+        "card_present",
+        "card_installments_three",
+        "card_installments_six",
+        "card_installments_twelve",
+        "cashapp",
+        "claritypay",
+        "coinbase",
+        "crypto",
+        "crypto_subscription",
+        "custom",
+        "customer_balance",
+        "demo_pay",
+        "duitnow_qr",
+        "efecty",
+        "eps",
+        "eu_bank_transfer",
+        "fpx",
+        "flex_pay",
+        "gb_bank_transfer",
+        "gcash",
+        "giropay",
+        "google_pay",
+        "gopay",
+        "grabpay",
+        "id_bank_transfer",
+        "ideal",
+        "interac",
+        "international_bank_wire",
+        "kakao_pay",
+        "klarna",
+        "klarna_pay_now",
+        "konbini",
+        "kr_card",
+        "kr_market",
+        "kriya",
+        "kueski",
+        "link",
+        "mb_way",
+        "m_pesa",
+        "mercado_pago",
+        "mercado_pago_ar",
+        "mercado_pago_mx",
+        "mobilepay",
+        "modo",
+        "mondu",
+        "multibanco",
+        "naver_pay",
+        "nequi",
+        "netbanking",
+        "ng_bank",
+        "ng_bank_transfer",
+        "ng_card",
+        "ng_market",
+        "ng_ussd",
+        "ng_wallet",
+        "nupay",
+        "nz_bank_account",
+        "oney",
+        "oney_3x",
+        "oney_4x",
+        "opay",
+        "oxxo",
+        "p24",
+        "pago_efectivo",
+        "pse",
+        "pay_by_bank",
+        "payco",
+        "paynow",
+        "paypal",
+        "paypal_express",
+        "paypay",
+        "payto",
+        "payto_email",
+        "payto_phone",
+        "payto_bank_account",
+        "pix",
+        "pix_automatico",
+        "platform_balance",
+        "promptpay",
+        "qris",
+        "rapipago",
+        "rechnung",
+        "revolut_pay",
+        "samsung_pay",
+        "satispay",
+        "scalapay",
+        "sencillito",
+        "sepa_debit",
+        "sequra",
+        "servipag",
+        "sezzle",
+        "shop_pay",
+        "shopeepay",
+        "sofort",
+        "south_korea_market",
+        "spei",
+        "splitit",
+        "sunbit",
+        "swish",
+        "tabby",
+        "tamara",
+        "touch_n_go",
+        "twint",
+        "upi",
+        "us_bank_account",
+        "us_bank_transfer",
+        "venmo",
+        "verve",
+        "vipps",
+        "webpay",
+        "wechat_pay",
+        "whop_pay",
+        "yape",
+        "zip",
+        "coinflow",
+        "unknown"
+      ],
+      "example": "acss_debit",
+      "type": "string"
+    },
+    "PaymentRuleMatch": {
+      "properties": {
+        "action": {
+          "description": "What the rule asked for.",
+          "enum": [
+            "allow",
+            "block",
+            "review",
+            "enforce_3ds"
+          ],
+          "example": "allow",
+          "type": "string"
+        },
+        "id": {
+          "description": "Payment rule ID, prefixed `prule_`.",
+          "type": "string"
+        },
+        "name": {
+          "description": "The rule's name when it matched. Renaming the rule afterwards does not rewrite this.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "action"
+      ],
+      "type": "object"
+    },
+    "ReceiptStatus": {
+      "description": "The status of a receipt",
+      "enum": [
+        "draft",
+        "open",
+        "authorized",
+        "paid",
+        "pending",
+        "uncollectible",
+        "unresolved",
+        "void"
+      ],
+      "example": "draft",
+      "type": "string"
+    },
+    "FriendlyReceiptStatus": {
+      "description": "The friendly status of a payment. This is a derived status that provides a human-readable summary of the payment state, combining the underlying status and substatus fields.",
+      "enum": [
+        "succeeded",
+        "requires_capture",
+        "pending",
+        "failed",
+        "blocked",
+        "past_due",
+        "canceled",
+        "price_too_low",
+        "uncollectible",
+        "refunded",
+        "auto_refunded",
+        "partially_refunded",
+        "dispute_warning",
+        "dispute_needs_response",
+        "dispute_warning_needs_response",
+        "resolution_needs_response",
+        "dispute_under_review",
+        "dispute_warning_under_review",
+        "resolution_under_review",
+        "dispute_won",
+        "dispute_warning_closed",
+        "resolution_won",
+        "dispute_lost",
+        "dispute_closed",
+        "resolution_lost",
+        "drafted",
+        "incomplete",
+        "unresolved",
+        "open_dispute",
+        "open_resolution"
+      ],
+      "example": "succeeded",
+      "type": "string"
+    },
+    "ReceiptTaxBehaviors": {
+      "description": "The type of tax inclusivity applied to the receipt, for determining whether the tax is included in the final price, or paid on top.",
+      "enum": [
+        "exclusive",
+        "inclusive",
+        "unspecified",
+        "unable_to_collect"
+      ],
+      "example": "exclusive",
+      "type": "string"
+    },
+    "UserSummary": {
+      "properties": {
+        "badges": {
+          "items": {
+            "$ref": "#/components/schemas/UserBadge",
+            "description": "Public badges for the user, in display order. Empty when the user has no badges or is suspended."
+          },
+          "type": "array"
+        },
+        "id": {
+          "description": "User ID, prefixed `user_`.",
+          "example": "user_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name.",
+          "example": "Dana Whitfield",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_picture": {
+          "$ref": "#/components/schemas/UserProfilePicture",
+          "description": "Avatar wrapper. Its `url` is always present, and is a generated placeholder when the user set no picture."
+        },
+        "username": {
+          "description": "Public username.",
+          "example": "danawhitfield",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "name",
+        "profile_picture",
+        "badges"
+      ],
+      "type": "object"
+    },
+    "PaymentVerificationChecks": {
+      "properties": {
+        "address_line1": {
+          "description": "The Address Verification Service (AVS) result for the billing street address.",
+          "example": "PASS",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "arn": {
+          "description": "The Acquirer Reference Number (ARN) that traces this charge through the card network, or null when the processor did not return one.",
+          "example": "74123456789",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "authorization_code": {
+          "description": "The card issuer's authorization code for this charge, or null when the processor did not return one.",
+          "example": "A1B2C3",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "card_holder_name": {
+          "description": "Whether the cardholder name matched the issuer's records.",
+          "example": "PASS",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "card_security_code": {
+          "description": "The Card Verification Value (CVV/CVC) result.",
+          "example": "PASS",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "zip_code": {
+          "description": "The Address Verification Service (AVS) result for the billing postal code.",
+          "example": "PASS",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "address_line1",
+        "zip_code",
+        "card_holder_name",
+        "card_security_code",
+        "authorization_code",
+        "arn"
+      ],
+      "type": "object"
+    },
+    "PaymentInstrumentCard": {
+      "properties": {
+        "brand": {
+          "description": "The network identifier (`visa`, `amex`, \u2026), matching `card.networks` entries and saved card payment methods. Null when the vault did not record the network.",
+          "example": "visa",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "exp_month": {
+          "description": "The card's expiry month, 1 to 12. Null when the vault did not record it.",
+          "example": 10,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "exp_year": {
+          "description": "The card's four-digit expiry year. Null when the vault did not record it.",
+          "example": 2031,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "issuer_identification_number": {
+          "description": "The issuer identification number, also called the BIN: the card's leading six or eight digits, which identify the issuing bank. Null when the processor did not report it.",
+          "example": "41111111",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "last4": {
+          "description": "The card's last four digits, when captured.",
+          "example": "4242",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "network_transaction_id": {
+          "description": "The network transaction id this account uses for the card. It's this account's own id, from its first customer-present charge or verification on the card, when Whop has one. Otherwise it's an earlier network transaction id for this card, which can come from another account's transaction or be one brought with the card. Cite it as the prior transaction on a later merchant-initiated charge of this card at this account. Null until there is one. A webhook sent as a payment is first recorded can carry `null`, so retrieve the payment to read it.",
+          "example": "016153570198200",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "brand",
+        "last4",
+        "issuer_identification_number",
+        "exp_month",
+        "exp_year",
+        "network_transaction_id"
+      ],
+      "type": "object"
+    },
+    "PaymentInstrumentCrypto": {
+      "properties": {
+        "transaction_hash": {
+          "description": "The hash of the on-chain transaction that the buyer sent to pay. Use it to find the payment from a hash that the buyer gives you. Null until the payment provider reports the transaction.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "transaction_hash"
+      ],
+      "type": "object"
+    },
+    "PaymentMethodIcons": {
+      "properties": {
+        "card": {
+          "$ref": "#/components/schemas/PaymentMethodIconVariants",
+          "description": "The credit-card-proportioned tile (48x30)."
+        },
+        "square": {
+          "$ref": "#/components/schemas/PaymentMethodIconVariants",
+          "description": "The square tile (32x32)."
+        }
+      },
+      "required": [
+        "square",
+        "card"
+      ],
+      "type": "object"
+    },
+    "UserBadge": {
+      "properties": {
+        "type": {
+          "description": "Badge category. `whop_team` identifies a Whop team member. `verified_partner` identifies a verified member of the Whop Partners program.",
+          "enum": [
+            "whop_team",
+            "verified_partner"
+          ],
+          "example": "verified_partner",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "type": "object"
+    },
+    "UserProfilePicture": {
+      "properties": {
+        "url": {
+          "description": "Avatar image URL. Always present. It is a generated placeholder when the user set no picture.",
+          "example": "https://ui-avatars.com/api/",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "type": "object"
+    },
+    "PaymentMethodIconVariants": {
+      "properties": {
+        "dark": {
+          "$ref": "#/components/schemas/PaymentMethodIconFiles",
+          "description": "The colorway for dark surfaces."
+        },
+        "light": {
+          "$ref": "#/components/schemas/PaymentMethodIconFiles",
+          "description": "The colorway for light surfaces."
+        }
+      },
+      "required": [
+        "light",
+        "dark"
+      ],
+      "type": "object"
+    },
+    "PaymentMethodIconFiles": {
+      "properties": {
+        "png_1x": {
+          "description": "Raster fallback at the shape's native size.",
+          "example": "https://content.whop.com/payment_methods/card/icons/card_dark_30.png",
+          "type": "string"
+        },
+        "png_2x": {
+          "description": "Raster fallback at double density.",
+          "example": "https://content.whop.com/payment_methods/card/icons/card_dark_60.png",
+          "type": "string"
+        },
+        "png_4x": {
+          "description": "Raster fallback at quadruple density.",
+          "example": "https://content.whop.com/payment_methods/card/icons/card_dark_120.png",
+          "type": "string"
+        },
+        "svg": {
+          "description": "The vector file. Prefer this everywhere SVG renders.",
+          "example": "https://content.whop.com/payment_methods/card/icons/card_dark.svg",
+          "type": "string"
+        }
+      },
+      "required": [
+        "svg",
+        "png_1x",
+        "png_2x",
+        "png_4x"
+      ],
+      "type": "object"
+    }
+  }
+}

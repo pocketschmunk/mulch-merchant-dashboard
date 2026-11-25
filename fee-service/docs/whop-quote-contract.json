@@ -1,0 +1,1232 @@
+{
+  "api_version_date": "2026-11-23-3",
+  "endpoint": "/payment_quotes",
+  "request": {
+    "allOf": [
+      {
+        "$ref": "#/components/schemas/PaymentInput"
+      },
+      {
+        "properties": {
+          "address": {
+            "description": "The buyer's billing address. Where tax is calculated when no shipping address is given, and the address a tax registration belongs to. A seller that collects tax on this purchase needs the buyer located by a `country` here, on `shipping_address`, a `presentment_country`, or an `ip_address`; without one the quote is refused with `quote_location_required`. Only the keys you supply are kept. The payment that consumes the quote must put the buyer in the same place, by country, state and postal code, through its own `shipping_address` or its confirmation token's billing address, or it is refused with `quote_mismatch`.",
+            "properties": {
+              "city": {
+                "description": "City name.",
+                "example": "Austin",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code, such as `US`.",
+                "example": "US",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line1": {
+                "description": "First line of the street address.",
+                "example": "1114 Bouldin Ave",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line2": {
+                "description": "Second line of the street address.",
+                "example": "Unit B",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "description": "The full name on the address.",
+                "example": "Dana Whitfield",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "postal_code": {
+                "description": "Postal or ZIP code.",
+                "example": "78704",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "description": "State, province, or region code, such as `CA`.",
+                "example": "TX",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "ip_address": {
+            "description": "The buyer's IP address, when your server makes the call on their behalf. Locates the buyer when neither address carries a country and no `presentment_country` is sent. A quote located this way (`located_by` is `ip_address`) is a preview: a payment refuses it with `quote_preview_only`, so quote again with the buyer's address before paying. Also where `presentment_currency` `auto` and `recommended_currencies` find the buyer's local currency, and where a payment method must be able to collect it.",
+            "example": "203.0.113.7",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "line_items": {
+            "description": "What the buyer is purchasing. Each entry names an existing variant by `variant_id`. Several entries form a cart, which requires every variant to be compatible, belong to this account, and use the same currency.",
+            "example": [
+              {
+                "quantity": 1,
+                "variant_id": "plan_xxxxxxxxxxxxxx"
+              }
+            ],
+            "items": {
+              "properties": {
+                "quantity": {
+                  "description": "How many units of the variant to purchase. Defaults to 1; more than 1 requires the variant to allow multiple quantities.",
+                  "example": 1,
+                  "maximum": 999999,
+                  "minimum": 1,
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "variant_id": {
+                  "description": "An existing variant to charge for, prefixed `plan_`. Each variant may appear once \u2014 use `quantity` for multiple units.",
+                  "example": "plan_xxxxxxxxxxxxxx",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "variant_id"
+              ],
+              "type": "object"
+            },
+            "maxItems": 50,
+            "minItems": 1,
+            "type": "array"
+          },
+          "presentment_country": {
+            "description": "The country to price the purchase for, as an ISO 3166-1 alpha-2 code such as `JP`, when the buyer chose one: a store's country picker. Prices in the currency `auto` would pick for a buyer in that country, so send it instead of `presentment_currency`, never with it. Whether a payment method can collect that currency is still judged where the buyer is: by `ip_address`, and by this country only without one. With no address that carries a country, tax is estimated for this country (`located_by` is `presentment_country`) at the country level, and a quote located this way is a preview a payment refuses with `quote_preview_only`. Send it only once the buyer has chosen a country: without it, an `ip_address` estimates more precisely, such as for a US state. For a country Whop has no currency for, the quote is priced as `auto` for the buyer's `ip_address`, and tax is still estimated for the country.",
+            "example": "JP",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "presentment_currency": {
+            "description": "The currency to price and charge the purchase in. Omit it, or send null, to price in the variants' own currency. `auto` prices in the currency of the country Whop places the buyer's `ip_address` in when the purchase can be converted into it and a payment method can collect it, and in the variants' own currency otherwise, including when no `ip_address` is sent or Whop cannot place it in a country. To choose that country instead, send `presentment_country` in place of this. A three-letter ISO 4217 code, such as `eur`, prices in that currency or is refused: with `presentment_currency_unsupported` when the purchase cannot be converted into it (adaptive pricing is off for the variant, the variant is not a one-time purchase, or `plan` describes a variant that does not exist yet), and with `presentment_currency_not_payable` when no payment method can collect it. A converted quote states every amount in this currency at an `exchange_rate` fixed until `expires_at`, and the payment that consumes it is charged in this currency at that rate.",
+            "example": "auto",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "shipping_address": {
+            "description": "Where physical goods ship. When present it is where tax is calculated; omit it for digital goods. Only the keys you supply are kept. The payment that consumes the quote must ship to the same place, by country, state and postal code, or it is refused with `quote_mismatch`.",
+            "properties": {
+              "city": {
+                "description": "City name.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "country": {
+                "description": "ISO 3166-1 alpha-2 country code, such as `US`.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line1": {
+                "description": "First line of the street address.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "line2": {
+                "description": "Second line of the street address.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "name": {
+                "description": "The full name on the address.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "postal_code": {
+                "description": "Postal or ZIP code.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "description": "State, province, or region code, such as `CA`.",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "tax_ids": {
+            "description": "The buyer's tax registration, for a business purchase. One entry. Prices the purchase as business-to-business where that applies (EU reverse charge, for one) and requires an `address` to belong to.",
+            "items": {
+              "properties": {
+                "type": {
+                  "description": "The registration type. See the [tax IDs guide](/developer/guides/tax-ids) for an example of each type.",
+                  "enum": [
+                    "ad_nrt",
+                    "ao_tin",
+                    "ar_cuit",
+                    "al_tin",
+                    "am_tin",
+                    "aw_tin",
+                    "au_abn",
+                    "au_arn",
+                    "eu_vat",
+                    "az_tin",
+                    "bs_tin",
+                    "bh_vat",
+                    "bd_bin",
+                    "bb_tin",
+                    "by_tin",
+                    "bj_ifu",
+                    "bo_tin",
+                    "ba_tin",
+                    "br_cnpj",
+                    "br_cpf",
+                    "bg_uic",
+                    "bf_ifu",
+                    "kh_tin",
+                    "cm_niu",
+                    "ca_bn",
+                    "ca_gst_hst",
+                    "ca_pst_bc",
+                    "ca_pst_mb",
+                    "ca_pst_sk",
+                    "ca_qst",
+                    "cv_nif",
+                    "cl_tin",
+                    "cn_tin",
+                    "co_nit",
+                    "cd_nif",
+                    "cr_tin",
+                    "hr_oib",
+                    "do_rcn",
+                    "ec_ruc",
+                    "eg_tin",
+                    "sv_nit",
+                    "et_tin",
+                    "eu_oss_vat",
+                    "ge_vat",
+                    "gh_tin",
+                    "de_stn",
+                    "gb_vat",
+                    "gn_nif",
+                    "hk_br",
+                    "hu_tin",
+                    "is_vat",
+                    "in_gst",
+                    "id_npwp",
+                    "il_vat",
+                    "jp_cn",
+                    "jp_rn",
+                    "jp_trn",
+                    "kz_bin",
+                    "ke_pin",
+                    "kg_tin",
+                    "la_tin",
+                    "li_uid",
+                    "li_vat",
+                    "my_frp",
+                    "my_itn",
+                    "my_sst",
+                    "mr_nif",
+                    "mx_rfc",
+                    "md_vat",
+                    "me_pib",
+                    "ma_vat",
+                    "np_pan",
+                    "nz_gst",
+                    "ng_tin",
+                    "mk_vat",
+                    "no_vat",
+                    "no_voec",
+                    "om_vat",
+                    "pe_ruc",
+                    "ph_tin",
+                    "pl_nip",
+                    "ro_tin",
+                    "ru_inn",
+                    "ru_kpp",
+                    "sa_vat",
+                    "sn_ninea",
+                    "rs_pib",
+                    "sg_gst",
+                    "sg_uen",
+                    "si_tin",
+                    "za_vat",
+                    "kr_brn",
+                    "es_cif",
+                    "ch_uid",
+                    "ch_vat",
+                    "tw_vat",
+                    "tj_tin",
+                    "tz_vat",
+                    "th_vat",
+                    "tr_tin",
+                    "ug_tin",
+                    "ua_vat",
+                    "ae_trn",
+                    "us_ein",
+                    "uy_ruc",
+                    "uz_tin",
+                    "uz_vat",
+                    "ve_rif",
+                    "vn_tin",
+                    "zm_tin",
+                    "zw_tin",
+                    "sr_fin",
+                    "xi_vat"
+                  ],
+                  "example": "eu_vat",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "The registration number as issued. An `eu_vat` number must start with its two-letter country code (Greece uses `EL`). See the [tax IDs guide](/developer/guides/tax-ids).",
+                  "example": "DE123456789",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "value"
+              ],
+              "type": "object"
+            },
+            "maxItems": 1,
+            "type": [
+              "array",
+              "null"
+            ]
+          }
+        },
+        "required": [],
+        "type": "object"
+      }
+    ]
+  },
+  "schemas": {
+    "PaymentInput": {
+      "description": "The account, variant and promo code for a purchase.",
+      "properties": {
+        "account_id": {
+          "description": "The account the purchase belongs to, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "promo_code": {
+          "description": "The promo code as the buyer typed it, matched within the account regardless of case and surrounding spaces, as checkout matches it. It must be valid for the variant. Send it or `promo_code_id`, not both; an empty or whitespace-only string counts as not sent. A code the account does not have, or one that is no longer active, is refused before anything is written, with the error code `promo_invalid`. A code this purchase cannot use, such as one with no uses left or one restricted to other variants, products or buyers, is refused with `promo_invalid` too, and the error's message says why.",
+          "example": "SHINE20",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "promo_code_id": {
+          "description": "An active promo code to apply, prefixed `promo_`. It must belong to the account and be valid for the variant. Send it or `promo_code`, not both. A code this purchase cannot use is refused with the error code `promo_invalid`, and the error's message says why.",
+          "example": "promo_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant": {
+          "description": "The variant purchased, described by its attributes instead of an id: the variant with exactly these attributes is used, and one is created when none exists. Mutually exclusive with `variant_id` and `line_items`. Creating a variant requires `plan:create`; creating or updating a product requires the corresponding product permission.",
+          "properties": {
+            "allow_multiple_quantity": {
+              "description": "Whether more than one unit can be purchased in an order. Renewal variants cannot enable it. When `false`, checkouts, carts, and invoices reject a quantity above 1.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "application_fee_amount": {
+              "description": "Application fee the platform collects per unit, in the variant currency (5.00 means $5.00 for USD). Must be positive and below the initial price for one-time variants or renewal price for recurring variants. Paid to the parent account alongside other processing fees; collection is capped to remaining proceeds. Applies to subsequent payments on recurring variants. Only valid for subaccounts with a parent account.",
+              "example": 2,
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "billing_period": {
+              "description": "Recurring billing interval in days.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "billing_type": {
+              "description": "Billing model for the variant.",
+              "enum": [
+                null,
+                "renewal",
+                "one_time"
+              ],
+              "example": "one_time",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "currency": {
+              "description": "Currency code for the variant prices.",
+              "enum": [
+                "usd",
+                "sgd",
+                "inr",
+                "aud",
+                "brl",
+                "cad",
+                "dkk",
+                "eur",
+                "nok",
+                "gbp",
+                "sek",
+                "chf",
+                "hkd",
+                "huf",
+                "jpy",
+                "mxn",
+                "myr",
+                "pln",
+                "czk",
+                "nzd",
+                "aed",
+                "eth",
+                "ape",
+                "cop",
+                "ron",
+                "thb",
+                "bgn",
+                "idr",
+                "dop",
+                "php",
+                "try",
+                "krw",
+                "twd",
+                "vnd",
+                "pkr",
+                "clp",
+                "uyu",
+                "ars",
+                "zar",
+                "dzd",
+                "tnd",
+                "mad",
+                "kes",
+                "kwd",
+                "jod",
+                "all",
+                "xcd",
+                "amd",
+                "bsd",
+                "bhd",
+                "bob",
+                "bam",
+                "khr",
+                "crc",
+                "xof",
+                "egp",
+                "etb",
+                "gmd",
+                "ghs",
+                "gtq",
+                "gyd",
+                "ils",
+                "jmd",
+                "mop",
+                "mga",
+                "mur",
+                "mdl",
+                "mnt",
+                "nad",
+                "ngn",
+                "mkd",
+                "omr",
+                "pyg",
+                "pen",
+                "qar",
+                "rwf",
+                "sar",
+                "rsd",
+                "lkr",
+                "tzs",
+                "ttd",
+                "uzs",
+                "rub",
+                "btc",
+                "cny",
+                "usdt",
+                "kzt",
+                "awg",
+                "whop_usd",
+                "xau",
+                "hnl"
+              ],
+              "example": "usd",
+              "type": "string"
+            },
+            "description": {
+              "description": "Variant description.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "expiration_days": {
+              "description": "Days until access expires.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "force_create_new_plan": {
+              "description": "Create a new variant instead of reusing a matching variant.",
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "initial_price": {
+              "description": "Additional amount charged on the first purchase, in the variant currency. For recurring variants without a trial, the first charge includes this amount plus renewal_price.",
+              "example": 31,
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "internal_notes": {
+              "description": "Internal notes for the account.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "override_tax_type": {
+              "description": "Whether the variant's price includes tax: `inclusive` (tax is included in the price), `exclusive` (tax is added on top), or `unspecified`. Omit it or pass `null` to use the account's tax setting. On an account enrolled in the Whop tax service, `inclusive` or `exclusive` replaces the account's setting and `unspecified` keeps it. Otherwise it applies only where the account is the merchant of record: `inclusive` or `exclusive` replaces the account's setting when the account collects tax, and `unspecified` means the variant collects no tax. Where Whop is the merchant of record, the account's setting applies. Variants that differ only in this value are different variants.",
+              "enum": [
+                null,
+                "exclusive",
+                "inclusive",
+                "unspecified"
+              ],
+              "example": "inclusive",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "product": {
+              "description": "Find or create a product by external identifier. Mutually exclusive with product_id.",
+              "properties": {
+                "collect_shipping_address": {
+                  "description": "Whether to collect a shipping address at checkout.",
+                  "example": true,
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                },
+                "custom_statement_descriptor": {
+                  "description": "Custom card statement descriptor for the product, starting with WHOP*.",
+                  "example": "WHOP*INLINE",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "description": {
+                  "description": "Product description.",
+                  "example": "Two-stage paint correction with a three-year ceramic coating.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "external_identifier": {
+                  "description": "Your unique identifier for the product.",
+                  "example": "quoted-again",
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "global_affiliate_percentage": {
+                  "description": "Percentage of revenue paid to global affiliates.",
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "global_affiliate_status": {
+                  "description": "Global affiliate program status.",
+                  "enum": [
+                    null,
+                    "enabled",
+                    "disabled"
+                  ],
+                  "example": "enabled",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "headline": {
+                  "description": "Product headline.",
+                  "example": "A showroom finish that lasts three years",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "product_tax_code_id": {
+                  "description": "Product tax code identifier.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "redirect_purchase_url": {
+                  "description": "Where to redirect the buyer after purchase.",
+                  "example": "https://shinetime.example/thanks",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "route": {
+                  "description": "Product route.",
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "title": {
+                  "description": "Product title.",
+                  "example": "Ceramic Coating Package",
+                  "pattern": "\\S",
+                  "type": "string"
+                },
+                "visibility": {
+                  "default": "hidden",
+                  "description": "Product visibility. Defaults to hidden.",
+                  "enum": [
+                    "visible",
+                    "hidden",
+                    "archived",
+                    "quick_link"
+                  ],
+                  "example": "visible",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "external_identifier",
+                "title"
+              ],
+              "type": [
+                "object",
+                "null"
+              ]
+            },
+            "product_id": {
+              "description": "Existing product ID belonging to the account, prefixed `prod_`. Mutually exclusive with `product`.",
+              "example": "prod_xxxxxxxxxxxxxx",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "redirect_url": {
+              "description": "Where the customer is sent after paying for this variant. Must be a valid URL that is not another Whop checkout link.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "renewal_price": {
+              "description": "Recurring price in the variant currency.",
+              "type": [
+                "number",
+                "null"
+              ]
+            },
+            "split_pay_required_payments": {
+              "description": "How many payments a recurring variant collects before it stops billing, from 2 to 115. Only valid for `renewal` variants. `null` bills until the subscription is canceled.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "title": {
+              "description": "Variant title.",
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "trial_period_days": {
+              "description": "Free trial days before renewal.",
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "visibility": {
+              "description": "Whether the variant is visible to customers.",
+              "enum": [
+                null,
+                "visible",
+                "hidden",
+                "archived",
+                "quick_link"
+              ],
+              "example": "visible",
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "currency"
+          ],
+          "type": "object"
+        },
+        "variant_id": {
+          "description": "The variant purchased, prefixed `plan_`. It must belong to the account. Mutually exclusive with `variant` and `line_items`.",
+          "example": "plan_xxxxxxxxxxxxxx",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_id"
+      ],
+      "type": "object"
+    },
+    "PaymentQuote": {
+      "properties": {
+        "account_id": {
+          "description": "The account the purchase is priced for, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "address": {
+          "description": "The billing address the purchase was priced with, or null. Where tax was calculated when no shipping address was given, and the address the registration belongs to.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentAddress"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "base_currency": {
+          "description": "Three-letter ISO 4217 code of the variants' own currency, lowercase. Equal to `currency` when nothing was converted.",
+          "example": "usd",
+          "type": "string"
+        },
+        "base_total": {
+          "$ref": "#/components/schemas/Money",
+          "description": "`total` in `base_currency` at `exchange_rate`: the variants' own prices after the promo code, plus `tax_amount` converted at `exchange_rate` when tax is added on top. Equal to `total` when nothing was converted. The payment charges `total`, in `currency`."
+        },
+        "created_at": {
+          "description": "When the quote was priced, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "currency": {
+          "description": "Three-letter ISO 4217 currency code the purchase is priced and charged in, lowercase: the variants' own currency, or the `presentment_currency` it was converted into.",
+          "example": "usd",
+          "type": "string"
+        },
+        "discount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "What the promo code takes off. Zero without a code."
+        },
+        "exchange_rate": {
+          "description": "How many units of `currency` one unit of `base_currency` buys, as a decimal string such as `\"5.4321\"`: the rate the variants' prices were converted at, fixed until `expires_at`, and the rate a payment consuming the quote is charged at. A string, like money amounts, so no float rounds it in transit. Null when nothing was converted.",
+          "example": "0.918",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expires_at": {
+          "description": "When the quote stops being chargeable, as an ISO 8601 timestamp. Quote again after it.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "id": {
+          "description": "Payment quote ID, prefixed `pq_`.",
+          "example": "pq_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "line_items": {
+          "items": {
+            "$ref": "#/components/schemas/PaymentQuoteLineItem",
+            "description": "One entry per variant, in the order given, each carrying its own tax."
+          },
+          "type": "array"
+        },
+        "located_by": {
+          "description": "Which location tax was calculated for: `shipping_address` when it carries a country, else the billing `address` when it does, else the `presentment_country` sent, else the buyer's `ip_address`. A quote located by `presentment_country` or `ip_address` is a preview that estimates tax: a payment cannot use it, so quote again with the buyer's address to pay. Null when nothing in the request located the buyer, which only a seller that collects no tax on this purchase is quoted without; `tax_status` is then `not_applicable`.",
+          "enum": [
+            "shipping_address",
+            "address",
+            "presentment_country",
+            "ip_address",
+            null
+          ],
+          "example": "address",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "payment_id": {
+          "description": "The payment holding this quote, prefixed `pay_`, or null while it is unspent. A declined payment keeps its quote and can be retried; check that payment's `status`.",
+          "example": "pay_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "promo_code_id": {
+          "description": "The promo code the quote applied, prefixed `promo_`, or null.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "recommended_currencies": {
+          "items": {
+            "description": "Lowercase ISO 4217 codes to offer the buyer in a currency picker, most relevant first: the currency of the `presentment_country` sent, else of the country the buyer's `ip_address` is in, when this purchase can be converted into it and a payment method can collect it, then `base_currency`. Quote again with one as `presentment_currency` to price in it. Only `base_currency` when the quote was priced without `presentment_currency` or `presentment_country`.",
+            "example": "usd",
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "shipping_address": {
+          "description": "The shipping address the purchase was priced with, or null. When present it is where tax was calculated.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/PaymentAddress"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "subtotal": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The price of every line before the promo code, tax and fees."
+        },
+        "tax_amount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The tax a payment consuming this quote charges. Zero unless `tax_status` is `calculated`."
+        },
+        "tax_behavior": {
+          "description": "Whether tax is added on top of the price (`exclusive`) or already inside it (`inclusive`). Null when no tax was calculated.",
+          "enum": [
+            "inclusive",
+            "exclusive",
+            null
+          ],
+          "example": "exclusive",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tax_ids": {
+          "items": {
+            "$ref": "#/components/schemas/TaxId",
+            "description": "The buyer's tax registration the quote priced as a business purchase. Empty for a consumer purchase."
+          },
+          "type": "array"
+        },
+        "tax_status": {
+          "description": "`calculated`: every line was priced and a payment may consume the quote. `not_applicable`: this seller collects no tax on this purchase, so the quote owes none and may still be consumed. `unavailable`: tax could not be priced \u2014 the provider did not answer, or this seller's tax setup cannot price a purchase here \u2014 so a payment refuses the quote; quote again, or charge without `quote_id` to have tax calculated at charge time.",
+          "enum": [
+            "calculated",
+            "not_applicable",
+            "unavailable"
+          ],
+          "example": "calculated",
+          "type": "string"
+        },
+        "total": {
+          "$ref": "#/components/schemas/Money",
+          "description": "What the buyer pays: the subtotal less the discount, plus `tax_amount` when tax is added on top."
+        }
+      },
+      "required": [
+        "id",
+        "account_id",
+        "currency",
+        "base_currency",
+        "exchange_rate",
+        "recommended_currencies",
+        "tax_status",
+        "tax_behavior",
+        "subtotal",
+        "discount",
+        "tax_amount",
+        "total",
+        "base_total",
+        "line_items",
+        "promo_code_id",
+        "located_by",
+        "address",
+        "shipping_address",
+        "tax_ids",
+        "payment_id",
+        "expires_at",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "V1ErrorResponse": {
+      "properties": {
+        "error": {
+          "properties": {
+            "code": {
+              "description": "Machine-readable reason for this specific refusal, such as `bank_warning_not_acknowledged`. Only present when the error carries one.",
+              "type": "string"
+            },
+            "message": {
+              "description": "Human-readable error message.",
+              "example": "account_id is required",
+              "type": "string"
+            },
+            "type": {
+              "description": "Machine-readable error code.",
+              "example": "bad_request",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "message"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "type": "object"
+    },
+    "PaymentAddress": {
+      "properties": {
+        "city": {
+          "description": "The city.",
+          "example": "Austin",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "description": "The ISO 3166-1 alpha-2 country code.",
+          "example": "US",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line1": {
+          "description": "The first street address line.",
+          "example": "1114 Bouldin Ave",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "line2": {
+          "description": "The second street address line.",
+          "example": "Unit B",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "The name on the address.",
+          "example": "Dana Whitfield",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "postal_code": {
+          "description": "The postal or ZIP code.",
+          "example": "78704",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "state": {
+          "description": "The state, province or region.",
+          "example": "TX",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "line1",
+        "line2",
+        "city",
+        "state",
+        "postal_code",
+        "country"
+      ],
+      "type": "object"
+    },
+    "Money": {
+      "properties": {
+        "amount": {
+          "description": "The amount in major units, as an exact decimal string. For example, `\"10.00\"` is ten dollars. It is a string so that no float rounds it in transit.",
+          "example": "-1234.56",
+          "type": "string"
+        },
+        "currency": {
+          "description": "Three-letter ISO 4217 currency code, lowercase.",
+          "example": "usd",
+          "type": "string"
+        },
+        "decimals": {
+          "description": "How many decimal places the amount carries. This is the precision the charge itself runs at.",
+          "example": 2,
+          "type": "integer"
+        },
+        "display_decimals": {
+          "description": "How many decimal places to SHOW. Usually equal to `decimals`, and deliberately not always: COP is charged in centavos but written in whole pesos, so it is `2` and `0`. Format the number in your own locale using this.",
+          "example": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "currency",
+        "amount",
+        "decimals",
+        "display_decimals"
+      ],
+      "type": "object"
+    },
+    "PaymentQuoteLineItem": {
+      "properties": {
+        "discount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The promo code's share on this line. Zero without a code."
+        },
+        "quantity": {
+          "description": "How many units of the variant the line covers.",
+          "example": 1,
+          "type": "integer"
+        },
+        "subtotal": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The line's price before the promo code's share and tax; `subtotal` minus `discount` is what the line comes to after the discount. The lines' subtotals sum to the quote's `subtotal`."
+        },
+        "tax_amount": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The tax on this line. Zero when `tax_status` is not `calculated`."
+        },
+        "total": {
+          "$ref": "#/components/schemas/Money",
+          "description": "`subtotal` minus `discount`, plus `tax_amount` when tax is added on top, or without it when the price already includes it."
+        },
+        "variant_id": {
+          "description": "The variant this line prices, prefixed `plan_`. Null when the purchase describes the variant by `variant` and no variant with those attributes exists yet: the payment that consumes the quote creates it, and the line names it from then on.",
+          "example": "plan_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "variant_id",
+        "quantity",
+        "subtotal",
+        "discount",
+        "tax_amount",
+        "total"
+      ],
+      "type": "object"
+    },
+    "TaxId": {
+      "properties": {
+        "type": {
+          "description": "The registration's type, such as `eu_vat`.",
+          "enum": [
+            "ad_nrt",
+            "ao_tin",
+            "ar_cuit",
+            "al_tin",
+            "am_tin",
+            "aw_tin",
+            "au_abn",
+            "au_arn",
+            "eu_vat",
+            "az_tin",
+            "bs_tin",
+            "bh_vat",
+            "bd_bin",
+            "bb_tin",
+            "by_tin",
+            "bj_ifu",
+            "bo_tin",
+            "ba_tin",
+            "br_cnpj",
+            "br_cpf",
+            "bg_uic",
+            "bf_ifu",
+            "kh_tin",
+            "cm_niu",
+            "ca_bn",
+            "ca_gst_hst",
+            "ca_pst_bc",
+            "ca_pst_mb",
+            "ca_pst_sk",
+            "ca_qst",
+            "cv_nif",
+            "cl_tin",
+            "cn_tin",
+            "co_nit",
+            "cd_nif",
+            "cr_tin",
+            "hr_oib",
+            "do_rcn",
+            "ec_ruc",
+            "eg_tin",
+            "sv_nit",
+            "et_tin",
+            "eu_oss_vat",
+            "ge_vat",
+            "gh_tin",
+            "de_stn",
+            "gb_vat",
+            "gn_nif",
+            "hk_br",
+            "hu_tin",
+            "is_vat",
+            "in_gst",
+            "id_npwp",
+            "il_vat",
+            "jp_cn",
+            "jp_rn",
+            "jp_trn",
+            "kz_bin",
+            "ke_pin",
+            "kg_tin",
+            "la_tin",
+            "li_uid",
+            "li_vat",
+            "my_frp",
+            "my_itn",
+            "my_sst",
+            "mr_nif",
+            "mx_rfc",
+            "md_vat",
+            "me_pib",
+            "ma_vat",
+            "np_pan",
+            "nz_gst",
+            "ng_tin",
+            "mk_vat",
+            "no_vat",
+            "no_voec",
+            "om_vat",
+            "pe_ruc",
+            "ph_tin",
+            "pl_nip",
+            "ro_tin",
+            "ru_inn",
+            "ru_kpp",
+            "sa_vat",
+            "sn_ninea",
+            "rs_pib",
+            "sg_gst",
+            "sg_uen",
+            "si_tin",
+            "za_vat",
+            "kr_brn",
+            "es_cif",
+            "ch_uid",
+            "ch_vat",
+            "tw_vat",
+            "tj_tin",
+            "tz_vat",
+            "th_vat",
+            "tr_tin",
+            "ug_tin",
+            "ua_vat",
+            "ae_trn",
+            "us_ein",
+            "uy_ruc",
+            "uz_tin",
+            "uz_vat",
+            "ve_rif",
+            "vn_tin",
+            "zm_tin",
+            "zw_tin",
+            "sr_fin",
+            "xi_vat"
+          ],
+          "example": "us_ein",
+          "type": "string"
+        },
+        "value": {
+          "description": "The registration number as the buyer entered it, whitespace removed (`eu_vat` values also drop dots and dashes).",
+          "example": "12-3456789",
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "type": "object"
+    }
+  }
+}

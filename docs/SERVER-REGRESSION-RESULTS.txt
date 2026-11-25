@@ -1,0 +1,343 @@
+Creating finite isolated PostgreSQL merchant API test cluster.
+TAP version 13
+# Subtest: application requires explicit auth and entitlement dependencies; no bypass defaults
+ok 1 - application requires explicit auth and entitlement dependencies; no bypass defaults
+  ---
+  duration_ms: 2.354713
+  type: 'test'
+  ...
+# Subtest: public configuration preserves fees and paid monthly plan amounts without secrets
+ok 2 - public configuration preserves fees and paid monthly plan amounts without secrets
+  ---
+  duration_ms: 47.754797
+  type: 'test'
+  ...
+# Subtest: session remains reachable logged out and authenticated before purchase
+ok 3 - session remains reachable logged out and authenticated before purchase
+  ---
+  duration_ms: 18.422471
+  type: 'test'
+  ...
+# Subtest: known public auth endpoints delegate before purchase, unknown demo endpoint does not
+ok 4 - known public auth endpoints delegate before purchase, unknown demo endpoint does not
+  ---
+  duration_ms: 50.350763
+  type: 'test'
+  ...
+# Subtest: all dashboard routes deny unauthenticated callers
+ok 5 - all dashboard routes deny unauthenticated callers
+  ---
+  duration_ms: 16.38796
+  type: 'test'
+  ...
+# Subtest: unpaid users cannot read or create stores, configuration, analytics or billing
+ok 6 - unpaid users cannot read or create stores, configuration, analytics or billing
+  ---
+  duration_ms: 24.201267
+  type: 'test'
+  ...
+# Subtest: access and refresh are auth-only, refresh requires exact origin and session CSRF
+ok 7 - access and refresh are auth-only, refresh requires exact origin and session CSRF
+  ---
+  duration_ms: 23.803742
+  type: 'test'
+  ...
+# Subtest: private mutations enforce CSRF even when account is paid
+ok 8 - private mutations enforce CSRF even when account is paid
+  ---
+  duration_ms: 16.120082
+  type: 'test'
+  ...
+# Subtest: paid store list is empty without store facts, not seeded or synthetic
+ok 9 - paid store list is empty without store facts, not seeded or synthetic
+  ---
+  duration_ms: 4.438521
+  type: 'test'
+  ...
+# Subtest: foreign or nonexistent store is 404 even if global access exists
+ok 10 - foreign or nonexistent store is 404 even if global access exists
+  ---
+  duration_ms: 8.958263
+  type: 'test'
+  ...
+# Subtest: database secrets and SQL errors never reach response bodies
+ok 11 - database secrets and SQL errors never reach response bodies
+  ---
+  duration_ms: 4.519365
+  type: 'test'
+  ...
+# Subtest: AppError is preserved and duplicate-store SQL error is sanitized conflict
+ok 12 - AppError is preserved and duplicate-store SQL error is sanitized conflict
+  ---
+  duration_ms: 7.335742
+  type: 'test'
+  ...
+# Subtest: standalone static files and SPA routes have CSP and frame denial; missing API/assets do not become HTML
+ok 13 - standalone static files and SPA routes have CSP and frame denial; missing API/assets do not become HTML
+  ---
+  duration_ms: 24.967338
+  type: 'test'
+  ...
+# Subtest: missing client build fails honestly without starting a service or returning example dashboard
+ok 14 - missing client build fails honestly without starting a service or returning example dashboard
+  ---
+  duration_ms: 4.004589
+  type: 'test'
+  ...
+# Subtest: PostgreSQL merchant API: isolated database only
+    # Subtest: plan/status/client verified fields rejected and an owned purchased membership binds once
+    ok 1 - plan/status/client verified fields rejected and an owned purchased membership binds once
+      ---
+      duration_ms: 33.594914
+      type: 'test'
+      ...
+    # Subtest: concurrent creates row-lock one active unassigned entitlement and create exactly one store
+    ok 2 - concurrent creates row-lock one active unassigned entitlement and create exactly one store
+      ---
+      duration_ms: 24.719678
+      type: 'test'
+      ...
+    # Subtest: expired, inactive, past-due and unpaid entitlements cannot create a store
+    ok 3 - expired, inactive, past-due and unpaid entitlements cannot create a store
+      ---
+      duration_ms: 35.075905
+      type: 'test'
+      ...
+    # Subtest: tenant store and resource endpoints remain 404 for another paid user
+    ok 4 - tenant store and resource endpoints remain 404 for another paid user
+      ---
+      duration_ms: 31.670341
+      type: 'test'
+      ...
+    # Subtest: durable resource create/read/update, exact field validation and optimistic concurrent conflict
+    ok 5 - durable resource create/read/update, exact field validation and optimistic concurrent conflict
+      ---
+      duration_ms: 61.843485
+      type: 'test'
+      ...
+    # Subtest: resource data survives a fresh app instance; foreign resource IDs cannot overwrite/delete
+    ok 6 - resource data survives a fresh app instance; foreign resource IDs cannot overwrite/delete
+      ---
+      duration_ms: 20.345379
+      type: 'test'
+      ...
+    # Subtest: Premium reads/writes and nested subscription blocks are enforced server-side
+    ok 7 - Premium reads/writes and nested subscription blocks are enforced server-side
+      ---
+      duration_ms: 92.338243
+      type: 'test'
+      ...
+    # Subtest: draft activation remains 409 despite client or operator readiness claims; consent is durable only
+    ok 8 - draft activation remains 409 despite client or operator readiness claims; consent is durable only
+      ---
+      duration_ms: 17.760949
+      type: 'test'
+      ...
+    # Subtest: Shopify/Whop connections block honestly and legacy API key or business-ID paste is rejected
+    ok 9 - Shopify/Whop connections block honestly and legacy API key or business-ID paste is rejected
+      ---
+      duration_ms: 17.998821
+      type: 'test'
+      ...
+    # Subtest: empty operational routes contain zero/empty data, no example accounts or bank-money forecast
+    ok 10 - empty operational routes contain zero/empty data, no example accounts or bank-money forecast
+      ---
+      duration_ms: 22.404308
+      type: 'test'
+      ...
+    # Subtest: existing verified fee ledger facts drive fees/analytics; refunded gross never reduces lifetime rate
+    ok 11 - existing verified fee ledger facts drive fees/analytics; refunded gross never reduces lifetime rate
+      ---
+      duration_ms: 17.309804
+      type: 'test'
+      ...
+    # Subtest: inactive/expired bound entitlements retain data but deny every store endpoint
+    ok 12 - inactive/expired bound entitlements retain data but deny every store endpoint
+      ---
+      duration_ms: 23.894252
+      type: 'test'
+      ...
+    # Subtest: experiment variants must be owned Mulch designs and resource deletes are durable
+    ok 13 - experiment variants must be owned Mulch designs and resource deletes are durable
+      ---
+      duration_ms: 46.608521
+      type: 'test'
+      ...
+    1..13
+ok 15 - PostgreSQL merchant API: isolated database only
+  ---
+  duration_ms: 617.089147
+  type: 'test'
+  ...
+# Subtest: checkout-design: exact documented config accepted and unsupported status/credentials rejected
+ok 16 - checkout-design: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 3.942969
+  type: 'test'
+  ...
+# Subtest: thank-you: exact documented config accepted and unsupported status/credentials rejected
+ok 17 - thank-you: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.295045
+  type: 'test'
+  ...
+# Subtest: offer: exact documented config accepted and unsupported status/credentials rejected
+ok 18 - offer: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.387319
+  type: 'test'
+  ...
+# Subtest: discount: exact documented config accepted and unsupported status/credentials rejected
+ok 19 - discount: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.611448
+  type: 'test'
+  ...
+# Subtest: buy-link: exact documented config accepted and unsupported status/credentials rejected
+ok 20 - buy-link: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.771577
+  type: 'test'
+  ...
+# Subtest: survey: exact documented config accepted and unsupported status/credentials rejected
+ok 21 - survey: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.267845
+  type: 'test'
+  ...
+# Subtest: experiment: exact documented config accepted and unsupported status/credentials rejected
+ok 22 - experiment: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.456118
+  type: 'test'
+  ...
+# Subtest: general: exact documented config accepted and unsupported status/credentials rejected
+ok 23 - general: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 23.792329
+  type: 'test'
+  ...
+# Subtest: shipping: exact documented config accepted and unsupported status/credentials rejected
+ok 24 - shipping: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 1.648744
+  type: 'test'
+  ...
+# Subtest: integration: exact documented config accepted and unsupported status/credentials rejected
+ok 25 - integration: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.991439
+  type: 'test'
+  ...
+# Subtest: subscription-rule: exact documented config accepted and unsupported status/credentials rejected
+ok 26 - subscription-rule: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.498529
+  type: 'test'
+  ...
+# Subtest: portal: exact documented config accepted and unsupported status/credentials rejected
+ok 27 - portal: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.300681
+  type: 'test'
+  ...
+# Subtest: recovery: exact documented config accepted and unsupported status/credentials rejected
+ok 28 - recovery: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.275804
+  type: 'test'
+  ...
+# Subtest: cancel-flow: exact documented config accepted and unsupported status/credentials rejected
+ok 29 - cancel-flow: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.212043
+  type: 'test'
+  ...
+# Subtest: Standard denied subscription-rule config
+ok 30 - Standard denied subscription-rule config
+  ---
+  duration_ms: 0.247948
+  type: 'test'
+  ...
+# Subtest: Standard denied portal config
+ok 31 - Standard denied portal config
+  ---
+  duration_ms: 0.124922
+  type: 'test'
+  ...
+# Subtest: Standard denied recovery config
+ok 32 - Standard denied recovery config
+  ---
+  duration_ms: 0.11446
+  type: 'test'
+  ...
+# Subtest: Standard denied cancel-flow config
+ok 33 - Standard denied cancel-flow config
+  ---
+  duration_ms: 0.122264
+  type: 'test'
+  ...
+# Subtest: nested subscription-choice requires Premium even inside checkout design
+ok 34 - nested subscription-choice requires Premium even inside checkout design
+  ---
+  duration_ms: 0.537487
+  type: 'test'
+  ...
+# Subtest: fixed contact/delivery/shipping/payment blocks cannot be hidden, removed or duplicated
+ok 35 - fixed contact/delivery/shipping/payment blocks cannot be hidden, removed or duplicated
+  ---
+  duration_ms: 0.512314
+  type: 'test'
+  ...
+# Subtest: only formatting HTML is accepted and normalization is idempotent
+ok 36 - only formatting HTML is accepted and normalization is idempotent
+  ---
+  duration_ms: 1.259505
+  type: 'test'
+  ...
+# Subtest: image URLs cannot be scripts, native checkout paths or private hosts
+ok 37 - image URLs cannot be scripts, native checkout paths or private hosts
+  ---
+  duration_ms: 0.886513
+  type: 'test'
+  ...
+# Subtest: buy link cannot accept destination URL or native product ID shortcut
+ok 38 - buy link cannot accept destination URL or native product ID shortcut
+  ---
+  duration_ms: 0.282926
+  type: 'test'
+  ...
+# Subtest: shipping uses exact money and unique countries; unsupported currencies fail
+ok 39 - shipping uses exact money and unique countries; unsupported currencies fail
+  ---
+  duration_ms: 0.477533
+  type: 'test'
+  ...
+# Subtest: experiments cannot route to native checkout or use identical designs
+ok 40 - experiments cannot route to native checkout or use identical designs
+  ---
+  duration_ms: 0.282204
+  type: 'test'
+  ...
+# Subtest: recovery schedules and unsupported provider scripts fail validation
+ok 41 - recovery schedules and unsupported provider scripts fail validation
+  ---
+  duration_ms: 0.264883
+  type: 'test'
+  ...
+# Subtest: adapter reuses exact fee policy at whole-payment thresholds and never increases earned rate
+ok 42 - adapter reuses exact fee policy at whole-payment thresholds and never increases earned rate
+  ---
+  duration_ms: 1.96472
+  type: 'test'
+  ...
+1..42
+# tests 55
+# suites 0
+# pass 55
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1503.564467
+Isolated merchant API tests finished; removing temporary cluster.

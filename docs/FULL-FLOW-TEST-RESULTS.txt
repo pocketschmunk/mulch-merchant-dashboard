@@ -1,0 +1,16 @@
+TAP version 13
+# Subtest: assembled HTTP: email proof alone is unpaid; captured Whop plan unlocks one store, not Premium or live operations
+ok 1 - assembled HTTP: email proof alone is unpaid; captured Whop plan unlocks one store, not Premium or live operations
+  ---
+  duration_ms: 2007.991392
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2222.709134

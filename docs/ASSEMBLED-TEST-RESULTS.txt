@@ -1,0 +1,1560 @@
+$ node --test tests/*.test.mjs
+TAP version 13
+# Subtest: fee schedule is public but does not activate collection
+ok 1 - fee schedule is public but does not activate collection
+  ---
+  duration_ms: 45.705434
+  type: 'test'
+  ...
+# Subtest: private backend endpoints reject unauthorized browsers
+ok 2 - private backend endpoints reject unauthorized browsers
+  ---
+  duration_ms: 18.689635
+  type: 'test'
+  ...
+# Subtest: backend fee preview includes tax-gross and whole crossing charge
+ok 3 - backend fee preview includes tax-gross and whole crossing charge
+  ---
+  duration_ms: 9.817288
+  type: 'test'
+  ...
+# Subtest: browser return cannot verify payments or account access
+ok 4 - browser return cannot verify payments or account access
+  ---
+  duration_ms: 6.548649
+  type: 'test'
+  ...
+# Subtest: unsigned webhook fails before state changes
+ok 5 - unsigned webhook fails before state changes
+  ---
+  duration_ms: 10.746664
+  type: 'test'
+  ...
+# Subtest: unknown account override is not accepted in a charge request
+ok 6 - unknown account override is not accepted in a charge request
+  ---
+  duration_ms: 7.290942
+  type: 'test'
+  ...
+# Subtest: merchant fee basis cannot be a numeric float
+ok 7 - merchant fee basis cannot be a numeric float
+  ---
+  duration_ms: 6.418649
+  type: 'test'
+  ...
+# Subtest: unsupported method cannot mutate private state
+ok 8 - unsupported method cannot mutate private state
+  ---
+  duration_ms: 4.682464
+  type: 'test'
+  ...
+# Subtest: official SDK accepts signature over exact raw bytes and literal ws_ secret
+ok 9 - official SDK accepts signature over exact raw bytes and literal ws_ secret
+  ---
+  duration_ms: 16.940691
+  type: 'test'
+  ...
+# Subtest: tampering or wrong API version cannot process a signed webhook
+ok 10 - tampering or wrong API version cannot process a signed webhook
+  ---
+  duration_ms: 14.610241
+  type: 'test'
+  ...
+# Subtest: oversized JSON body is rejected without state changes
+ok 11 - oversized JSON body is rejected without state changes
+  ---
+  duration_ms: 8.826367
+  type: 'test'
+  ...
+# Subtest: health reports configuration readiness, not a fabricated live-activation result
+ok 12 - health reports configuration readiness, not a fabricated live-activation result
+  ---
+  duration_ms: 5.575393
+  type: 'test'
+  ...
+# Subtest: unsupported saved-method purchases fail explicitly
+ok 13 - unsupported saved-method purchases fail explicitly
+  ---
+  duration_ms: 10.673261
+  type: 'test'
+  ...
+# Subtest: tax-inclusive Launch example
+ok 14 - tax-inclusive Launch example
+  ---
+  duration_ms: 2.15168
+  type: 'test'
+  ...
+# Subtest: tax-inclusive Growth example
+ok 15 - tax-inclusive Growth example
+  ---
+  duration_ms: 0.474324
+  type: 'test'
+  ...
+# Subtest: tax-inclusive Scale example
+ok 16 - tax-inclusive Scale example
+  ---
+  duration_ms: 0.236075
+  type: 'test'
+  ...
+# Subtest: just below first threshold
+ok 17 - just below first threshold
+  ---
+  duration_ms: 0.171895
+  type: 'test'
+  ...
+# Subtest: exact first threshold crossing
+ok 18 - exact first threshold crossing
+  ---
+  duration_ms: 0.419802
+  type: 'test'
+  ...
+# Subtest: crossing first threshold uses whole charge
+ok 19 - crossing first threshold uses whole charge
+  ---
+  duration_ms: 0.180527
+  type: 'test'
+  ...
+# Subtest: just below second threshold
+ok 20 - just below second threshold
+  ---
+  duration_ms: 0.365641
+  type: 'test'
+  ...
+# Subtest: exact second threshold crossing
+ok 21 - exact second threshold crossing
+  ---
+  duration_ms: 0.185557
+  type: 'test'
+  ...
+# Subtest: crossing both thresholds uses Scale on whole charge
+ok 22 - crossing both thresholds uses Scale on whole charge
+  ---
+  duration_ms: 1.046962
+  type: 'test'
+  ...
+# Subtest: earned Growth never returns to Launch
+ok 23 - earned Growth never returns to Launch
+  ---
+  duration_ms: 0.831735
+  type: 'test'
+  ...
+# Subtest: earned Scale never returns to Growth
+ok 24 - earned Scale never returns to Growth
+  ---
+  duration_ms: 0.329998
+  type: 'test'
+  ...
+# Subtest: money parsing preserves exact cents
+ok 25 - money parsing preserves exact cents
+  ---
+  duration_ms: 0.452959
+  type: 'test'
+  ...
+# Subtest: minor validation rejects -1
+ok 26 - minor validation rejects -1
+  ---
+  duration_ms: 0.375856
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 1.1
+ok 27 - minor validation rejects 1.1
+  ---
+  duration_ms: 0.130189
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 01
+ok 28 - minor validation rejects 01
+  ---
+  duration_ms: 0.112638
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 1
+ok 29 - minor validation rejects 1
+  ---
+  duration_ms: 0.125857
+  type: 'test'
+  ...
+# Subtest: minor validation rejects NaN
+ok 30 - minor validation rejects NaN
+  ---
+  duration_ms: 0.109644
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 9223372036854775808
+ok 31 - minor validation rejects 9223372036854775808
+  ---
+  duration_ms: 1.260867
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects 1e3
+ok 32 - exact decimal validation rejects 1e3
+  ---
+  duration_ms: 0.204962
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects 10.001
+ok 33 - exact decimal validation rejects 10.001
+  ---
+  duration_ms: 0.101726
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects -1.00
+ok 34 - exact decimal validation rejects -1.00
+  ---
+  duration_ms: 0.126488
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects 108
+ok 35 - exact decimal validation rejects 108
+  ---
+  duration_ms: 0.10948
+  type: 'test'
+  ...
+# Subtest: unsupported currency fails closed
+ok 36 - unsupported currency fails closed
+  ---
+  duration_ms: 0.198849
+  type: 'test'
+  ...
+# Subtest: zero and uncollectibly small payments cannot charge a fabricated minimum
+ok 37 - zero and uncollectibly small payments cannot charge a fabricated minimum
+  ---
+  duration_ms: 0.191784
+  type: 'test'
+  ...
+# Subtest: unsupported stored rate is not accepted
+ok 38 - unsupported stored rate is not accepted
+  ---
+  duration_ms: 0.147207
+  type: 'test'
+  ...
+# Subtest: deterministic boundary properties use exact projected volume and half-up cents
+ok 39 - deterministic boundary properties use exact projected volume and half-up cents
+  ---
+  duration_ms: 0.712648
+  type: 'test'
+  ...
+# Subtest: PostgreSQL ledger and controlled-payment integration
+    # Subtest: two quotes bind full tax-inclusive fee and successful capture
+    ok 1 - two quotes bind full tax-inclusive fee and successful capture
+      ---
+      duration_ms: 60.960353
+      type: 'test'
+      ...
+    # Subtest: first crossing entire payment uses Growth
+    ok 2 - first crossing entire payment uses Growth
+      ---
+      duration_ms: 50.44251
+      type: 'test'
+      ...
+    # Subtest: second crossing entire payment uses Scale
+    ok 3 - second crossing entire payment uses Scale
+      ---
+      duration_ms: 32.941079
+      type: 'test'
+      ...
+    # Subtest: same key replay does not charge or count twice
+    ok 4 - same key replay does not charge or count twice
+      ---
+      duration_ms: 48.147111
+      type: 'test'
+      ...
+    # Subtest: concurrent payments serialize a store and cannot advance on unpaid reservations
+    ok 5 - concurrent payments serialize a store and cannot advance on unpaid reservations
+      ---
+      duration_ms: 39.763604
+      type: 'test'
+      ...
+    # Subtest: lost creation response replays exact provider key and encrypted payload
+    ok 6 - lost creation response replays exact provider key and encrypted payload
+      ---
+      duration_ms: 40.029389
+      type: 'test'
+      ...
+    # Subtest: changed final quote never submits or advances lifetime
+    ok 7 - changed final quote never submits or advances lifetime
+      ---
+      duration_ms: 18.772235
+      type: 'test'
+      ...
+    # Subtest: buyer fee mismatch locks review and does not silently certify collection
+    ok 8 - buyer fee mismatch locks review and does not silently certify collection
+      ---
+      duration_ms: 23.182457
+      type: 'test'
+      ...
+    # Subtest: actual application fee mismatch is exposed and halts store
+    ok 9 - actual application fee mismatch is exposed and halts store
+      ---
+      duration_ms: 30.466056
+      type: 'test'
+      ...
+    # Subtest: refund preserves gross lifetime and earned tier; duplicate events are idempotent
+    ok 10 - refund preserves gross lifetime and earned tier; duplicate events are idempotent
+      ---
+      duration_ms: 36.587624
+      type: 'test'
+      ...
+    # Subtest: provider terminal nonpayment releases slot without counting failed volume
+    ok 11 - provider terminal nonpayment releases slot without counting failed volume
+      ---
+      duration_ms: 24.555093
+      type: 'test'
+      ...
+    # Subtest: webhook from another account cannot bind an attempt
+    ok 12 - webhook from another account cannot bind an attempt
+      ---
+      duration_ms: 19.903028
+      type: 'test'
+      ...
+    # Subtest: a new command key cannot charge an already-paid order
+    ok 13 - a new command key cannot charge an already-paid order
+      ---
+      duration_ms: 24.84208
+      type: 'test'
+      ...
+    # Subtest: canonical hashing accepts reordered equivalent purchases
+    ok 14 - canonical hashing accepts reordered equivalent purchases
+      ---
+      duration_ms: 29.200791
+      type: 'test'
+      ...
+    # Subtest: nullable payment tax means zero only for an untaxed quote
+    ok 15 - nullable payment tax means zero only for an untaxed quote
+      ---
+      duration_ms: 19.763461
+      type: 'test'
+      ...
+    # Subtest: captured volume and refunds count while actual fee evidence is pending
+    ok 16 - captured volume and refunds count while actual fee evidence is pending
+      ---
+      duration_ms: 32.717303
+      type: 'test'
+      ...
+    # Subtest: prepared command resumes once without creating a new purchase
+    ok 17 - prepared command resumes once without creating a new purchase
+      ---
+      duration_ms: 22.226382
+      type: 'test'
+      ...
+    # Subtest: stale submitting lease reuses the same provider command after acceptance
+    ok 18 - stale submitting lease reuses the same provider command after acceptance
+      ---
+      duration_ms: 26.225293
+      type: 'test'
+      ...
+    # Subtest: expired replay erases sensitive payload but never releases an unknown charge
+    ok 19 - expired replay erases sensitive payload but never releases an unknown charge
+      ---
+      duration_ms: 51.206268
+      type: 'test'
+      ...
+    # Subtest: unavailable tax fails before any payment submission
+    ok 20 - unavailable tax fails before any payment submission
+      ---
+      duration_ms: 14.303873
+      type: 'test'
+      ...
+    # Subtest: proven first-submission quote refusal releases slot, allowing a failed-order retry
+    ok 21 - proven first-submission quote refusal releases slot, allowing a failed-order retry
+      ---
+      duration_ms: 31.617205
+      type: 'test'
+      ...
+    # Subtest: failure cannot regress an already-counted payment
+    ok 22 - failure cannot regress an already-counted payment
+      ---
+      duration_ms: 30.606411
+      type: 'test'
+      ...
+    # Subtest: different stores have independent pending-payment slots
+    ok 23 - different stores have independent pending-payment slots
+      ---
+      duration_ms: 25.259487
+      type: 'test'
+      ...
+    # Subtest: payment and quote requests use only fields in saved official contracts
+    ok 24 - payment and quote requests use only fields in saved official contracts
+      ---
+      duration_ms: 3.540217
+      type: 'test'
+      ...
+    1..24
+ok 40 - PostgreSQL ledger and controlled-payment integration
+  ---
+  duration_ms: 780.768773
+  type: 'test'
+  ...
+# Subtest: disabled provider never calls network
+ok 41 - disabled provider never calls network
+  ---
+  duration_ms: 2.315099
+  type: 'test'
+  ...
+# Subtest: production requires every explicit activation gate
+ok 42 - production requires every explicit activation gate
+  ---
+  duration_ms: 0.676743
+  type: 'test'
+  ...
+# Subtest: sandbox requests cannot be redirected to production
+ok 43 - sandbox requests cannot be redirected to production
+  ---
+  duration_ms: 55.364996
+  type: 'test'
+  ...
+# Subtest: fee breakdown selects collected application_fee, never Whop processing fee
+ok 44 - fee breakdown selects collected application_fee, never Whop processing fee
+  ---
+  duration_ms: 1.497509
+  type: 'test'
+  ...
+# Subtest: missing collected fee stays pending, not reported paid
+ok 45 - missing collected fee stays pending, not reported paid
+  ---
+  duration_ms: 1.076
+  type: 'test'
+  ...
+# Subtest: connected verification checks ownership, capability and provider status
+ok 46 - connected verification checks ownership, capability and provider status
+  ---
+  duration_ms: 0.529282
+  type: 'test'
+  ...
+# Subtest: onboarding creates its own store account and uses only documented fields
+ok 47 - onboarding creates its own store account and uses only documented fields
+  ---
+  duration_ms: 13.905552
+  type: 'test'
+  ...
+# Subtest: vault ciphertext does not expose payload and is bound to one attempt
+ok 48 - vault ciphertext does not expose payload and is bound to one attempt
+  ---
+  duration_ms: 3.736128
+  type: 'test'
+  ...
+# Subtest: each missing production gate independently blocks all requests
+ok 49 - each missing production gate independently blocks all requests
+  ---
+  duration_ms: 1.14479
+  type: 'test'
+  ...
+# Subtest: quote-specific native fields are checked against the saved documentation
+ok 50 - quote-specific native fields are checked against the saved documentation
+  ---
+  duration_ms: 7.556146
+  type: 'test'
+  ...
+# Subtest: only whitelisted 400 quote refusals receive proven pre-charge classification
+ok 51 - only whitelisted 400 quote refusals receive proven pre-charge classification
+  ---
+  duration_ms: 2.213094
+  type: 'test'
+  ...
+# Subtest: quote validation rejects invalid expiry and preview-only tax
+ok 52 - quote validation rejects invalid expiry and preview-only tax
+  ---
+  duration_ms: 1.262311
+  type: 'test'
+  ...
+# Subtest: partly approved verification cannot enable payments
+ok 53 - partly approved verification cannot enable payments
+  ---
+  duration_ms: 0.206348
+  type: 'test'
+  ...
+1..53
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 952.902945
+$ node --env-file-if-exists=.env tools/migrate.mjs
+.env not found. Continuing without it.
+Installed 000_auth.sql; no provider calls or charges.
+Installed 001_entitlements.sql; no provider calls or charges.
+Installed 001_fee_ledger.sql; no provider calls or charges.
+Installed 002_app.sql; no provider calls or charges.
+$ node --test --test-concurrency=1 tests/*.test.mjs
+TAP version 13
+# Subtest: application requires explicit auth and entitlement dependencies; no bypass defaults
+ok 1 - application requires explicit auth and entitlement dependencies; no bypass defaults
+  ---
+  duration_ms: 2.350742
+  type: 'test'
+  ...
+# Subtest: public configuration preserves fees and paid monthly plan amounts without secrets
+ok 2 - public configuration preserves fees and paid monthly plan amounts without secrets
+  ---
+  duration_ms: 53.201371
+  type: 'test'
+  ...
+# Subtest: session remains reachable logged out and authenticated before purchase
+ok 3 - session remains reachable logged out and authenticated before purchase
+  ---
+  duration_ms: 31.617977
+  type: 'test'
+  ...
+# Subtest: known public auth endpoints delegate before purchase, unknown demo endpoint does not
+ok 4 - known public auth endpoints delegate before purchase, unknown demo endpoint does not
+  ---
+  duration_ms: 50.047135
+  type: 'test'
+  ...
+# Subtest: all dashboard routes deny unauthenticated callers
+ok 5 - all dashboard routes deny unauthenticated callers
+  ---
+  duration_ms: 16.851199
+  type: 'test'
+  ...
+# Subtest: unpaid users cannot read or create stores, configuration, analytics or billing
+ok 6 - unpaid users cannot read or create stores, configuration, analytics or billing
+  ---
+  duration_ms: 24.168964
+  type: 'test'
+  ...
+# Subtest: access and refresh are auth-only, refresh requires exact origin and session CSRF
+ok 7 - access and refresh are auth-only, refresh requires exact origin and session CSRF
+  ---
+  duration_ms: 23.859814
+  type: 'test'
+  ...
+# Subtest: private mutations enforce CSRF even when account is paid
+ok 8 - private mutations enforce CSRF even when account is paid
+  ---
+  duration_ms: 16.768468
+  type: 'test'
+  ...
+# Subtest: paid store list is empty without store facts, not seeded or synthetic
+ok 9 - paid store list is empty without store facts, not seeded or synthetic
+  ---
+  duration_ms: 4.73409
+  type: 'test'
+  ...
+# Subtest: foreign or nonexistent store is 404 even if global access exists
+ok 10 - foreign or nonexistent store is 404 even if global access exists
+  ---
+  duration_ms: 8.257413
+  type: 'test'
+  ...
+# Subtest: database secrets and SQL errors never reach response bodies
+ok 11 - database secrets and SQL errors never reach response bodies
+  ---
+  duration_ms: 4.554506
+  type: 'test'
+  ...
+# Subtest: AppError is preserved and duplicate-store SQL error is sanitized conflict
+ok 12 - AppError is preserved and duplicate-store SQL error is sanitized conflict
+  ---
+  duration_ms: 7.493016
+  type: 'test'
+  ...
+# Subtest: standalone static files and SPA routes have CSP and frame denial; missing API/assets do not become HTML
+ok 13 - standalone static files and SPA routes have CSP and frame denial; missing API/assets do not become HTML
+  ---
+  duration_ms: 24.38099
+  type: 'test'
+  ...
+# Subtest: missing client build fails honestly without starting a service or returning example dashboard
+ok 14 - missing client build fails honestly without starting a service or returning example dashboard
+  ---
+  duration_ms: 3.829879
+  type: 'test'
+  ...
+# Subtest: PostgreSQL auth lifecycle, concurrency, expiry, session revocation and durable rate limits
+    # Subtest: signup requires verification and stores only hashes; duplicate cannot replace an unverified password
+    ok 1 - signup requires verification and stores only hashes; duplicate cannot replace an unverified password
+      ---
+      duration_ms: 2733.628499
+      type: 'test'
+      ...
+    # Subtest: verification is atomic single-use, POST-only, and never signs in or creates paid grants
+    ok 2 - verification is atomic single-use, POST-only, and never signs in or creates paid grants
+      ---
+      duration_ms: 21.297402
+      type: 'test'
+      ...
+    # Subtest: verified login issues durable opaque secure host cookie and identity-only session; logout needs CSRF
+    ok 3 - verified login issues durable opaque secure host cookie and identity-only session; logout needs CSRF
+      ---
+      duration_ms: 2239.185322
+      type: 'test'
+      ...
+    # Subtest: forgot-password is generic; reset expires in 15 minutes, revokes all tokens/sessions and never auto-logins
+    ok 4 - forgot-password is generic; reset expires in 15 minutes, revokes all tokens/sessions and never auto-logins
+      ---
+      duration_ms: 3703.175125
+      type: 'test'
+      ...
+    # Subtest: expired verification and reset tokens cannot be consumed; expired sessions deny access
+    ok 5 - expired verification and reset tokens cannot be consumed; expired sessions deny access
+      ---
+      duration_ms: 359.910157
+      type: 'test'
+      ...
+    # Subtest: resend invalidates the previous link and unverified users cannot reset into a session
+    ok 6 - resend invalidates the previous link and unverified users cannot reset into a session
+      ---
+      duration_ms: 4855.689197
+      type: 'test'
+      ...
+    # Subtest: durable per-account buckets span instances; spoofed forwarding cannot evade per-transport-IP limits
+    ok 7 - durable per-account buckets span instances; spoofed forwarding cannot evade per-transport-IP limits
+      ---
+      duration_ms: 711.023363
+      type: 'test'
+      ...
+    # Subtest: explicit loopback HTTP changes cookie transport only, never verification or authorization
+    ok 8 - explicit loopback HTTP changes cookie transport only, never verification or authorization
+      ---
+      duration_ms: 355.379871
+      type: 'test'
+      ...
+    1..8
+ok 15 - PostgreSQL auth lifecycle, concurrency, expiry, session revocation and durable rate limits
+  ---
+  duration_ms: 15035.856117
+  type: 'test'
+  ...
+# Subtest: password policy counts Unicode code points and preserves input exactly
+ok 16 - password policy counts Unicode code points and preserves input exactly
+  ---
+  duration_ms: 3.39027
+  type: 'test'
+  ...
+# Subtest: salted scrypt hashes use immutable costs, verify correctly and reject corrupt/lowered costs
+ok 17 - salted scrypt hashes use immutable costs, verify correctly and reject corrupt/lowered costs
+  ---
+  duration_ms: 1790.759714
+  type: 'test'
+  ...
+# Subtest: origin configuration rejects public HTTP, userinfo, local HTTPS and arbitrary paths
+ok 18 - origin configuration rejects public HTTP, userinfo, local HTTPS and arbitrary paths
+  ---
+  duration_ms: 9.279456
+  type: 'test'
+  ...
+# Subtest: authentication fails closed when email service is missing, with no database lookup
+ok 19 - authentication fails closed when email service is missing, with no database lookup
+  ---
+  duration_ms: 1.099031
+  type: 'test'
+  ...
+# Subtest: all auth POSTs enforce exact origin; GET cannot consume tokens or mutate accounts
+ok 20 - all auth POSTs enforce exact origin; GET cannot consume tokens or mutate accounts
+  ---
+  duration_ms: 3.270288
+  type: 'test'
+  ...
+# Subtest: CSRF requires the exact configured origin and a timing-safe matching token
+ok 21 - CSRF requires the exact configured origin and a timing-safe matching token
+  ---
+  duration_ms: 1.774117
+  type: 'test'
+  ...
+# Subtest: auth body rejects unknown plan, redirect, verification and provider fields before SQL
+ok 22 - auth body rejects unknown plan, redirect, verification and provider fields before SQL
+  ---
+  duration_ms: 1.622922
+  type: 'test'
+  ...
+# Subtest: Resend adapter uses the documented endpoint and server fields only, with mocked transport
+ok 23 - Resend adapter uses the documented endpoint and server fields only, with mocked transport
+  ---
+  duration_ms: 1.876105
+  type: 'test'
+  ...
+# Subtest: Resend errors never expose provider bodies, request secrets or email tokens
+ok 24 - Resend errors never expose provider bodies, request secrets or email tokens
+  ---
+  duration_ms: 1.217651
+  type: 'test'
+  ...
+# Subtest: PostgreSQL paid proof: real durable lease, one-store binding, revocation, pagination and no client grant
+ok 25 - PostgreSQL paid proof: real durable lease, one-store binding, revocation, pagination and no client grant
+  ---
+  duration_ms: 118.944573
+  type: 'test'
+  ...
+# Subtest: active paid membership yields exact Standard evidence
+ok 26 - active paid membership yields exact Standard evidence
+  ---
+  duration_ms: 2.781284
+  type: 'test'
+  ...
+# Subtest: Premium requires its exact purchased variant
+ok 27 - Premium requires its exact purchased variant
+  ---
+  duration_ms: 0.700578
+  type: 'test'
+  ...
+# Subtest: cancellation scheduled at paid-period end keeps access until the paid end
+ok 28 - cancellation scheduled at paid-period end keeps access until the paid end
+  ---
+  duration_ms: 0.530824
+  type: 'test'
+  ...
+# Subtest: membership trialing never grants paid dashboard access
+ok 29 - membership trialing never grants paid dashboard access
+  ---
+  duration_ms: 0.224686
+  type: 'test'
+  ...
+# Subtest: membership past_due never grants paid dashboard access
+ok 30 - membership past_due never grants paid dashboard access
+  ---
+  duration_ms: 0.184892
+  type: 'test'
+  ...
+# Subtest: membership completed never grants paid dashboard access
+ok 31 - membership completed never grants paid dashboard access
+  ---
+  duration_ms: 0.181922
+  type: 'test'
+  ...
+# Subtest: membership expired never grants paid dashboard access
+ok 32 - membership expired never grants paid dashboard access
+  ---
+  duration_ms: 0.148133
+  type: 'test'
+  ...
+# Subtest: membership canceled never grants paid dashboard access
+ok 33 - membership canceled never grants paid dashboard access
+  ---
+  duration_ms: 1.282725
+  type: 'test'
+  ...
+# Subtest: membership unresolved never grants paid dashboard access
+ok 34 - membership unresolved never grants paid dashboard access
+  ---
+  duration_ms: 0.803568
+  type: 'test'
+  ...
+# Subtest: payment account_id mismatch does not unlock dashboard
+ok 35 - payment account_id mismatch does not unlock dashboard
+  ---
+  duration_ms: 1.086855
+  type: 'test'
+  ...
+# Subtest: payment member_id mismatch does not unlock dashboard
+ok 36 - payment member_id mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.49871
+  type: 'test'
+  ...
+# Subtest: payment membership_id mismatch does not unlock dashboard
+ok 37 - payment membership_id mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.149955
+  type: 'test'
+  ...
+# Subtest: payment variant_id mismatch does not unlock dashboard
+ok 38 - payment variant_id mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.103137
+  type: 'test'
+  ...
+# Subtest: payment customer_email mismatch does not unlock dashboard
+ok 39 - payment customer_email mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.096344
+  type: 'test'
+  ...
+# Subtest: payment status mismatch does not unlock dashboard
+ok 40 - payment status mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.092634
+  type: 'test'
+  ...
+# Subtest: payment substatus mismatch does not unlock dashboard
+ok 41 - payment substatus mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.09028
+  type: 'test'
+  ...
+# Subtest: payment auto_refunded mismatch does not unlock dashboard
+ok 42 - payment auto_refunded mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.091454
+  type: 'test'
+  ...
+# Subtest: payment billing_reason mismatch does not unlock dashboard
+ok 43 - payment billing_reason mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.115108
+  type: 'test'
+  ...
+# Subtest: payment paid_at mismatch does not unlock dashboard
+ok 44 - payment paid_at mismatch does not unlock dashboard
+  ---
+  duration_ms: 0.111326
+  type: 'test'
+  ...
+# Subtest: member fuzzy email, buyer identity or seller mismatch is not proof
+ok 45 - member fuzzy email, buyer identity or seller mismatch is not proof
+  ---
+  duration_ms: 0.268477
+  type: 'test'
+  ...
+# Subtest: free/partial/full/unknown refund or float money fail closed
+ok 46 - free/partial/full/unknown refund or float money fail closed
+  ---
+  duration_ms: 0.540416
+  type: 'test'
+  ...
+# Subtest: unconfigured billing denies access without reading any database or provider
+ok 47 - unconfigured billing denies access without reading any database or provider
+  ---
+  duration_ms: 2.228068
+  type: 'test'
+  ...
+# Subtest: PostgreSQL merchant API: isolated database only
+    # Subtest: plan/status/client verified fields rejected and an owned purchased membership binds once
+    ok 1 - plan/status/client verified fields rejected and an owned purchased membership binds once
+      ---
+      duration_ms: 31.182183
+      type: 'test'
+      ...
+    # Subtest: concurrent creates row-lock one active unassigned entitlement and create exactly one store
+    ok 2 - concurrent creates row-lock one active unassigned entitlement and create exactly one store
+      ---
+      duration_ms: 23.884874
+      type: 'test'
+      ...
+    # Subtest: expired, inactive, past-due and unpaid entitlements cannot create a store
+    ok 3 - expired, inactive, past-due and unpaid entitlements cannot create a store
+      ---
+      duration_ms: 35.741679
+      type: 'test'
+      ...
+    # Subtest: tenant store and resource endpoints remain 404 for another paid user
+    ok 4 - tenant store and resource endpoints remain 404 for another paid user
+      ---
+      duration_ms: 34.462374
+      type: 'test'
+      ...
+    # Subtest: durable resource create/read/update, exact field validation and optimistic concurrent conflict
+    ok 5 - durable resource create/read/update, exact field validation and optimistic concurrent conflict
+      ---
+      duration_ms: 58.427164
+      type: 'test'
+      ...
+    # Subtest: resource data survives a fresh app instance; foreign resource IDs cannot overwrite/delete
+    ok 6 - resource data survives a fresh app instance; foreign resource IDs cannot overwrite/delete
+      ---
+      duration_ms: 18.149268
+      type: 'test'
+      ...
+    # Subtest: Premium reads/writes and nested subscription blocks are enforced server-side
+    ok 7 - Premium reads/writes and nested subscription blocks are enforced server-side
+      ---
+      duration_ms: 65.431078
+      type: 'test'
+      ...
+    # Subtest: draft activation remains 409 despite client or operator readiness claims; consent is durable only
+    ok 8 - draft activation remains 409 despite client or operator readiness claims; consent is durable only
+      ---
+      duration_ms: 18.409302
+      type: 'test'
+      ...
+    # Subtest: Shopify/Whop connections block honestly and legacy API key or business-ID paste is rejected
+    ok 9 - Shopify/Whop connections block honestly and legacy API key or business-ID paste is rejected
+      ---
+      duration_ms: 19.13539
+      type: 'test'
+      ...
+    # Subtest: empty operational routes contain zero/empty data, no example accounts or bank-money forecast
+    ok 10 - empty operational routes contain zero/empty data, no example accounts or bank-money forecast
+      ---
+      duration_ms: 21.60316
+      type: 'test'
+      ...
+    # Subtest: existing verified fee ledger facts drive fees/analytics; refunded gross never reduces lifetime rate
+    ok 11 - existing verified fee ledger facts drive fees/analytics; refunded gross never reduces lifetime rate
+      ---
+      duration_ms: 15.064816
+      type: 'test'
+      ...
+    # Subtest: inactive/expired bound entitlements retain data but deny every store endpoint
+    ok 12 - inactive/expired bound entitlements retain data but deny every store endpoint
+      ---
+      duration_ms: 25.465409
+      type: 'test'
+      ...
+    # Subtest: experiment variants must be owned Mulch designs and resource deletes are durable
+    ok 13 - experiment variants must be owned Mulch designs and resource deletes are durable
+      ---
+      duration_ms: 45.768924
+      type: 'test'
+      ...
+    1..13
+ok 48 - PostgreSQL merchant API: isolated database only
+  ---
+  duration_ms: 525.546825
+  type: 'test'
+  ...
+# Subtest: checkout-design: exact documented config accepted and unsupported status/credentials rejected
+ok 49 - checkout-design: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 3.919716
+  type: 'test'
+  ...
+# Subtest: thank-you: exact documented config accepted and unsupported status/credentials rejected
+ok 50 - thank-you: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.34512
+  type: 'test'
+  ...
+# Subtest: offer: exact documented config accepted and unsupported status/credentials rejected
+ok 51 - offer: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.424782
+  type: 'test'
+  ...
+# Subtest: discount: exact documented config accepted and unsupported status/credentials rejected
+ok 52 - discount: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.609068
+  type: 'test'
+  ...
+# Subtest: buy-link: exact documented config accepted and unsupported status/credentials rejected
+ok 53 - buy-link: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.798211
+  type: 'test'
+  ...
+# Subtest: survey: exact documented config accepted and unsupported status/credentials rejected
+ok 54 - survey: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.288612
+  type: 'test'
+  ...
+# Subtest: experiment: exact documented config accepted and unsupported status/credentials rejected
+ok 55 - experiment: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.439421
+  type: 'test'
+  ...
+# Subtest: general: exact documented config accepted and unsupported status/credentials rejected
+ok 56 - general: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 23.651571
+  type: 'test'
+  ...
+# Subtest: shipping: exact documented config accepted and unsupported status/credentials rejected
+ok 57 - shipping: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 1.618623
+  type: 'test'
+  ...
+# Subtest: integration: exact documented config accepted and unsupported status/credentials rejected
+ok 58 - integration: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 1.001293
+  type: 'test'
+  ...
+# Subtest: subscription-rule: exact documented config accepted and unsupported status/credentials rejected
+ok 59 - subscription-rule: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.552527
+  type: 'test'
+  ...
+# Subtest: portal: exact documented config accepted and unsupported status/credentials rejected
+ok 60 - portal: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 47.640172
+  type: 'test'
+  ...
+# Subtest: recovery: exact documented config accepted and unsupported status/credentials rejected
+ok 61 - recovery: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.875264
+  type: 'test'
+  ...
+# Subtest: cancel-flow: exact documented config accepted and unsupported status/credentials rejected
+ok 62 - cancel-flow: exact documented config accepted and unsupported status/credentials rejected
+  ---
+  duration_ms: 0.488404
+  type: 'test'
+  ...
+# Subtest: Standard denied subscription-rule config
+ok 63 - Standard denied subscription-rule config
+  ---
+  duration_ms: 0.433004
+  type: 'test'
+  ...
+# Subtest: Standard denied portal config
+ok 64 - Standard denied portal config
+  ---
+  duration_ms: 0.171994
+  type: 'test'
+  ...
+# Subtest: Standard denied recovery config
+ok 65 - Standard denied recovery config
+  ---
+  duration_ms: 0.11469
+  type: 'test'
+  ...
+# Subtest: Standard denied cancel-flow config
+ok 66 - Standard denied cancel-flow config
+  ---
+  duration_ms: 0.116724
+  type: 'test'
+  ...
+# Subtest: nested subscription-choice requires Premium even inside checkout design
+ok 67 - nested subscription-choice requires Premium even inside checkout design
+  ---
+  duration_ms: 0.99948
+  type: 'test'
+  ...
+# Subtest: fixed contact/delivery/shipping/payment blocks cannot be hidden, removed or duplicated
+ok 68 - fixed contact/delivery/shipping/payment blocks cannot be hidden, removed or duplicated
+  ---
+  duration_ms: 0.607041
+  type: 'test'
+  ...
+# Subtest: only formatting HTML is accepted and normalization is idempotent
+ok 69 - only formatting HTML is accepted and normalization is idempotent
+  ---
+  duration_ms: 1.695512
+  type: 'test'
+  ...
+# Subtest: image URLs cannot be scripts, native checkout paths or private hosts
+ok 70 - image URLs cannot be scripts, native checkout paths or private hosts
+  ---
+  duration_ms: 1.103338
+  type: 'test'
+  ...
+# Subtest: buy link cannot accept destination URL or native product ID shortcut
+ok 71 - buy link cannot accept destination URL or native product ID shortcut
+  ---
+  duration_ms: 0.311159
+  type: 'test'
+  ...
+# Subtest: shipping uses exact money and unique countries; unsupported currencies fail
+ok 72 - shipping uses exact money and unique countries; unsupported currencies fail
+  ---
+  duration_ms: 0.638294
+  type: 'test'
+  ...
+# Subtest: experiments cannot route to native checkout or use identical designs
+ok 73 - experiments cannot route to native checkout or use identical designs
+  ---
+  duration_ms: 0.27253
+  type: 'test'
+  ...
+# Subtest: recovery schedules and unsupported provider scripts fail validation
+ok 74 - recovery schedules and unsupported provider scripts fail validation
+  ---
+  duration_ms: 0.275
+  type: 'test'
+  ...
+# Subtest: adapter reuses exact fee policy at whole-payment thresholds and never increases earned rate
+ok 75 - adapter reuses exact fee policy at whole-payment thresholds and never increases earned rate
+  ---
+  duration_ms: 2.400882
+  type: 'test'
+  ...
+1..75
+# tests 96
+# suites 0
+# pass 96
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18970.531864
+$ tsx --test tests/*.test.ts tests/*.test.tsx
+TAP version 13
+# Subtest: login and purchase are distinct from dashboard access
+ok 1 - login and purchase are distinct from dashboard access
+  ---
+  duration_ms: 1.975115
+  type: 'test'
+  ...
+# Subtest: past_due membership cannot grant client dashboard access
+ok 2 - past_due membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.296144
+  type: 'test'
+  ...
+# Subtest: trialing membership cannot grant client dashboard access
+ok 3 - trialing membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.156437
+  type: 'test'
+  ...
+# Subtest: expired membership cannot grant client dashboard access
+ok 4 - expired membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.178164
+  type: 'test'
+  ...
+# Subtest: completed membership cannot grant client dashboard access
+ok 5 - completed membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.157553
+  type: 'test'
+  ...
+# Subtest: unverified membership cannot grant client dashboard access
+ok 6 - unverified membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.143318
+  type: 'test'
+  ...
+# Subtest: canceled membership cannot grant client dashboard access
+ok 7 - canceled membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.326216
+  type: 'test'
+  ...
+# Subtest: creator uses only active unassigned server entitlements
+ok 8 - creator uses only active unassigned server entitlements
+  ---
+  duration_ms: 1.956908
+  type: 'test'
+  ...
+# Subtest: only active stores with exact current membership binding and plan are accepted
+ok 9 - only active stores with exact current membership binding and plan are accepted
+  ---
+  duration_ms: 0.891378
+  type: 'test'
+  ...
+# Subtest: unpaid access load never requests stores, dashboard, bootstrap or resource APIs
+ok 10 - unpaid access load never requests stores, dashboard, bootstrap or resource APIs
+  ---
+  duration_ms: 1.176897
+  type: 'test'
+  ...
+# Subtest: no session means no API request
+ok 11 - no session means no API request
+  ---
+  duration_ms: 0.463658
+  type: 'test'
+  ...
+# Subtest: payment refresh POST uses CSRF and only then loads active bound stores
+ok 12 - payment refresh POST uses CSRF and only then loads active bound stores
+  ---
+  duration_ms: 0.604982
+  type: 'test'
+  ...
+# Subtest: missing provider proof and provider failure cannot load stores
+ok 13 - missing provider proof and provider failure cannot load stores
+  ---
+  duration_ms: 0.818911
+  type: 'test'
+  ...
+# Subtest: route set excludes public demos, arbitrary bypasses and URL success grants
+ok 14 - route set excludes public demos, arbitrary bypasses and URL success grants
+  ---
+  duration_ms: 0.692299
+  type: 'test'
+  ...
+# Subtest: safe provider URLs refuse credentials and executable schemes
+ok 15 - safe provider URLs refuse credentials and executable schemes
+  ---
+  duration_ms: 0.368094
+  type: 'test'
+  ...
+# Subtest: request refuses non-API paths and missing mutation CSRF, including logout
+ok 16 - request refuses non-API paths and missing mutation CSRF, including logout
+  ---
+  duration_ms: 0.517992
+  type: 'test'
+  ...
+# Subtest: API private mutations use same-origin cookies, no-store and exact CSRF header
+ok 17 - API private mutations use same-origin cookies, no-store and exact CSRF header
+  ---
+  duration_ms: 57.30613
+  type: 'test'
+  ...
+# Subtest: API errors and non-JSON failures preserve fail-closed error states
+ok 18 - API errors and non-JSON failures preserve fail-closed error states
+  ---
+  duration_ms: 1.533513
+  type: 'test'
+  ...
+# Subtest: builder starts with one visible fixed contact/delivery/shipping/payment block
+ok 19 - builder starts with one visible fixed contact/delivery/shipping/payment block
+  ---
+  duration_ms: 4.168632
+  type: 'test'
+  ...
+# Subtest: core blocks cannot be hidden, deleted, duplicated or repositioned
+ok 20 - core blocks cannot be hidden, deleted, duplicated or repositioned
+  ---
+  duration_ms: 0.72909
+  type: 'test'
+  ...
+# Subtest: add, reorder, visibility, duplicate and delete work on added blocks
+ok 21 - add, reorder, visibility, duplicate and delete work on added blocks
+  ---
+  duration_ms: 0.693193
+  type: 'test'
+  ...
+# Subtest: subscription blocks are Premium-only and unsupported block types cannot be added
+ok 22 - subscription blocks are Premium-only and unsupported block types cannot be added
+  ---
+  duration_ms: 0.544732
+  type: 'test'
+  ...
+# Subtest: design validates required blocks, unique ids, safe image URLs and script rejection
+ok 23 - design validates required blocks, unique ids, safe image URLs and script rejection
+  ---
+  duration_ms: 1.31374
+  type: 'test'
+  ...
+# Subtest: HTML preview preserves only attribute-free formatting and escapes every execution surface
+ok 24 - HTML preview preserves only attribute-free formatting and escapes every execution surface
+  ---
+  duration_ms: 1.187448
+  type: 'test'
+  ...
+# Subtest: serialization uses only the exact checkout design contract fields
+ok 25 - serialization uses only the exact checkout design contract fields
+  ---
+  duration_ms: 0.51439
+  type: 'test'
+  ...
+# Subtest: configuration factories are independent and unknown fields are rejected
+ok 26 - configuration factories are independent and unknown fields are rejected
+  ---
+  duration_ms: 1.029805
+  type: 'test'
+  ...
+# Subtest: resource form validators reject unsafe products, invalid discounts, test variants and zone amounts
+ok 27 - resource form validators reject unsafe products, invalid discounts, test variants and zone amounts
+  ---
+  duration_ms: 2.059618
+  type: 'test'
+  ...
+# Subtest: money uses exact integer minor units without unsafe floating-point rounding
+ok 28 - money uses exact integer minor units without unsafe floating-point rounding
+  ---
+  duration_ms: 28.74522
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: Home
+ok 29 - paid route is wired and renders: Home
+  ---
+  duration_ms: 42.750964
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: analytics/overview
+ok 30 - paid route is wired and renders: analytics/overview
+  ---
+  duration_ms: 5.846635
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: analytics/orders
+ok 31 - paid route is wired and renders: analytics/orders
+  ---
+  duration_ms: 1.633326
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: analytics/abandoned
+ok 32 - paid route is wired and renders: analytics/abandoned
+  ---
+  duration_ms: 0.967102
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/setup
+ok 33 - paid route is wired and renders: subscriptions/setup
+  ---
+  duration_ms: 2.004998
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/portal
+ok 34 - paid route is wired and renders: subscriptions/portal
+  ---
+  duration_ms: 1.168372
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/recovery
+ok 35 - paid route is wired and renders: subscriptions/recovery
+  ---
+  duration_ms: 1.305528
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/subscribers
+ok 36 - paid route is wired and renders: subscriptions/subscribers
+  ---
+  duration_ms: 0.719499
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/design
+ok 37 - paid route is wired and renders: checkout/design
+  ---
+  duration_ms: 2.683784
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/thank-you
+ok 38 - paid route is wired and renders: checkout/thank-you
+  ---
+  duration_ms: 1.651148
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/upsells
+ok 39 - paid route is wired and renders: checkout/upsells
+  ---
+  duration_ms: 1.234037
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/buy-links
+ok 40 - paid route is wired and renders: checkout/buy-links
+  ---
+  duration_ms: 1.270007
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/surveys
+ok 41 - paid route is wired and renders: checkout/surveys
+  ---
+  duration_ms: 0.763962
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/tests
+ok 42 - paid route is wired and renders: checkout/tests
+  ---
+  duration_ms: 0.66912
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/general
+ok 43 - paid route is wired and renders: settings/general
+  ---
+  duration_ms: 0.692381
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/shopify
+ok 44 - paid route is wired and renders: settings/shopify
+  ---
+  duration_ms: 1.849644
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/payments
+ok 45 - paid route is wired and renders: settings/payments
+  ---
+  duration_ms: 3.096358
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/shipping
+ok 46 - paid route is wired and renders: settings/shipping
+  ---
+  duration_ms: 0.750038
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/integrations
+ok 47 - paid route is wired and renders: settings/integrations
+  ---
+  duration_ms: 0.678597
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/ai-mcp
+ok 48 - paid route is wired and renders: settings/ai-mcp
+  ---
+  duration_ms: 0.643151
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/billing
+ok 49 - paid route is wired and renders: settings/billing
+  ---
+  duration_ms: 2.633364
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/stores
+ok 50 - paid route is wired and renders: settings/stores
+  ---
+  duration_ms: 1.173311
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/setup-check
+ok 51 - paid route is wired and renders: settings/setup-check
+  ---
+  duration_ms: 2.311103
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: tools
+ok 52 - paid route is wired and renders: tools
+  ---
+  duration_ms: 1.375926
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: help
+ok 53 - paid route is wired and renders: help
+  ---
+  duration_ms: 2.677835
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/setup
+ok 54 - Standard sees explicit upgrade gate, not editor: subscriptions/setup
+  ---
+  duration_ms: 0.868043
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/portal
+ok 55 - Standard sees explicit upgrade gate, not editor: subscriptions/portal
+  ---
+  duration_ms: 0.614155
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/recovery
+ok 56 - Standard sees explicit upgrade gate, not editor: subscriptions/recovery
+  ---
+  duration_ms: 0.516671
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/subscribers
+ok 57 - Standard sees explicit upgrade gate, not editor: subscriptions/subscribers
+  ---
+  duration_ms: 0.496158
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: thank-you
+ok 58 - exact field form renders without raw JSON editor: thank-you
+  ---
+  duration_ms: 1.510268
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: offer
+ok 59 - exact field form renders without raw JSON editor: offer
+  ---
+  duration_ms: 1.672801
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: discount
+ok 60 - exact field form renders without raw JSON editor: discount
+  ---
+  duration_ms: 1.512146
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: buy-link
+ok 61 - exact field form renders without raw JSON editor: buy-link
+  ---
+  duration_ms: 0.939517
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: survey
+ok 62 - exact field form renders without raw JSON editor: survey
+  ---
+  duration_ms: 1.124262
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: experiment
+ok 63 - exact field form renders without raw JSON editor: experiment
+  ---
+  duration_ms: 1.451577
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: general
+ok 64 - exact field form renders without raw JSON editor: general
+  ---
+  duration_ms: 1.019557
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: shipping
+ok 65 - exact field form renders without raw JSON editor: shipping
+  ---
+  duration_ms: 0.645022
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: integration
+ok 66 - exact field form renders without raw JSON editor: integration
+  ---
+  duration_ms: 1.23151
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: subscription-rule
+ok 67 - exact field form renders without raw JSON editor: subscription-rule
+  ---
+  duration_ms: 1.664751
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: portal
+ok 68 - exact field form renders without raw JSON editor: portal
+  ---
+  duration_ms: 0.760023
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: recovery
+ok 69 - exact field form renders without raw JSON editor: recovery
+  ---
+  duration_ms: 1.539248
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: cancel-flow
+ok 70 - exact field form renders without raw JSON editor: cancel-flow
+  ---
+  duration_ms: 0.776417
+  type: 'test'
+  ...
+# Subtest: sample preview has disabled charge presentation and no scripts
+ok 71 - sample preview has disabled charge presentation and no scripts
+  ---
+  duration_ms: 4.935573
+  type: 'test'
+  ...
+# Subtest: purchase gate has exact paid URLs and never exposes dashboard navigation
+ok 72 - purchase gate has exact paid URLs and never exposes dashboard navigation
+  ---
+  duration_ms: 2.936843
+  type: 'test'
+  ...
+# Subtest: store creator exposes active unassigned entitlement ID, no client plan override
+ok 73 - store creator exposes active unassigned entitlement ID, no client plan override
+  ---
+  duration_ms: 2.348928
+  type: 'test'
+  ...
+# Subtest: navigation contains every functional destination and readiness badges
+ok 74 - navigation contains every functional destination and readiness badges
+  ---
+  duration_ms: 6.996316
+  type: 'test'
+  ...
+# Subtest: all five auth screens render without automatic token consumption
+ok 75 - all five auth screens render without automatic token consumption
+  ---
+  duration_ms: 10.989409
+  type: 'test'
+  ...
+# Subtest: static route manifest exactly matches paid and authentication routes
+ok 76 - static route manifest exactly matches paid and authentication routes
+  ---
+  duration_ms: 12.099082
+  type: 'test'
+  ...
+# Subtest: production source has no demo, fixture or developer entitlement bypass
+ok 77 - production source has no demo, fixture or developer entitlement bypass
+  ---
+  duration_ms: 15.370133
+  type: 'test'
+  ...
+1..77
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 578.025077
+$ pnpm -r --if-present check
+Scope: 3 of 4 workspace projects
+$ node tools/check.mjs
+Syntax checked 9 JavaScript modules.
+$ node tools/check.mjs
+Merchant server JavaScript syntax checks passed.
+$ pnpm --filter @mulch/merchant-client build
+$ tsc --noEmit && vite build
+vite v8.3.8 building client environment for production...
+transforming...
+[32m✓[0m 32 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[0m[32mindex.html                 [0m[1;2m  0.51 kB[0m[2m │ gzip:  0.31 kB[0m
+[2mdist/[0m[2massets/[0m[35mindex-DfBZjDhF.css  [0m[1;2m 17.73 kB[0m[2m │ gzip:  4.68 kB[0m
+[2mdist/[0m[2massets/[0m[36mindex-DskiZrE2.js   [0m[1;2m299.03 kB[0m[2m │ gzip: 91.71 kB[0m
+
+✓ built in 200ms

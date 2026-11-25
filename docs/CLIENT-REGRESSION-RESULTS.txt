@@ -1,0 +1,502 @@
+$ tsx --test tests/*.test.ts tests/*.test.tsx
+TAP version 13
+# Subtest: login and purchase are distinct from dashboard access
+ok 1 - login and purchase are distinct from dashboard access
+  ---
+  duration_ms: 1.967821
+  type: 'test'
+  ...
+# Subtest: past_due membership cannot grant client dashboard access
+ok 2 - past_due membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.243911
+  type: 'test'
+  ...
+# Subtest: trialing membership cannot grant client dashboard access
+ok 3 - trialing membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.147108
+  type: 'test'
+  ...
+# Subtest: expired membership cannot grant client dashboard access
+ok 4 - expired membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.200186
+  type: 'test'
+  ...
+# Subtest: completed membership cannot grant client dashboard access
+ok 5 - completed membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.234812
+  type: 'test'
+  ...
+# Subtest: unverified membership cannot grant client dashboard access
+ok 6 - unverified membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.133521
+  type: 'test'
+  ...
+# Subtest: canceled membership cannot grant client dashboard access
+ok 7 - canceled membership cannot grant client dashboard access
+  ---
+  duration_ms: 0.357551
+  type: 'test'
+  ...
+# Subtest: creator uses only active unassigned server entitlements
+ok 8 - creator uses only active unassigned server entitlements
+  ---
+  duration_ms: 1.728669
+  type: 'test'
+  ...
+# Subtest: only active stores with exact current membership binding and plan are accepted
+ok 9 - only active stores with exact current membership binding and plan are accepted
+  ---
+  duration_ms: 0.816605
+  type: 'test'
+  ...
+# Subtest: unpaid access load never requests stores, dashboard, bootstrap or resource APIs
+ok 10 - unpaid access load never requests stores, dashboard, bootstrap or resource APIs
+  ---
+  duration_ms: 1.042548
+  type: 'test'
+  ...
+# Subtest: no session means no API request
+ok 11 - no session means no API request
+  ---
+  duration_ms: 0.420401
+  type: 'test'
+  ...
+# Subtest: payment refresh POST uses CSRF and only then loads active bound stores
+ok 12 - payment refresh POST uses CSRF and only then loads active bound stores
+  ---
+  duration_ms: 0.547243
+  type: 'test'
+  ...
+# Subtest: missing provider proof and provider failure cannot load stores
+ok 13 - missing provider proof and provider failure cannot load stores
+  ---
+  duration_ms: 0.856483
+  type: 'test'
+  ...
+# Subtest: route set excludes public demos, arbitrary bypasses and URL success grants
+ok 14 - route set excludes public demos, arbitrary bypasses and URL success grants
+  ---
+  duration_ms: 0.695894
+  type: 'test'
+  ...
+# Subtest: safe provider URLs refuse credentials and executable schemes
+ok 15 - safe provider URLs refuse credentials and executable schemes
+  ---
+  duration_ms: 0.335134
+  type: 'test'
+  ...
+# Subtest: request refuses non-API paths and missing mutation CSRF, including logout
+ok 16 - request refuses non-API paths and missing mutation CSRF, including logout
+  ---
+  duration_ms: 0.475941
+  type: 'test'
+  ...
+# Subtest: API private mutations use same-origin cookies, no-store and exact CSRF header
+ok 17 - API private mutations use same-origin cookies, no-store and exact CSRF header
+  ---
+  duration_ms: 56.822203
+  type: 'test'
+  ...
+# Subtest: API errors and non-JSON failures preserve fail-closed error states
+ok 18 - API errors and non-JSON failures preserve fail-closed error states
+  ---
+  duration_ms: 1.44996
+  type: 'test'
+  ...
+# Subtest: plan changes reload current authorized store metadata and preserve a paid binding
+ok 19 - plan changes reload current authorized store metadata and preserve a paid binding
+  ---
+  duration_ms: 0.985818
+  type: 'test'
+  ...
+# Subtest: reconciliation never reloads private stores on lost paid evidence
+ok 20 - reconciliation never reloads private stores on lost paid evidence
+  ---
+  duration_ms: 0.687984
+  type: 'test'
+  ...
+# Subtest: builder starts with one visible fixed contact/delivery/shipping/payment block
+ok 21 - builder starts with one visible fixed contact/delivery/shipping/payment block
+  ---
+  duration_ms: 4.360827
+  type: 'test'
+  ...
+# Subtest: core blocks cannot be hidden, deleted, duplicated or repositioned
+ok 22 - core blocks cannot be hidden, deleted, duplicated or repositioned
+  ---
+  duration_ms: 0.776426
+  type: 'test'
+  ...
+# Subtest: add, reorder, visibility, duplicate and delete work on added blocks
+ok 23 - add, reorder, visibility, duplicate and delete work on added blocks
+  ---
+  duration_ms: 0.684193
+  type: 'test'
+  ...
+# Subtest: subscription blocks are Premium-only and unsupported block types cannot be added
+ok 24 - subscription blocks are Premium-only and unsupported block types cannot be added
+  ---
+  duration_ms: 0.569979
+  type: 'test'
+  ...
+# Subtest: design validates required blocks, unique ids, safe image URLs and script rejection
+ok 25 - design validates required blocks, unique ids, safe image URLs and script rejection
+  ---
+  duration_ms: 1.806182
+  type: 'test'
+  ...
+# Subtest: HTML preview preserves only attribute-free formatting and escapes every execution surface
+ok 26 - HTML preview preserves only attribute-free formatting and escapes every execution surface
+  ---
+  duration_ms: 1.161996
+  type: 'test'
+  ...
+# Subtest: serialization uses only the exact checkout design contract fields
+ok 27 - serialization uses only the exact checkout design contract fields
+  ---
+  duration_ms: 0.509779
+  type: 'test'
+  ...
+# Subtest: configuration factories are independent and unknown fields are rejected
+ok 28 - configuration factories are independent and unknown fields are rejected
+  ---
+  duration_ms: 1.292711
+  type: 'test'
+  ...
+# Subtest: resource form validators reject unsafe products, invalid discounts, test variants and zone amounts
+ok 29 - resource form validators reject unsafe products, invalid discounts, test variants and zone amounts
+  ---
+  duration_ms: 1.724468
+  type: 'test'
+  ...
+# Subtest: money uses exact integer minor units without unsafe floating-point rounding
+ok 30 - money uses exact integer minor units without unsafe floating-point rounding
+  ---
+  duration_ms: 26.658551
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: Home
+ok 31 - paid route is wired and renders: Home
+  ---
+  duration_ms: 42.675603
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: analytics/overview
+ok 32 - paid route is wired and renders: analytics/overview
+  ---
+  duration_ms: 5.270527
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: analytics/orders
+ok 33 - paid route is wired and renders: analytics/orders
+  ---
+  duration_ms: 1.569885
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: analytics/abandoned
+ok 34 - paid route is wired and renders: analytics/abandoned
+  ---
+  duration_ms: 0.991693
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/setup
+ok 35 - paid route is wired and renders: subscriptions/setup
+  ---
+  duration_ms: 1.922266
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/portal
+ok 36 - paid route is wired and renders: subscriptions/portal
+  ---
+  duration_ms: 1.222329
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/recovery
+ok 37 - paid route is wired and renders: subscriptions/recovery
+  ---
+  duration_ms: 1.285901
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: subscriptions/subscribers
+ok 38 - paid route is wired and renders: subscriptions/subscribers
+  ---
+  duration_ms: 0.666831
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/design
+ok 39 - paid route is wired and renders: checkout/design
+  ---
+  duration_ms: 2.483893
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/thank-you
+ok 40 - paid route is wired and renders: checkout/thank-you
+  ---
+  duration_ms: 1.588838
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/upsells
+ok 41 - paid route is wired and renders: checkout/upsells
+  ---
+  duration_ms: 1.059983
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/buy-links
+ok 42 - paid route is wired and renders: checkout/buy-links
+  ---
+  duration_ms: 1.104405
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/surveys
+ok 43 - paid route is wired and renders: checkout/surveys
+  ---
+  duration_ms: 0.808442
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: checkout/tests
+ok 44 - paid route is wired and renders: checkout/tests
+  ---
+  duration_ms: 0.656156
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/general
+ok 45 - paid route is wired and renders: settings/general
+  ---
+  duration_ms: 0.632313
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/shopify
+ok 46 - paid route is wired and renders: settings/shopify
+  ---
+  duration_ms: 1.77529
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/payments
+ok 47 - paid route is wired and renders: settings/payments
+  ---
+  duration_ms: 3.105473
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/shipping
+ok 48 - paid route is wired and renders: settings/shipping
+  ---
+  duration_ms: 0.760311
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/integrations
+ok 49 - paid route is wired and renders: settings/integrations
+  ---
+  duration_ms: 0.677916
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/ai-mcp
+ok 50 - paid route is wired and renders: settings/ai-mcp
+  ---
+  duration_ms: 0.585667
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/billing
+ok 51 - paid route is wired and renders: settings/billing
+  ---
+  duration_ms: 2.680551
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/stores
+ok 52 - paid route is wired and renders: settings/stores
+  ---
+  duration_ms: 1.075967
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: settings/setup-check
+ok 53 - paid route is wired and renders: settings/setup-check
+  ---
+  duration_ms: 0.884601
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: tools
+ok 54 - paid route is wired and renders: tools
+  ---
+  duration_ms: 1.245614
+  type: 'test'
+  ...
+# Subtest: paid route is wired and renders: help
+ok 55 - paid route is wired and renders: help
+  ---
+  duration_ms: 3.816292
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/setup
+ok 56 - Standard sees explicit upgrade gate, not editor: subscriptions/setup
+  ---
+  duration_ms: 0.792319
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/portal
+ok 57 - Standard sees explicit upgrade gate, not editor: subscriptions/portal
+  ---
+  duration_ms: 0.594537
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/recovery
+ok 58 - Standard sees explicit upgrade gate, not editor: subscriptions/recovery
+  ---
+  duration_ms: 0.478083
+  type: 'test'
+  ...
+# Subtest: Standard sees explicit upgrade gate, not editor: subscriptions/subscribers
+ok 59 - Standard sees explicit upgrade gate, not editor: subscriptions/subscribers
+  ---
+  duration_ms: 0.491145
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: thank-you
+ok 60 - exact field form renders without raw JSON editor: thank-you
+  ---
+  duration_ms: 1.484553
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: offer
+ok 61 - exact field form renders without raw JSON editor: offer
+  ---
+  duration_ms: 1.663833
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: discount
+ok 62 - exact field form renders without raw JSON editor: discount
+  ---
+  duration_ms: 1.542267
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: buy-link
+ok 63 - exact field form renders without raw JSON editor: buy-link
+  ---
+  duration_ms: 0.92058
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: survey
+ok 64 - exact field form renders without raw JSON editor: survey
+  ---
+  duration_ms: 1.080947
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: experiment
+ok 65 - exact field form renders without raw JSON editor: experiment
+  ---
+  duration_ms: 1.449648
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: general
+ok 66 - exact field form renders without raw JSON editor: general
+  ---
+  duration_ms: 1.025613
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: shipping
+ok 67 - exact field form renders without raw JSON editor: shipping
+  ---
+  duration_ms: 0.633707
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: integration
+ok 68 - exact field form renders without raw JSON editor: integration
+  ---
+  duration_ms: 1.120339
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: subscription-rule
+ok 69 - exact field form renders without raw JSON editor: subscription-rule
+  ---
+  duration_ms: 1.492716
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: portal
+ok 70 - exact field form renders without raw JSON editor: portal
+  ---
+  duration_ms: 0.675348
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: recovery
+ok 71 - exact field form renders without raw JSON editor: recovery
+  ---
+  duration_ms: 1.481353
+  type: 'test'
+  ...
+# Subtest: exact field form renders without raw JSON editor: cancel-flow
+ok 72 - exact field form renders without raw JSON editor: cancel-flow
+  ---
+  duration_ms: 0.736688
+  type: 'test'
+  ...
+# Subtest: sample preview has disabled charge presentation and no scripts
+ok 73 - sample preview has disabled charge presentation and no scripts
+  ---
+  duration_ms: 4.995577
+  type: 'test'
+  ...
+# Subtest: purchase gate has exact paid URLs and never exposes dashboard navigation
+ok 74 - purchase gate has exact paid URLs and never exposes dashboard navigation
+  ---
+  duration_ms: 2.99944
+  type: 'test'
+  ...
+# Subtest: store creator exposes active unassigned entitlement ID, no client plan override
+ok 75 - store creator exposes active unassigned entitlement ID, no client plan override
+  ---
+  duration_ms: 2.394557
+  type: 'test'
+  ...
+# Subtest: navigation contains every functional destination and readiness badges
+ok 76 - navigation contains every functional destination and readiness badges
+  ---
+  duration_ms: 7.000017
+  type: 'test'
+  ...
+# Subtest: all five auth screens render without automatic token consumption
+ok 77 - all five auth screens render without automatic token consumption
+  ---
+  duration_ms: 9.554727
+  type: 'test'
+  ...
+# Subtest: supported order shape displays captured gross, refunds, paid date and ledger-only fulfillment evidence
+ok 78 - supported order shape displays captured gross, refunds, paid date and ledger-only fulfillment evidence
+  ---
+  duration_ms: 2.011488
+  type: 'test'
+  ...
+# Subtest: static route manifest exactly matches paid and authentication routes
+ok 79 - static route manifest exactly matches paid and authentication routes
+  ---
+  duration_ms: 9.70405
+  type: 'test'
+  ...
+# Subtest: production source has no demo, fixture or developer entitlement bypass
+ok 80 - production source has no demo, fixture or developer entitlement bypass
+  ---
+  duration_ms: 36.123147
+  type: 'test'
+  ...
+1..80
+# tests 80
+# suites 0
+# pass 80
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 693.363829
+$ tsc --noEmit && vite build
+vite v8.3.8 building client environment for production...
+transforming...
+[32m✓[0m 32 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[0m[32mindex.html                 [0m[1;2m  0.51 kB[0m[2m │ gzip:  0.31 kB[0m
+[2mdist/[0m[2massets/[0m[35mindex-DfBZjDhF.css  [0m[1;2m 17.73 kB[0m[2m │ gzip:  4.68 kB[0m
+[2mdist/[0m[2massets/[0m[36mindex-BVQMDGyI.js   [0m[1;2m300.76 kB[0m[2m │ gzip: 92.11 kB[0m
+
+✓ built in 203ms

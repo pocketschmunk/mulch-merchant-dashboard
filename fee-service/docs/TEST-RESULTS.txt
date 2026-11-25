@@ -1,0 +1,474 @@
+$ node --test tests/*.test.mjs
+TAP version 13
+# Subtest: fee schedule is public but does not activate collection
+ok 1 - fee schedule is public but does not activate collection
+  ---
+  duration_ms: 50.50245
+  type: 'test'
+  ...
+# Subtest: private backend endpoints reject unauthorized browsers
+ok 2 - private backend endpoints reject unauthorized browsers
+  ---
+  duration_ms: 29.202439
+  type: 'test'
+  ...
+# Subtest: backend fee preview includes tax-gross and whole crossing charge
+ok 3 - backend fee preview includes tax-gross and whole crossing charge
+  ---
+  duration_ms: 9.776801
+  type: 'test'
+  ...
+# Subtest: browser return cannot verify payments or account access
+ok 4 - browser return cannot verify payments or account access
+  ---
+  duration_ms: 6.690029
+  type: 'test'
+  ...
+# Subtest: unsigned webhook fails before state changes
+ok 5 - unsigned webhook fails before state changes
+  ---
+  duration_ms: 10.531328
+  type: 'test'
+  ...
+# Subtest: unknown account override is not accepted in a charge request
+ok 6 - unknown account override is not accepted in a charge request
+  ---
+  duration_ms: 6.34047
+  type: 'test'
+  ...
+# Subtest: merchant fee basis cannot be a numeric float
+ok 7 - merchant fee basis cannot be a numeric float
+  ---
+  duration_ms: 5.019008
+  type: 'test'
+  ...
+# Subtest: unsupported method cannot mutate private state
+ok 8 - unsupported method cannot mutate private state
+  ---
+  duration_ms: 3.821509
+  type: 'test'
+  ...
+# Subtest: official SDK accepts signature over exact raw bytes and literal ws_ secret
+ok 9 - official SDK accepts signature over exact raw bytes and literal ws_ secret
+  ---
+  duration_ms: 13.04045
+  type: 'test'
+  ...
+# Subtest: tampering or wrong API version cannot process a signed webhook
+ok 10 - tampering or wrong API version cannot process a signed webhook
+  ---
+  duration_ms: 19.363066
+  type: 'test'
+  ...
+# Subtest: oversized JSON body is rejected without state changes
+ok 11 - oversized JSON body is rejected without state changes
+  ---
+  duration_ms: 10.279942
+  type: 'test'
+  ...
+# Subtest: health reports configuration readiness, not a fabricated live-activation result
+ok 12 - health reports configuration readiness, not a fabricated live-activation result
+  ---
+  duration_ms: 6.644983
+  type: 'test'
+  ...
+# Subtest: unsupported saved-method purchases fail explicitly
+ok 13 - unsupported saved-method purchases fail explicitly
+  ---
+  duration_ms: 5.923498
+  type: 'test'
+  ...
+# Subtest: tax-inclusive Launch example
+ok 14 - tax-inclusive Launch example
+  ---
+  duration_ms: 2.047918
+  type: 'test'
+  ...
+# Subtest: tax-inclusive Growth example
+ok 15 - tax-inclusive Growth example
+  ---
+  duration_ms: 0.415051
+  type: 'test'
+  ...
+# Subtest: tax-inclusive Scale example
+ok 16 - tax-inclusive Scale example
+  ---
+  duration_ms: 0.177229
+  type: 'test'
+  ...
+# Subtest: just below first threshold
+ok 17 - just below first threshold
+  ---
+  duration_ms: 0.163748
+  type: 'test'
+  ...
+# Subtest: exact first threshold crossing
+ok 18 - exact first threshold crossing
+  ---
+  duration_ms: 0.366108
+  type: 'test'
+  ...
+# Subtest: crossing first threshold uses whole charge
+ok 19 - crossing first threshold uses whole charge
+  ---
+  duration_ms: 0.170525
+  type: 'test'
+  ...
+# Subtest: just below second threshold
+ok 20 - just below second threshold
+  ---
+  duration_ms: 0.376406
+  type: 'test'
+  ...
+# Subtest: exact second threshold crossing
+ok 21 - exact second threshold crossing
+  ---
+  duration_ms: 0.160844
+  type: 'test'
+  ...
+# Subtest: crossing both thresholds uses Scale on whole charge
+ok 22 - crossing both thresholds uses Scale on whole charge
+  ---
+  duration_ms: 1.028574
+  type: 'test'
+  ...
+# Subtest: earned Growth never returns to Launch
+ok 23 - earned Growth never returns to Launch
+  ---
+  duration_ms: 0.80881
+  type: 'test'
+  ...
+# Subtest: earned Scale never returns to Growth
+ok 24 - earned Scale never returns to Growth
+  ---
+  duration_ms: 0.319733
+  type: 'test'
+  ...
+# Subtest: money parsing preserves exact cents
+ok 25 - money parsing preserves exact cents
+  ---
+  duration_ms: 0.424052
+  type: 'test'
+  ...
+# Subtest: minor validation rejects -1
+ok 26 - minor validation rejects -1
+  ---
+  duration_ms: 0.356845
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 1.1
+ok 27 - minor validation rejects 1.1
+  ---
+  duration_ms: 0.145574
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 01
+ok 28 - minor validation rejects 01
+  ---
+  duration_ms: 0.109209
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 1
+ok 29 - minor validation rejects 1
+  ---
+  duration_ms: 0.104556
+  type: 'test'
+  ...
+# Subtest: minor validation rejects NaN
+ok 30 - minor validation rejects NaN
+  ---
+  duration_ms: 1.609359
+  type: 'test'
+  ...
+# Subtest: minor validation rejects 9223372036854775808
+ok 31 - minor validation rejects 9223372036854775808
+  ---
+  duration_ms: 0.12991
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects 1e3
+ok 32 - exact decimal validation rejects 1e3
+  ---
+  duration_ms: 0.156544
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects 10.001
+ok 33 - exact decimal validation rejects 10.001
+  ---
+  duration_ms: 0.098911
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects -1.00
+ok 34 - exact decimal validation rejects -1.00
+  ---
+  duration_ms: 0.127055
+  type: 'test'
+  ...
+# Subtest: exact decimal validation rejects 108
+ok 35 - exact decimal validation rejects 108
+  ---
+  duration_ms: 0.108102
+  type: 'test'
+  ...
+# Subtest: unsupported currency fails closed
+ok 36 - unsupported currency fails closed
+  ---
+  duration_ms: 0.208292
+  type: 'test'
+  ...
+# Subtest: zero and uncollectibly small payments cannot charge a fabricated minimum
+ok 37 - zero and uncollectibly small payments cannot charge a fabricated minimum
+  ---
+  duration_ms: 0.21608
+  type: 'test'
+  ...
+# Subtest: unsupported stored rate is not accepted
+ok 38 - unsupported stored rate is not accepted
+  ---
+  duration_ms: 0.150719
+  type: 'test'
+  ...
+# Subtest: deterministic boundary properties use exact projected volume and half-up cents
+ok 39 - deterministic boundary properties use exact projected volume and half-up cents
+  ---
+  duration_ms: 0.696763
+  type: 'test'
+  ...
+# Subtest: PostgreSQL ledger and controlled-payment integration
+    # Subtest: two quotes bind full tax-inclusive fee and successful capture
+    ok 1 - two quotes bind full tax-inclusive fee and successful capture
+      ---
+      duration_ms: 50.696598
+      type: 'test'
+      ...
+    # Subtest: first crossing entire payment uses Growth
+    ok 2 - first crossing entire payment uses Growth
+      ---
+      duration_ms: 30.401613
+      type: 'test'
+      ...
+    # Subtest: second crossing entire payment uses Scale
+    ok 3 - second crossing entire payment uses Scale
+      ---
+      duration_ms: 25.757229
+      type: 'test'
+      ...
+    # Subtest: same key replay does not charge or count twice
+    ok 4 - same key replay does not charge or count twice
+      ---
+      duration_ms: 44.465189
+      type: 'test'
+      ...
+    # Subtest: concurrent payments serialize a store and cannot advance on unpaid reservations
+    ok 5 - concurrent payments serialize a store and cannot advance on unpaid reservations
+      ---
+      duration_ms: 37.698083
+      type: 'test'
+      ...
+    # Subtest: lost creation response replays exact provider key and encrypted payload
+    ok 6 - lost creation response replays exact provider key and encrypted payload
+      ---
+      duration_ms: 32.159581
+      type: 'test'
+      ...
+    # Subtest: changed final quote never submits or advances lifetime
+    ok 7 - changed final quote never submits or advances lifetime
+      ---
+      duration_ms: 15.254997
+      type: 'test'
+      ...
+    # Subtest: buyer fee mismatch locks review and does not silently certify collection
+    ok 8 - buyer fee mismatch locks review and does not silently certify collection
+      ---
+      duration_ms: 22.592017
+      type: 'test'
+      ...
+    # Subtest: actual application fee mismatch is exposed and halts store
+    ok 9 - actual application fee mismatch is exposed and halts store
+      ---
+      duration_ms: 27.081989
+      type: 'test'
+      ...
+    # Subtest: refund preserves gross lifetime and earned tier; duplicate events are idempotent
+    ok 10 - refund preserves gross lifetime and earned tier; duplicate events are idempotent
+      ---
+      duration_ms: 34.229776
+      type: 'test'
+      ...
+    # Subtest: provider terminal nonpayment releases slot without counting failed volume
+    ok 11 - provider terminal nonpayment releases slot without counting failed volume
+      ---
+      duration_ms: 20.915925
+      type: 'test'
+      ...
+    # Subtest: webhook from another account cannot bind an attempt
+    ok 12 - webhook from another account cannot bind an attempt
+      ---
+      duration_ms: 17.162346
+      type: 'test'
+      ...
+    # Subtest: a new command key cannot charge an already-paid order
+    ok 13 - a new command key cannot charge an already-paid order
+      ---
+      duration_ms: 23.272074
+      type: 'test'
+      ...
+    # Subtest: canonical hashing accepts reordered equivalent purchases
+    ok 14 - canonical hashing accepts reordered equivalent purchases
+      ---
+      duration_ms: 31.239905
+      type: 'test'
+      ...
+    # Subtest: nullable payment tax means zero only for an untaxed quote
+    ok 15 - nullable payment tax means zero only for an untaxed quote
+      ---
+      duration_ms: 18.64543
+      type: 'test'
+      ...
+    # Subtest: captured volume and refunds count while actual fee evidence is pending
+    ok 16 - captured volume and refunds count while actual fee evidence is pending
+      ---
+      duration_ms: 29.143609
+      type: 'test'
+      ...
+    # Subtest: prepared command resumes once without creating a new purchase
+    ok 17 - prepared command resumes once without creating a new purchase
+      ---
+      duration_ms: 20.079604
+      type: 'test'
+      ...
+    # Subtest: stale submitting lease reuses the same provider command after acceptance
+    ok 18 - stale submitting lease reuses the same provider command after acceptance
+      ---
+      duration_ms: 22.845297
+      type: 'test'
+      ...
+    # Subtest: expired replay erases sensitive payload but never releases an unknown charge
+    ok 19 - expired replay erases sensitive payload but never releases an unknown charge
+      ---
+      duration_ms: 33.231962
+      type: 'test'
+      ...
+    # Subtest: unavailable tax fails before any payment submission
+    ok 20 - unavailable tax fails before any payment submission
+      ---
+      duration_ms: 12.117237
+      type: 'test'
+      ...
+    # Subtest: proven first-submission quote refusal releases slot, allowing a failed-order retry
+    ok 21 - proven first-submission quote refusal releases slot, allowing a failed-order retry
+      ---
+      duration_ms: 30.032436
+      type: 'test'
+      ...
+    # Subtest: failure cannot regress an already-counted payment
+    ok 22 - failure cannot regress an already-counted payment
+      ---
+      duration_ms: 26.221397
+      type: 'test'
+      ...
+    # Subtest: different stores have independent pending-payment slots
+    ok 23 - different stores have independent pending-payment slots
+      ---
+      duration_ms: 22.081187
+      type: 'test'
+      ...
+    # Subtest: payment and quote requests use only fields in saved official contracts
+    ok 24 - payment and quote requests use only fields in saved official contracts
+      ---
+      duration_ms: 3.011894
+      type: 'test'
+      ...
+    1..24
+ok 40 - PostgreSQL ledger and controlled-payment integration
+  ---
+  duration_ms: 673.561652
+  type: 'test'
+  ...
+# Subtest: disabled provider never calls network
+ok 41 - disabled provider never calls network
+  ---
+  duration_ms: 2.203042
+  type: 'test'
+  ...
+# Subtest: production requires every explicit activation gate
+ok 42 - production requires every explicit activation gate
+  ---
+  duration_ms: 0.632772
+  type: 'test'
+  ...
+# Subtest: sandbox requests cannot be redirected to production
+ok 43 - sandbox requests cannot be redirected to production
+  ---
+  duration_ms: 53.441287
+  type: 'test'
+  ...
+# Subtest: fee breakdown selects collected application_fee, never Whop processing fee
+ok 44 - fee breakdown selects collected application_fee, never Whop processing fee
+  ---
+  duration_ms: 1.347398
+  type: 'test'
+  ...
+# Subtest: missing collected fee stays pending, not reported paid
+ok 45 - missing collected fee stays pending, not reported paid
+  ---
+  duration_ms: 0.924855
+  type: 'test'
+  ...
+# Subtest: connected verification checks ownership, capability and provider status
+ok 46 - connected verification checks ownership, capability and provider status
+  ---
+  duration_ms: 0.479264
+  type: 'test'
+  ...
+# Subtest: onboarding creates its own store account and uses only documented fields
+ok 47 - onboarding creates its own store account and uses only documented fields
+  ---
+  duration_ms: 15.96538
+  type: 'test'
+  ...
+# Subtest: vault ciphertext does not expose payload and is bound to one attempt
+ok 48 - vault ciphertext does not expose payload and is bound to one attempt
+  ---
+  duration_ms: 3.380448
+  type: 'test'
+  ...
+# Subtest: each missing production gate independently blocks all requests
+ok 49 - each missing production gate independently blocks all requests
+  ---
+  duration_ms: 1.108984
+  type: 'test'
+  ...
+# Subtest: quote-specific native fields are checked against the saved documentation
+ok 50 - quote-specific native fields are checked against the saved documentation
+  ---
+  duration_ms: 6.922666
+  type: 'test'
+  ...
+# Subtest: only whitelisted 400 quote refusals receive proven pre-charge classification
+ok 51 - only whitelisted 400 quote refusals receive proven pre-charge classification
+  ---
+  duration_ms: 1.942098
+  type: 'test'
+  ...
+# Subtest: quote validation rejects invalid expiry and preview-only tax
+ok 52 - quote validation rejects invalid expiry and preview-only tax
+  ---
+  duration_ms: 1.107769
+  type: 'test'
+  ...
+# Subtest: partly approved verification cannot enable payments
+ok 53 - partly approved verification cannot enable payments
+  ---
+  duration_ms: 0.188978
+  type: 'test'
+  ...
+1..53
+# tests 77
+# suites 0
+# pass 77
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 821.302764

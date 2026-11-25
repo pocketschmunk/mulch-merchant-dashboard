@@ -1,0 +1,23 @@
+# Whop provider contract notes
+
+Verified November 24, 2026. This code does not claim to reproduce Crisp's private backend.
+
+Native payment quotes price a single inline variant, return exact Money total and tax_amount, and may be consumed once via quote_id. The payment must match the quoted purchase and buyer location. A second quote with the fixed per-payment application fee binds the fee and tax. Use Api-Version-Date 2026-11-23-3. https://docs.whop.com/api-reference/payment-quotes/create-payment-quote ; https://docs.whop.com/api-reference/payments/create-payment
+
+Inline variant application_fee_amount is a positive number in major currency units, less than initial_price for one_time variants, and valid only on parent-owned subaccounts. It is capped to remaining proceeds. On recurring variants it applies to later payments too; a fixed application fee on a native recurring variant does not automatically implement dynamic lifetime tiers. https://docs.whop.com/developer/platforms/collect-payments-for-subaccounts ; https://docs.whop.com/api-reference/payments/create-payment
+
+The native Payment total excludes buyer fees; amount_charged is the full amount charged and does not decrease for refunds. Quote total also does not establish later buyer fees. apply_surcharge is not supported with quote_id, so it is omitted; its documented default is false. Absence of additional buyer fees must be verified in sandbox before production. A discrepancy is a reconciliation incident, not silently ignored. A Payment tax_amount may be null when no tax applies; this is normalized to zero only against the exact expected quote tax. https://docs.whop.com/api-reference/payments/payment ; https://docs.whop.com/api-reference/payments/create-payment
+
+Create Account uses account API keys to create subaccounts, with top-level country/email/title/external_id/metadata. Same email/external_id retries return same account. AccountLinks POST /account_links remains legacy-only and is supported: account_id, refresh_url, return_url, use_case account_onboarding or payouts_portal. https://docs.whop.com/developer/platforms/enroll-subaccounts ; https://docs.whop.com/api-reference/accounts/create-account ; https://docs.whop.com/api-reference/legacy/account-links/create-account-link ; https://docs.whop.com/api-reference/stability
+
+Verification is not inferred from return_url: retrieve account parent_account, verification profiles, active payment capabilities and account status. No manual business/account ID may bypass this. Current onboarding reference creates a merchant-owned account per store and cannot attach standalone businesses. https://www.crispcheckout.com/dashboard/help/connect-payments-verify-whop
+
+Webhooks use Standard Webhooks signatures; SDK unwrapWebhook handles the provider ws_ secret exactly as supplied and verifies the raw body. Pin webhook api_version_date. Never trust a raw unsigned browser callback. https://docs.whop.com/developer/guides/webhooks
+
+No provider requests with secrets, sandbox payment, live payment, account creation or fee activation have been made by this implementation task. Source tests use fixtures and mocked HTTP.
+
+Actual fee reconciliation uses GET /payments/{id}/fees. The list is complete in one page, result.data contains PaymentFee lines with origin application_fee, exact Money amount/settlement_amount and collected_at. Do not mistake whop_fee or processing_fee for Mulch's fee. https://docs.whop.com/api-reference/payments/list-payment-fees
+
+Native saved payment methods use payt_ IDs and members use mber_. A native billing_address applies only to PayPal; for card tokens, quote location must match token billing location, or matching shipping_address for physical goods. API verifies quote_mismatch rather than trusting a different client location. Native payment statuses are open/paid/pending/void/uncollectible; payment.failed event alone is not a terminal state. https://docs.whop.com/api-reference/payments/create-payment ; https://docs.whop.com/api-reference/payment-quotes/create-payment-quote ; https://docs.whop.com/api-reference/payments/payment
+
+This release rejects saved-method purchases instead of guessing their address or accepting tapped-card Tip semantics. Only one-time confirmation-token purchases are supported. Quotes require calculated/not_applicable tax_status and cannot be IP/country-preview quotes. A whitelisted HTTP 400 quote refusal may release a first-submission slot because the documented API refuses before using the payment method. The same refusal after an earlier unknown submission does not establish that earlier submission failed; the slot stays unresolved.

@@ -1,0 +1,21 @@
+{
+  "name": "mulch-merchant-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": ">=22.23.0"
+  },
+  "scripts": {
+    "build": "pnpm --filter @mulch/merchant-client build",
+    "check": "pnpm -r --if-present check",
+    "test": "pnpm -r --if-present test",
+    "test:isolated": "bash tools/test-isolated.sh",
+    "start": "node --env-file-if-exists=.env server/src/start.js",
+    "migrate": "node --env-file-if-exists=.env tools/migrate.mjs"
+  },
+  "dependencies": {
+    "pg": "8.23.1"
+  }
+}

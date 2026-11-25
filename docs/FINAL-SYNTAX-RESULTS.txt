@@ -1,0 +1,6 @@
+$ pnpm -r --if-present check
+Scope: 3 of 4 workspace projects
+$ node tools/check.mjs
+Syntax checked 9 JavaScript modules.
+$ node tools/check.mjs
+Merchant server JavaScript syntax checks passed.

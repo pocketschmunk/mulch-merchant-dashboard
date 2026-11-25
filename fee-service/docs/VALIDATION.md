@@ -1,0 +1,13 @@
+# Source validation
+
+A separate read-only implementation reviewer traced the policy, PostgreSQL locks, provider contracts, raw webhook signature handling, retry encryption and account isolation against the agreed plan. No source edits, network/provider calls, account access or database writes were performed by that reviewer.
+
+The resulting fixes normalize native nullable tax only against an expected zero-tax quote; omit quote-incompatible apply_surcharge and PayPal-only billing_address; require payable non-preview quotes; classify only documented first-submission pre-charge quote refusals as safe failures; resume prepared/stale submission commands with the original key/body; and hash canonical command meaning rather than property order.
+
+Verified captured gross/refund facts now count independently of application-fee evidence. Fee incidents retain the serialization slot and a durable store review hold. Known provider IDs immediately erase the encrypted retry body. Expired unknown retry bodies are removed by noncharging reconciliation/retry or the explicit maintenance tool, without implying payment failure or clearing the slot. Store-then-attempt row locking fixes stale failure decisions. Unique non-failed order references prevent a second key from charging an already-paid order. Current-policy consent is persisted and checked.
+
+Unsupported saved-method/automatic-renewal paths are explicitly rejected, rather than claiming unverified address/Tip behavior is complete. The source remains a one-time merchant-payment component, not merchant login, Shopify authorization/order sync, a buyer authentication frontend or a recurring billing engine.
+
+The final recorded backend run passed 77 tests with zero failures/skips, including a real isolated PostgreSQL ledger, tier boundaries and rounding, concurrency/account isolation, duplicate commands/orders/events, loss/crash recovery, fee-delayed capture accounting, no-tax payments, native request fields, four independent production guards and real SDK raw-body signatures. Test files use fictitious fixtures and mock provider HTTP. The temporary test database/listeners were stopped automatically. See TEST-RESULTS.txt.
+
+Frontend snapshot evidence is supplied in each snapshot's handoff: Shopify 43 tests, 20 Liquid files parsed, zero Theme Check findings; subscription checkout 19 tests and syntax checks. Existing Apple association bytes and original source integrity were preserved. No container build, external provider sandbox purchase, production payment, deployment or public-site verification is claimed by these source checks. Complete provider proof and integration gates remain in ACTIVATION.md.

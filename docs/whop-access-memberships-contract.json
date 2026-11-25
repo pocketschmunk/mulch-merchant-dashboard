@@ -1,0 +1,971 @@
+{
+  "sourceUrl": "https://docs.whop.com/api-reference/memberships/list-memberships",
+  "apiVersionDate": "2026-11-23-3",
+  "path": "/memberships",
+  "operation": {
+    "tags": [
+      "Memberships"
+    ],
+    "summary": "List Memberships",
+    "description": "Lists every membership the caller can read: an account API key its account's; a user credential their own plus those of every account they manage. `account_id` and `user_id` only narrow that list \u2014 values outside the caller's reach return fewer results, not an error.",
+    "operationId": "listMemberships",
+    "parameters": [
+      {
+        "description": "Narrow to one account (`biz_` tag). With read access to the account this lists all of its memberships; without, only the caller's own memberships in it.",
+        "in": "query",
+        "name": "account_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Narrow to one user's memberships (`user_` tag, or `me` for the caller). A user outside the caller's visible set returns an empty list.",
+        "in": "query",
+        "name": "user_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Narrow to one member's memberships (`mber_` tag), including memberships bought by another business. A member outside the caller's visible set returns an empty list.",
+        "in": "query",
+        "name": "member_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Narrow to memberships linked to one Discord or Telegram account, given as the platform's user ID prefixed with `discord_` or `telegram_`. Discord matches include memberships imported with that Discord ID. Any other format is a 400.",
+        "in": "query",
+        "name": "external_account",
+        "required": false,
+        "schema": {
+          "example": "discord_123456789012345678",
+          "type": "string"
+        }
+      },
+      {
+        "description": "Filter by billing state. `trialing`, `active`, `past_due`, `completed`, `canceled`, and `expired` match the membership's `status`; `active`, `trialing`, and `past_due` exclude memberships set to cancel at period end. The other values are derived buckets that never appear as a `status`: `canceling` matches memberships set to cancel at period end; `paused` matches memberships with payment collection paused; `expiring` matches one-time purchases that have not yet expired; `one_time` matches one-time purchases that never expire; `unclaimed` matches memberships with no buyer user, including memberships bought by another business; `banned` matches memberships whose buyer is banned from the account.",
+        "in": "query",
+        "name": "status",
+        "required": false,
+        "schema": {
+          "enum": [
+            "active",
+            "trialing",
+            "past_due",
+            "completed",
+            "canceled",
+            "expired",
+            "canceling",
+            "paused",
+            "expiring",
+            "one_time",
+            "unclaimed",
+            "banned"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Filter to memberships matching any of these billing states, with the same meanings as `status`. Repeat the parameter to pass several. Combined with `status` when both are sent.",
+        "in": "query",
+        "name": "statuses",
+        "required": false,
+        "schema": {
+          "items": {
+            "enum": [
+              "active",
+              "trialing",
+              "past_due",
+              "completed",
+              "canceled",
+              "expired",
+              "canceling",
+              "paused",
+              "expiring",
+              "one_time",
+              "unclaimed",
+              "banned"
+            ],
+            "example": "canceled",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Filter to memberships of this product (`prod_` tag).",
+        "in": "query",
+        "name": "product_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Filter to memberships of any of these products, each prefixed `prod_`. Repeat the parameter to pass several.",
+        "in": "query",
+        "name": "product_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "prod_xxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Filter to memberships of this variant (`plan_` tag).",
+        "in": "query",
+        "name": "variant_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Filter to memberships of any of these variants, each prefixed `plan_`. Repeat the parameter to pass several.",
+        "in": "query",
+        "name": "variant_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "plan_xxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Filter to memberships discounted by any of these promo codes, each prefixed `promo_`. Repeat the parameter to pass several.",
+        "in": "query",
+        "name": "promo_code_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "promo_xxxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Only memberships created after this ISO 8601 timestamp.",
+        "in": "query",
+        "name": "created_after",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Only memberships created before this ISO 8601 timestamp.",
+        "in": "query",
+        "name": "created_before",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Sort field.",
+        "in": "query",
+        "name": "order",
+        "required": false,
+        "schema": {
+          "default": "created_at",
+          "enum": [
+            "created_at"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Sort direction.",
+        "in": "query",
+        "name": "direction",
+        "required": false,
+        "schema": {
+          "default": "desc",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Number of results to return from the start of the range.",
+        "in": "query",
+        "name": "first",
+        "required": false,
+        "schema": {
+          "default": 20,
+          "maximum": 100,
+          "type": "integer"
+        }
+      },
+      {
+        "description": "Return results after this cursor. Use `page_info.end_cursor` from the previous response to fetch the next page.",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Number of results to return from the end of the range.",
+        "in": "query",
+        "name": "last",
+        "required": false,
+        "schema": {
+          "maximum": 100,
+          "type": "integer"
+        }
+      },
+      {
+        "description": "Return results before this cursor. Use `page_info.start_cursor` from the previous response to fetch the previous page.",
+        "in": "query",
+        "name": "before",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Set to `true` to return the number of matching results in `page_info.total_count`. Send `first=0` as well to return the count without any results.",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "$ref": "#/components/schemas/Membership"
+                  },
+                  "type": "array"
+                },
+                "page_info": {
+                  "properties": {
+                    "end_cursor": {
+                      "example": null,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "has_next_page": {
+                      "example": false,
+                      "type": "boolean"
+                    },
+                    "has_previous_page": {
+                      "example": false,
+                      "type": "boolean"
+                    },
+                    "start_cursor": {
+                      "example": "WyJjdXJzb3IiLDFd",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "total_count": {
+                      "description": "Number of results matching the filters, across every page. Counting stops at 10,000. `null` when `include_total_count` isn't `true`, or when the count ran out of time.",
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "total_count_capped": {
+                      "description": "Whether counting stopped at the limit. `true` means `total_count` is 10,000 or more.",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "end_cursor",
+                    "start_cursor",
+                    "has_next_page",
+                    "has_previous_page",
+                    "total_count",
+                    "total_count_capped"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "data",
+                "page_info"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "description": "memberships listed"
+      },
+      "400": {
+        "$ref": "#/components/responses/InvalidParameters",
+        "description": "invalid status filter"
+      },
+      "401": {
+        "$ref": "#/components/responses/Unauthorized",
+        "description": "missing credentials"
+      },
+      "403": {
+        "$ref": "#/components/responses/Forbidden",
+        "description": "credential lacks the read scope"
+      },
+      "404": {
+        "$ref": "#/components/responses/NotFound",
+        "description": "unknown account_id"
+      }
+    },
+    "security": [
+      {
+        "bearerAuth": [
+          "member:basic:read"
+        ]
+      }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "TypeScript",
+        "source": "import { WhopClient } from \"@whop/sdk\";\n\nconst client = new WhopClient({ token: \"YOUR_TOKEN\", apiVersionDate: \"2026-08-21-1\", idempotencyKey: \"YOUR_IDEMPOTENCY_KEY\" });\nawait client.memberships.list();\n"
+      }
+    ]
+  },
+  "schemas": {
+    "Membership": {
+      "properties": {
+        "account": {
+          "$ref": "#/components/schemas/StorefrontAccount",
+          "description": "The account (seller) this membership belongs to."
+        },
+        "affiliate": {
+          "description": "The membership's affiliate commission. `null` without an affiliate, without `affiliate:basic:read` on the account, and always in webhooks.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/MembershipAffiliate"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "billing_period_days": {
+          "description": "Number of days between recurring charges. `null` for non-renewing memberships or memberships with multiple renewal schedules.",
+          "example": 30,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "cancel_at_period_end": {
+          "description": "Whether the membership is set to cancel when the current billing period ends. Only meaningful for recurring variants.",
+          "example": true,
+          "type": "boolean"
+        },
+        "cancel_option": {
+          "description": "The category the member picked for why they canceled. `null` when no category was picked.",
+          "enum": [
+            "too_expensive",
+            "switching",
+            "missing_features",
+            "technical_issues",
+            "bad_experience",
+            "unused",
+            "other",
+            "testing",
+            null
+          ],
+          "example": "too_expensive",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "canceled_at": {
+          "description": "When cancellation was requested, or when the membership was canceled if no request time is recorded, as an ISO 8601 timestamp. `null` when neither is recorded.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cancellation_reason": {
+          "description": "Free-text explanation provided when canceling. `null` when no reason was provided.",
+          "example": "Too expensive",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "collection_method": {
+          "description": "How renewals are collected. `charge_automatically` charges the saved payment method each period; `send_invoice` emails the buyer an invoice each period. `null` when not set.",
+          "enum": [
+            "charge_automatically",
+            "send_invoice",
+            null
+          ],
+          "example": "send_invoice",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "description": "When the membership was created, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "current_period_end": {
+          "description": "When the current billing period renews, or when a non-renewing membership expires, as an ISO 8601 timestamp. `null` for one-time purchases with no expiration.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "current_period_start": {
+          "description": "When the current billing period started, as an ISO 8601 timestamp. `null` when no billing period is recorded.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "expires_at": {
+          "description": "When access ends for a membership with a fixed expiration, as an ISO 8601 timestamp. `null` when the membership has no expiration, such as a renewing membership.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "external_accounts": {
+          "items": {
+            "$ref": "#/components/schemas/MembershipExternalAccount",
+            "description": "The member's accounts on outside platforms, such as Discord and Telegram. Empty when the member has none linked. `null` in webhooks."
+          },
+          "type": [
+            "array",
+            "null"
+          ]
+        },
+        "feedback_option": {
+          "description": "The account's own cancel reason the member picked, as they saw it. `null` when the member picked a default category or gave no reason.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/MembershipFeedbackOption"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "id": {
+          "description": "Membership ID, prefixed `mem_`.",
+          "example": "mem_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "initial_price": {
+          "$ref": "#/components/schemas/Money",
+          "description": "The variant's current up-front price, in the variant's currency. A list price, not necessarily what the buyer paid. `amount` is `\"0.00\"` when the first charge is free."
+        },
+        "license_key": {
+          "description": "The software license key for this membership. Only present when the product includes a software licensing experience.",
+          "example": "WHOP-XXXX-XXXX-XXXX",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "manage_url": {
+          "description": "URL where the buyer can sign in to manage billing. `null` without a member record or unless the caller is the buyer or has `member:manage` on the account.",
+          "example": "https://whop.com/billing/manage/mber_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "member": {
+          "description": "The caller's member row on the account. Present only when the membership belongs to the caller; `null` on seller-side reads.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/MembershipMember"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "member_id": {
+          "description": "The buyer's member record on the account, prefixed `mber_`. `null` when the membership has no member record, such as an unclaimed membership.",
+          "example": "mber_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "description": "Custom key-value pairs stored on the membership, commonly used for software licensing.",
+          "example": {},
+          "type": "object"
+        },
+        "most_recent_action": {
+          "description": "The membership's latest lifecycle event, such as `renewing_on` or `canceled_on`. Pair it with `most_recent_action_at`. `null` when none is recorded.",
+          "enum": [
+            "canceled_on",
+            "finished_split_pay_at",
+            "canceling_on",
+            "ending_on",
+            "renewing_on",
+            "past_due",
+            "next_payment_attempt",
+            "paused_at",
+            "trial_ends_at",
+            "unresolved_at",
+            "trial_canceling_on",
+            null
+          ],
+          "example": "renewing_on",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "most_recent_action_at": {
+          "description": "When `most_recent_action` happened or is scheduled to happen, as an ISO 8601 timestamp. A future time for upcoming events such as `renewing_on`. `null` when no action is recorded.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone_number": {
+          "description": "The buyer's phone number recorded for this membership, or `null`. The number collected (or verified) at checkout when the seller's phone collection is on; falls back to the buyer's account number when they have shared one with this seller.",
+          "example": "+xxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "product": {
+          "$ref": "#/components/schemas/MembershipProduct",
+          "description": "The product this membership grants access to."
+        },
+        "product_id": {
+          "description": "The product this membership grants access to, prefixed `prod_`.",
+          "example": "prod_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "promo_code_id": {
+          "description": "The promo code discounting this membership, prefixed `promo_`. `null` when none is applied. Set at checkout or by Apply Promo Code to Membership.",
+          "example": "promo_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "renewal_price": {
+          "description": "The variant's renewal price, in the variant's currency, after any promo code that still applies. A membership billed in the buyer's local currency is charged this price converted at the exchange rate on each billing date. `null` for non-renewing memberships.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "split_pay_current_payments": {
+          "description": "Paid installments counted so far on a split pay membership. `null` when the membership is not on split pay, or before its first installment is counted.",
+          "example": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "split_pay_required_payments": {
+          "description": "Installment payments required before the membership stops billing. `null` when the membership is not on split pay.",
+          "example": null,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "status": {
+          "description": "Billing state of the membership. `active`/`trialing` memberships grant access; `past_due` is the grace period after a failed payment; `completed` one-time purchases keep access; `canceled`/`expired` do not.",
+          "enum": [
+            "trialing",
+            "active",
+            "past_due",
+            "completed",
+            "canceled",
+            "expired",
+            "unresolved"
+          ],
+          "example": "active",
+          "type": "string"
+        },
+        "updated_at": {
+          "description": "When the membership was last changed, as an ISO 8601 timestamp. Reflects the most recent change to the membership itself, so you can reconcile against webhook retries, replays, and backfills.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "The buyer, prefixed `user_`. `null` when the buyer is another business or the membership is unclaimed.",
+          "example": "user_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "variant_id": {
+          "description": "The variant the buyer purchased, prefixed `plan_`.",
+          "example": "plan_xxxxxxxxxxxxxx",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "status",
+        "user_id",
+        "member_id",
+        "product_id",
+        "product",
+        "variant_id",
+        "promo_code_id",
+        "billing_period_days",
+        "initial_price",
+        "renewal_price",
+        "split_pay_current_payments",
+        "split_pay_required_payments",
+        "collection_method",
+        "license_key",
+        "phone_number",
+        "cancel_at_period_end",
+        "current_period_start",
+        "current_period_end",
+        "expires_at",
+        "canceled_at",
+        "cancel_option",
+        "cancellation_reason",
+        "feedback_option",
+        "most_recent_action",
+        "most_recent_action_at",
+        "manage_url",
+        "metadata",
+        "created_at",
+        "updated_at",
+        "member",
+        "affiliate",
+        "external_accounts",
+        "account"
+      ],
+      "type": "object"
+    },
+    "StorefrontAccount": {
+      "properties": {
+        "banner_image_url": {
+          "description": "Account banner image URL. `null` when the account has not set one.",
+          "example": null,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "Account ID, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "logo_url": {
+          "description": "Account logo image URL. `null` when the account has not set one.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/image/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "route": {
+          "description": "Account public route identifier, used in the `whop.com/{route}` storefront path.",
+          "example": "shine-time-auto-detailing",
+          "type": "string"
+        },
+        "title": {
+          "description": "Account display name.",
+          "example": "Shine Time Auto Detailing",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "route",
+        "logo_url",
+        "banner_image_url"
+      ],
+      "type": "object"
+    },
+    "MembershipAffiliate": {
+      "properties": {
+        "applies_to_payments": {
+          "description": "Whether the commission is paid on the membership's first payment only or on all its payments.",
+          "enum": [
+            "first_payment",
+            "all_payments"
+          ],
+          "example": "first_payment",
+          "type": "string"
+        },
+        "commission_amount": {
+          "description": "The flat fee commission in the membership currency, or `null` for a percentage.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/Money"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "commission_percentage": {
+          "description": "The percentage commission in percentage points, so `20` means 20%, or `null` for a flat fee.",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "commission_source": {
+          "description": "How the commission rate was set: `custom` for a rate set for this affiliate, `member` for the member affiliate rate of the plan or product, `global` for the product's global affiliate rate, or `marketplace` for a Whop marketplace referral.",
+          "enum": [
+            "custom",
+            "member",
+            "marketplace",
+            "global"
+          ],
+          "example": "custom",
+          "type": "string"
+        },
+        "commission_type": {
+          "description": "Whether the commission is a percentage or a flat fee.",
+          "enum": [
+            "flat_fee",
+            "percentage"
+          ],
+          "example": "flat_fee",
+          "type": "string"
+        },
+        "enabled": {
+          "description": "Whether this membership pays affiliate commissions. `false` means the affiliate is kept on the membership but is no longer paid.",
+          "type": "boolean"
+        },
+        "id": {
+          "description": "Affiliate ID, prefixed `aff_`.",
+          "type": "string"
+        },
+        "user_id": {
+          "description": "ID of the affiliate's user, prefixed `user_`.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "user_id",
+        "commission_source",
+        "commission_type",
+        "commission_percentage",
+        "commission_amount",
+        "enabled",
+        "applies_to_payments"
+      ],
+      "type": "object"
+    },
+    "MembershipExternalAccount": {
+      "properties": {
+        "external_id": {
+          "description": "The member's user ID on the platform, such as a Discord user ID. Prefixed with the platform (`discord_<external_id>`), it is the `external_account` value List Memberships filters by.",
+          "example": "7012345678",
+          "type": "string"
+        },
+        "platform": {
+          "description": "The platform the member's account is on.",
+          "enum": [
+            "discord",
+            "telegram"
+          ],
+          "example": "telegram",
+          "type": "string"
+        },
+        "username": {
+          "description": "The member's username on the platform. `null` when Whop doesn't know it, such as for a membership imported with only a Discord ID.",
+          "example": "telegram_username1",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "platform",
+        "external_id",
+        "username"
+      ],
+      "type": "object"
+    },
+    "MembershipFeedbackOption": {
+      "properties": {
+        "label": {
+          "description": "The option's label when the member picked it. Renaming the option later does not change it.",
+          "example": "The wash club costs more than I can spend",
+          "type": "string"
+        }
+      },
+      "required": [
+        "label"
+      ],
+      "type": "object"
+    },
+    "Money": {
+      "properties": {
+        "amount": {
+          "description": "The amount in major units, as an exact decimal string. For example, `\"10.00\"` is ten dollars. It is a string so that no float rounds it in transit.",
+          "example": "-1234.56",
+          "type": "string"
+        },
+        "currency": {
+          "description": "Three-letter ISO 4217 currency code, lowercase.",
+          "example": "usd",
+          "type": "string"
+        },
+        "decimals": {
+          "description": "How many decimal places the amount carries. This is the precision the charge itself runs at.",
+          "example": 2,
+          "type": "integer"
+        },
+        "display_decimals": {
+          "description": "How many decimal places to SHOW. Usually equal to `decimals`, and deliberately not always: COP is charged in centavos but written in whole pesos, so it is `2` and `0`. Format the number in your own locale using this.",
+          "example": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "currency",
+        "amount",
+        "decimals",
+        "display_decimals"
+      ],
+      "type": "object"
+    },
+    "MembershipMember": {
+      "properties": {
+        "access_level": {
+          "description": "What the member can reach on the account: `customer` for paying members, `admin` for team members, `no_access` once every grant has lapsed.",
+          "enum": [
+            "no_access",
+            "admin",
+            "customer"
+          ],
+          "example": "customer",
+          "type": "string"
+        },
+        "last_accessed_at": {
+          "description": "When the member last opened the account's content, as an ISO 8601 timestamp. `null` if they never have.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "position": {
+          "description": "The member's sort position in the buyer's own account list. `null` until they arrange it.",
+          "example": 1767268800000,
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "access_level",
+        "last_accessed_at",
+        "position"
+      ],
+      "type": "object"
+    },
+    "MembershipProduct": {
+      "properties": {
+        "id": {
+          "description": "Product ID, prefixed `prod_`.",
+          "example": "prod_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "logo_url": {
+          "description": "Product logo image URL. `null` when the product has no logo.",
+          "example": "https://whop-assets-example.s3.amazonaws.com/uploads/image/2026-01-01/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "title": {
+          "description": "Product display name.",
+          "example": "Ceramic Coating Package",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "logo_url"
+      ],
+      "type": "object"
+    },
+    "V1ErrorResponse": {
+      "properties": {
+        "error": {
+          "properties": {
+            "code": {
+              "description": "Machine-readable reason for this specific refusal, such as `bank_warning_not_acknowledged`. Only present when the error carries one.",
+              "type": "string"
+            },
+            "message": {
+              "description": "Human-readable error message.",
+              "example": "account_id is required",
+              "type": "string"
+            },
+            "type": {
+              "description": "Machine-readable error code.",
+              "example": "bad_request",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "message"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "type": "object"
+    }
+  }
+}

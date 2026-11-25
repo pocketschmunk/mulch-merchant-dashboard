@@ -1,0 +1,10 @@
+packages:
+  - client
+  - server
+  - fee-service
+allowBuilds:
+  esbuild: true
+  '@whop/sdk': false
+  pg: false
+minimumReleaseAgeExclude:
+  - '@types/react@19.3.1'

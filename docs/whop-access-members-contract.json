@@ -1,0 +1,847 @@
+{
+  "sourceUrl": "https://docs.whop.com/api-reference/members/list-members",
+  "apiVersionDate": "2026-11-19-2",
+  "path": "/members",
+  "operation": {
+    "tags": [
+      "Members"
+    ],
+    "summary": "List Members",
+    "description": "Lists the members of an account. A member is one buyer's relationship with the account, regardless of how many memberships they hold.",
+    "operationId": "listMembers",
+    "parameters": [
+      {
+        "description": "The account to list members for (`biz_` tag). Defaults to the account the credential acts as.",
+        "in": "query",
+        "name": "account_id",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Filter by what the member can reach on the account.",
+        "in": "query",
+        "name": "access_level",
+        "required": false,
+        "schema": {
+          "enum": [
+            "no_access",
+            "admin",
+            "customer"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Filter by whether the member is still part of the account.",
+        "in": "query",
+        "name": "status",
+        "required": false,
+        "schema": {
+          "enum": [
+            "joined",
+            "left"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Only return members whose users match these `user_` identifiers.",
+        "in": "query",
+        "name": "user_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "user_xxxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Only return members whose `most_recent_action` is one of these values.",
+        "in": "query",
+        "name": "most_recent_actions",
+        "required": false,
+        "schema": {
+          "items": {
+            "enum": [
+              "canceling",
+              "churned",
+              "finished_split_pay",
+              "paused",
+              "paid_subscriber",
+              "paid_once",
+              "expiring",
+              "joined",
+              "left",
+              "trialing",
+              "pending_entry",
+              "renewing",
+              "past_due"
+            ],
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "`active` returns members holding at least one membership that currently grants access; `inactive` returns members holding at least one membership that does not. Combined with `product_ids`, `variant_ids`, or `promo_code_ids`, one membership must match all of them.",
+        "in": "query",
+        "name": "membership_status",
+        "required": false,
+        "schema": {
+          "enum": [
+            "active",
+            "inactive"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Only return members holding a membership to one of these products, prefixed `prod_`. Unknown IDs match nothing.",
+        "in": "query",
+        "name": "product_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "prod_xxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Only return members holding a membership on one of these variants, prefixed `plan_`. Unknown IDs match nothing.",
+        "in": "query",
+        "name": "variant_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "plan_xxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Only return members holding a membership bought with one of these promo codes, prefixed `promo_`. Unknown IDs match nothing.",
+        "in": "query",
+        "name": "promo_code_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "promo_xxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Only return members this affiliate referred, prefixed `aff_`. Requires `affiliate:basic:read` and sorts by `created_at` only. Unknown IDs match nothing.",
+        "in": "query",
+        "name": "affiliate_id",
+        "required": false,
+        "schema": {
+          "example": "aff_xxxxxxxxxxxxxx",
+          "type": "string"
+        }
+      },
+      {
+        "description": "Only return members bought by these accounts, prefixed `biz_`. Unknown IDs match nothing.",
+        "in": "query",
+        "name": "buyer_account_ids",
+        "required": false,
+        "schema": {
+          "items": {
+            "example": "biz_xxxxxxxxxxxxxx",
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      {
+        "description": "Search members by name or username. An exact email address also matches when the credential holds the member:email:read scope.",
+        "in": "query",
+        "name": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Only members who joined after this ISO 8601 timestamp.",
+        "in": "query",
+        "name": "created_after",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Only members who joined before this ISO 8601 timestamp.",
+        "in": "query",
+        "name": "created_before",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Sort field. `most_recent_action_at` and `last_activity_at` place members without one first when ascending and last when descending. `needs_reply` lists customers awaiting a support reply first, ordered by their latest qualifying message. Other members follow in last-activity order. Direction applies within each group. Requires `support_chat:read`.",
+        "in": "query",
+        "name": "order",
+        "required": false,
+        "schema": {
+          "default": "created_at",
+          "enum": [
+            "created_at",
+            "joined_at",
+            "last_accessed_at",
+            "last_activity_at",
+            "most_recent_action_at",
+            "usd_total_spent",
+            "needs_reply"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Sort direction.",
+        "in": "query",
+        "name": "direction",
+        "required": false,
+        "schema": {
+          "default": "desc",
+          "enum": [
+            "asc",
+            "desc"
+          ],
+          "type": "string"
+        }
+      },
+      {
+        "description": "Number of results to return from the start of the range.",
+        "in": "query",
+        "name": "first",
+        "required": false,
+        "schema": {
+          "default": 20,
+          "maximum": 100,
+          "type": "integer"
+        }
+      },
+      {
+        "description": "Return results after this cursor. Use `page_info.end_cursor` from the previous response to fetch the next page.",
+        "in": "query",
+        "name": "after",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Number of results to return from the end of the range.",
+        "in": "query",
+        "name": "last",
+        "required": false,
+        "schema": {
+          "maximum": 100,
+          "type": "integer"
+        }
+      },
+      {
+        "description": "Return results before this cursor. Use `page_info.start_cursor` from the previous response to fetch the previous page.",
+        "in": "query",
+        "name": "before",
+        "required": false,
+        "schema": {
+          "type": "string"
+        }
+      },
+      {
+        "description": "Set to `true` to return the number of matching results in `page_info.total_count`. Send `first=0` as well to return the count without any results.",
+        "in": "query",
+        "name": "include_total_count",
+        "required": false,
+        "schema": {
+          "type": "boolean"
+        }
+      }
+    ],
+    "responses": {
+      "200": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "properties": {
+                "data": {
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  },
+                  "type": "array"
+                },
+                "page_info": {
+                  "properties": {
+                    "end_cursor": {
+                      "example": null,
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "has_next_page": {
+                      "example": false,
+                      "type": "boolean"
+                    },
+                    "has_previous_page": {
+                      "example": false,
+                      "type": "boolean"
+                    },
+                    "start_cursor": {
+                      "example": "WyJjdXJzb3IiLDFd",
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "total_count": {
+                      "description": "Number of results matching the filters, across every page. Counting stops at 10,000. `null` when `include_total_count` isn't `true`, or when the count ran out of time.",
+                      "type": [
+                        "integer",
+                        "null"
+                      ]
+                    },
+                    "total_count_capped": {
+                      "description": "Whether counting stopped at the limit. `true` means `total_count` is 10,000 or more.",
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "end_cursor",
+                    "start_cursor",
+                    "has_next_page",
+                    "has_previous_page",
+                    "total_count",
+                    "total_count_capped"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "data",
+                "page_info"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "description": "members listed"
+      },
+      "400": {
+        "$ref": "#/components/responses/InvalidParameters",
+        "description": "invalid access_level filter"
+      },
+      "401": {
+        "$ref": "#/components/responses/Unauthorized",
+        "description": "missing credentials"
+      },
+      "403": {
+        "$ref": "#/components/responses/Forbidden",
+        "description": "credential lacks the member-read scope"
+      }
+    },
+    "security": [
+      {
+        "bearerAuth": [
+          "member:basic:read"
+        ]
+      }
+    ],
+    "x-codeSamples": [
+      {
+        "lang": "TypeScript",
+        "source": "import { WhopClient } from \"@whop/sdk\";\n\nconst client = new WhopClient({ token: \"YOUR_TOKEN\", apiVersionDate: \"2026-08-21-1\", idempotencyKey: \"YOUR_IDEMPOTENCY_KEY\" });\nawait client.members.list();\n"
+      }
+    ]
+  },
+  "schemas": {
+    "Member": {
+      "properties": {
+        "access_level": {
+          "description": "What the member can reach on the account: `customer` for paying members, `admin` for team members, `no_access` once every grant has lapsed.",
+          "enum": [
+            "no_access",
+            "admin",
+            "customer"
+          ],
+          "example": "customer",
+          "type": "string"
+        },
+        "account_id": {
+          "description": "The account this member belongs to, prefixed `biz_`.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "buyer_account_id": {
+          "description": "The business that bought, prefixed `biz_`. `null` when the buyer is a person.",
+          "example": "biz_xxxxxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "created_at": {
+          "description": "When the member record was created, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "display_name": {
+          "description": "The name to show for this member: the user's name, or their username when they have not set one. The buying business's name when `user` is `null`.",
+          "example": "Dana Whitfield",
+          "type": "string"
+        },
+        "earnings_usd": {
+          "description": "The user's gross income across Whop, in USD, refreshed periodically. `null` when the user hides their earnings or the buyer is another business.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/UserEarningsAmount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "email": {
+          "description": "The user's email address. `null` without `member:email:read` on the account, when the buyer is another business, or when the user has no assigned email.",
+          "example": "marcus@shinetime.example",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "Member ID, prefixed `mber_`.",
+          "example": "mber_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "joined_at": {
+          "description": "When the member first joined the account, as an ISO 8601 timestamp.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": "string"
+        },
+        "last_accessed_at": {
+          "description": "When the member last opened the account's content, as an ISO 8601 timestamp. `null` if they never have.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "last_activity": {
+          "description": "What happened at `last_activity_at`. `object` says which kind of activity it is. `null` without `support_chat:read` on the account, or when `last_activity_at` is `null`.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/MemberLastActivity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "last_activity_at": {
+          "description": "When the member and the account last interacted, as an ISO 8601 timestamp. For example, a message in the member's support chat.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "metadata": {
+          "description": "Your own key-value data stored on this member. `null` when none is set.",
+          "example": null,
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "most_recent_action": {
+          "description": "The member's latest lifecycle state on the account, derived from their memberships, such as `paid_subscriber`, `canceling`, or `churned`. `null` until it is first computed.",
+          "enum": [
+            "canceling",
+            "churned",
+            "finished_split_pay",
+            "paused",
+            "paid_subscriber",
+            "paid_once",
+            "expiring",
+            "joined",
+            "left",
+            "trialing",
+            "pending_entry",
+            "renewing",
+            "past_due",
+            null
+          ],
+          "example": "paid_subscriber",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "most_recent_action_at": {
+          "description": "When `most_recent_action` took effect, as an ISO 8601 timestamp. `null` when `most_recent_action` is `null`.",
+          "example": "2026-01-01T12:00:00.000Z",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "description": "The name the account gave this customer with `PATCH /members/:id`. Invoices show it as the customer name on every invoice for this member, in place of the user's own name. `null` when the account has not set one.",
+          "example": "Northwind Legal LLP",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "phone_number": {
+          "description": "The member's phone number: the most recent number collected (or verified) at checkout, otherwise their account number when they have shared one with this seller. `null` without `member:phone:read` on the account, or when there is neither.",
+          "example": "+xxxxxxxxxxx",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "status": {
+          "description": "`joined` while the member is part of the account, `left` after they leave.",
+          "enum": [
+            "joined",
+            "left"
+          ],
+          "example": "joined",
+          "type": "string"
+        },
+        "token_balance": {
+          "description": "The member's current token balance for this account, computed from token transactions.",
+          "example": 70.25,
+          "type": "number"
+        },
+        "unsubscribe_status": {
+          "description": "`unsubscribed` once the member opts out of the account's marketing communications, `null` while they're subscribed. Only the member can change it.",
+          "enum": [
+            "unsubscribed",
+            null
+          ],
+          "example": "unsubscribed",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "usd_total_spent": {
+          "$ref": "#/components/schemas/Money",
+          "description": "How much the member has spent on the account's products, in USD."
+        },
+        "user": {
+          "description": "The user behind this member. `null` when the buyer is another business rather than a person.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/MemberUser"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "account_id",
+        "buyer_account_id",
+        "access_level",
+        "status",
+        "display_name",
+        "name",
+        "email",
+        "most_recent_action",
+        "most_recent_action_at",
+        "usd_total_spent",
+        "token_balance",
+        "earnings_usd",
+        "phone_number",
+        "joined_at",
+        "last_accessed_at",
+        "last_activity_at",
+        "last_activity",
+        "unsubscribe_status",
+        "metadata",
+        "created_at",
+        "user"
+      ],
+      "type": "object"
+    },
+    "UserEarningsAmount": {
+      "properties": {
+        "last_24_hours": {
+          "description": "Gross income in USD over the last 24 hours.",
+          "example": "0.00",
+          "type": "string"
+        },
+        "last_30_days": {
+          "description": "Gross income in USD over the last 30 days.",
+          "example": "0.00",
+          "type": "string"
+        },
+        "last_7_days": {
+          "description": "Gross income in USD over the last 7 days.",
+          "example": "0.00",
+          "type": "string"
+        },
+        "lifetime": {
+          "description": "All-time gross income in USD.",
+          "example": "0.00",
+          "type": "string"
+        }
+      },
+      "required": [
+        "lifetime",
+        "last_30_days",
+        "last_7_days",
+        "last_24_hours"
+      ],
+      "type": "object"
+    },
+    "MemberLastActivity": {
+      "$ref": "#/components/schemas/MemberLastActivityMessage",
+      "description": "What happened at the member's `last_activity_at`. `object` picks the shape: a `message` in their support chat.",
+      "discriminator": {
+        "mapping": {
+          "message": "#/components/schemas/MemberLastActivityMessage"
+        },
+        "propertyName": "object"
+      }
+    },
+    "Money": {
+      "properties": {
+        "amount": {
+          "description": "The amount in major units, as an exact decimal string. For example, `\"10.00\"` is ten dollars. It is a string so that no float rounds it in transit.",
+          "example": "-1234.56",
+          "type": "string"
+        },
+        "currency": {
+          "description": "Three-letter ISO 4217 currency code, lowercase.",
+          "example": "usd",
+          "type": "string"
+        },
+        "decimals": {
+          "description": "How many decimal places the amount carries. This is the precision the charge itself runs at.",
+          "example": 2,
+          "type": "integer"
+        },
+        "display_decimals": {
+          "description": "How many decimal places to SHOW. Usually equal to `decimals`, and deliberately not always: COP is charged in centavos but written in whole pesos, so it is `2` and `0`. Format the number in your own locale using this.",
+          "example": 2,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "currency",
+        "amount",
+        "decimals",
+        "display_decimals"
+      ],
+      "type": "object"
+    },
+    "MemberUser": {
+      "properties": {
+        "city": {
+          "description": "The user's city, derived from their IP address. `null` when unknown or the user turned off location sharing.",
+          "example": "Austin",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "description": "The user's country as an ISO 3166-1 alpha-2 code, like `US`, derived from their IP address. `null` when unknown or the user turned off location sharing.",
+          "example": "US",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "description": "User ID, prefixed `user_`.",
+          "example": "user_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name.",
+          "example": "Dana Whitfield",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_picture": {
+          "$ref": "#/components/schemas/UserProfilePicture",
+          "description": "Avatar wrapper. Its `url` is always present, and is a generated placeholder when the user set no picture."
+        },
+        "state": {
+          "description": "The user's state or region code, like `CA`, derived from their IP address. `null` when unknown or the user turned off location sharing.",
+          "example": "TX",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "username": {
+          "description": "Public username.",
+          "example": "danawhitfield",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "name",
+        "profile_picture",
+        "city",
+        "state",
+        "country"
+      ],
+      "type": "object"
+    },
+    "V1ErrorResponse": {
+      "properties": {
+        "error": {
+          "properties": {
+            "code": {
+              "description": "Machine-readable reason for this specific refusal, such as `bank_warning_not_acknowledged`. Only present when the error carries one.",
+              "type": "string"
+            },
+            "message": {
+              "description": "Human-readable error message.",
+              "example": "account_id is required",
+              "type": "string"
+            },
+            "type": {
+              "description": "Machine-readable error code.",
+              "example": "bad_request",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type",
+            "message"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "type": "object"
+    },
+    "MemberLastActivityMessage": {
+      "properties": {
+        "author": {
+          "description": "Who sent the message: the member, or someone on the account's team. `null` when the sender's account no longer exists.",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/UserSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "channel_id": {
+          "description": "The support chat the message was sent in.",
+          "type": "string"
+        },
+        "created_at": {
+          "description": "When the message was sent, as an ISO 8601 timestamp.",
+          "type": "string"
+        },
+        "id": {
+          "description": "The message ID.",
+          "type": "string"
+        },
+        "object": {
+          "description": "Always `message`.",
+          "enum": [
+            "message"
+          ],
+          "example": "message",
+          "type": "string"
+        },
+        "plain_content": {
+          "description": "The message text without formatting. `null` when the message has no text, such as an attachment on its own.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "object",
+        "id",
+        "channel_id",
+        "author",
+        "plain_content",
+        "created_at"
+      ],
+      "title": "Message",
+      "type": "object"
+    },
+    "UserProfilePicture": {
+      "properties": {
+        "url": {
+          "description": "Avatar image URL. Always present. It is a generated placeholder when the user set no picture.",
+          "example": "https://ui-avatars.com/api/",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "type": "object"
+    },
+    "UserSummary": {
+      "properties": {
+        "id": {
+          "description": "User ID, prefixed `user_`.",
+          "example": "user_xxxxxxxxxxxxxx",
+          "type": "string"
+        },
+        "name": {
+          "description": "Display name.",
+          "example": "Dana Whitfield",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "profile_picture": {
+          "$ref": "#/components/schemas/UserProfilePicture",
+          "description": "Avatar wrapper. Its `url` is always present, and is a generated placeholder when the user set no picture."
+        },
+        "username": {
+          "description": "Public username.",
+          "example": "danawhitfield",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "username",
+        "name",
+        "profile_picture"
+      ],
+      "type": "object"
+    }
+  }
+}

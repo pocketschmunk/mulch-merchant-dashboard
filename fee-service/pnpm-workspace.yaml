@@ -1,0 +1,3 @@
+allowBuilds:
+  '@whop/sdk': false
+  pg: false
